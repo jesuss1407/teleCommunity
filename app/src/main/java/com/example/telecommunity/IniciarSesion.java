@@ -16,6 +16,16 @@ public class IniciarSesion extends AppCompatActivity {
         setContentView(R.layout.activity_iniciar_sesion);
 
 
+        //iniciar
+        Button iniciar = findViewById(R.id.loginButton);
+        iniciar.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View view) {
+                Intent intent = new Intent(IniciarSesion.this, PantallaPrincipal.class);
+                startActivity(intent);
+            }
+        });
+
         //redireccionar a registro
         TextView registrarme = findViewById(R.id.signupText);
         registrarme.setOnClickListener(new View.OnClickListener() {

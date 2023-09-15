@@ -8,6 +8,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.telecommunity.R;
+
 public class MainActivity extends AppCompatActivity {
 
     EditText username;
