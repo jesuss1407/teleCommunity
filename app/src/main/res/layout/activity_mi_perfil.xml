@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_gravity="center"
+    android:background="@color/purple"
+    tools:context=".MiPerfil">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:padding="8dp"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_alignParentStart="true"
+                    android:padding="5dp"
+                    android:src="@drawable/ic_arrow" />
+
+
+                <ImageView
+                    android:layout_width="45dp"
+                    android:layout_height="45dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_margin="5dp"
+                    android:padding="1dp"
+                    android:src="@drawable/ic_notification" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:text="Mi"
+                android:textStyle="normal"
+                android:textColor="@color/white"
+                android:textSize="30sp"
+                android:layout_marginStart="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <TextView
+                android:text="Perfil"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:textSize="33sp"
+                android:layout_marginStart="15dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <include
+        android:layout_gravity="center"
+        layout="@layout/item_image"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_width="match_parent" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:orientation="vertical"
+                android:padding="8dp"
+                android:background="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:padding="1dp"
+                        android:gravity="center"
+                        android:layout_alignParentStart="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <ImageView
+                            android:padding="5dp"
+                            android:src="@drawable/ic_person"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"/>
+                        <TextView
+                            android:text="Informacion personal"
+                            android:textSize="16sp"
+                            android:layout_margin="5dp"
+                            android:textStyle="bold|normal"
+                            android:textColor="#F8554A4A"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+
+                    </LinearLayout>
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:padding="1dp"
+                        android:gravity="center"
+                        android:layout_alignParentEnd="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                        <ImageView
+                            android:padding="5dp"
+                            android:src="@drawable/ic_add"
+                            android:layout_width="35dp"
+                            android:layout_height="35dp"/>
+                        <TextView
+                            android:text="Editar perfil"
+                            android:textSize="16sp"
+                            android:layout_margin="5dp"
+                            android:textStyle="bold|normal"
+                            android:textColor="#286DC2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+                    </LinearLayout>
+
+
+                </RelativeLayout>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        app:tint="@color/black"
+                        android:padding="2dp"
+                        android:layout_marginStart="10dp"
+                        android:src="@drawable/ic_home"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"/>
+
+                    <LinearLayout
+
+                        android:orientation="vertical"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+                        <TextView
+                            android:text="Estudiante PUCP"
+                            android:textSize="17sp"
+                            android:textColor="@color/black"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                        <TextView
+                            android:text="Código \n20158969"
+                            android:textSize="13sp"
+                            android:textColor="#ED5E5E5E"
+                            android:textStyle="normal"
+                            android:textAlignment="textStart"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+
+
+                    </LinearLayout>
+
+
+
+                </LinearLayout>
+
+
+
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:background="@color/white"
+                android:layout_height="wrap_content">
+                <View
+                    android:background="#79D6D1D1"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"/>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:padding="3dp"
+                    android:layout_width="match_parent"
+                    android:layout_marginLeft="8dp"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:padding="2dp"
+                        android:src="@drawable/ic_phone"
+                        android:layout_marginStart="5dp"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"/>
+                    <TextView
+                        android:text="Teléfono"
+                        android:layout_marginStart="10dp"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_gravity="center"
+                        android:textColor="#605E5E"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+
+                </LinearLayout>
+                <TextView
+                    android:text="+51 961234569"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginBottom="15dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+
+
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:background="@color/white"
+                android:layout_height="wrap_content">
+                <View
+                    android:background="#79D6D1D1"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"/>
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:padding="3dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <ImageView
+                        android:padding="2dp"
+                        android:src="@drawable/ic_email"
+                        android:layout_marginStart="5dp"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"/>
+                    <TextView
+                        android:text="Correo"
+                        android:layout_marginStart="10dp"
+                        android:textSize="14sp"
+                        android:textStyle="bold"
+                        android:layout_gravity="center"
+                        android:textColor="#605E5E"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+
+                </LinearLayout>
+                <TextView
+                    android:text="lucho.stuardo@pucp.edu.pe"
+                    android:textStyle="bold"
+                    android:textColor="@color/black"
+                    android:textSize="18sp"
+                    android:layout_marginStart="25dp"
+                    android:layout_marginBottom="15dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+
+
+</LinearLayout>
