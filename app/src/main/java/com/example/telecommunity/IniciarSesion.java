@@ -36,5 +36,15 @@ public class IniciarSesion extends AppCompatActivity {
             }
         });
 
+        //redireccionar a mi perfil
+        TextView perfil = findViewById(R.id.loginText);
+        perfil.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View view) {
+                Intent intent = new Intent(IniciarSesion.this,MiPerfil.class);
+                startActivity(intent);
+            }
+        });
+
     }
 }

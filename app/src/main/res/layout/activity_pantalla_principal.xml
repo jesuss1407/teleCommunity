@@ -20,7 +20,7 @@
             android:id="@+id/search"
             app:iconifiedByDefault="false"
             app:searchHintIcon="@null"
-            app:queryHint="Search..."
+            app:queryHint="Buscar..."
             android:focusable="false"/>
 
         <androidx.recyclerview.widget.RecyclerView

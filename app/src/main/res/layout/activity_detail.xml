@@ -6,33 +6,33 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".actividades.DetailActivity">
+    tools:context=".DetailActivity">
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/detailTitle"
         android:layout_marginTop="14dp"
-        android:text="Title"
+        android:text="Basket hombres"
         android:textSize="24sp"
         android:layout_gravity="center"
         android:textColor="@color/lavender"
         android:layout_marginBottom="12dp"/>
 
     <ImageView
+        android:id="@+id/detailImage"
         android:layout_width="400dp"
         android:layout_height="200dp"
-        android:id="@+id/detailImage"
-        android:padding="8dp"
         android:layout_gravity="center"
-        android:src="@drawable/baseline_book_24"
-        android:scaleType="centerCrop"/>
+        android:padding="8dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/basquet" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:text="Description"
+        android:text="Se busca 11  telecos que deseen participar en el equipo de basquet. Los partidos se jugaran todos los lunes de noviembre."
         android:padding="20dp"
         android:layout_gravity="center"
         android:textColor="@color/lavender"

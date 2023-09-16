@@ -10,9 +10,6 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.example.telecommunity.actividades.DataClass;
-import com.example.telecommunity.actividades.MyAdapter;
-
 public class PantallaPrincipal extends AppCompatActivity {
 
     RecyclerView recyclerView;
@@ -41,8 +38,19 @@ public class PantallaPrincipal extends AppCompatActivity {
         GridLayoutManager gridLayoutManager = new GridLayoutManager(PantallaPrincipal.this, 1);
         recyclerView.setLayoutManager(gridLayoutManager);
         dataList = new ArrayList<>();
-        androidData = new DataClass("Camera", R.string.app_name, "Java", R.drawable.image_detail);
+        androidData = new DataClass("Basquet", R.string.app_name, "Inicio: 11/09", R.drawable.basquet);
         dataList.add(androidData);
+        androidData = new DataClass("Futbol", R.string.app_name, "Inicio: 11/10", R.drawable.futsal_damas);
+        dataList.add(androidData);
+        androidData = new DataClass("Voley", R.string.app_name, "Inicio: 08/10", R.drawable.basquet);
+        dataList.add(androidData);
+        androidData = new DataClass("Ajedrez", R.string.app_name, "Inicio: 01/09", R.drawable.futsal_damas);
+        dataList.add(androidData);
+        androidData = new DataClass("Camera", R.string.app_name, "Inicio: 11/09", R.drawable.basquet);
+        dataList.add(androidData);
+        androidData = new DataClass("Camera", R.string.app_name, "Java", R.drawable.basquet);
+        dataList.add(androidData);
+
 
         adapter = new MyAdapter(PantallaPrincipal.this, dataList);
         recyclerView.setAdapter(adapter);
