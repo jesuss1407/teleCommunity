@@ -13,6 +13,18 @@
         android:theme="@style/Theme.TeleCommunity"
         tools:targetApi="31">
         <activity
+            android:name=".DelegadoGeneral.BanearUsuario"
+            android:exported="false" />
+        <activity
+            android:name=".DelegadoGeneral.VerUsuario"
+            android:exported="false" />
+        <activity
+            android:name=".DelegadoGeneral.EditarUsuario"
+            android:exported="false" />
+        <activity
+            android:name=".CambiarContra"
+            android:exported="false" />
+        <activity
             android:name=".MiPerfil"
             android:exported="false" />
         <activity

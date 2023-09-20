@@ -4,6 +4,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="purple">#00C39C</color>
     <color name="lavender">#8692f7</color>
+    <color name="red">#BC180C</color>
 
     <color name="purple_200">#FFBB86FC</color>
     <color name="purple_500">#FF6200EE</color>
