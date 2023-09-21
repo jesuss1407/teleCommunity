@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+        <!-- Aquí va el contenido principal de tu actividad -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/white"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="Realizar Donación"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:layout_marginTop="10dp"
+                android:layout_width="112dp"
+                android:layout_height="6dp"
+                android:src="@drawable/lineasup" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/plin"
+                android:paddingEnd="70dp"
+                tools:ignore="RtlSymmetry" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/yape" />
+
+            <!-- Puedes agregar otra ImageView aquí -->
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_marginTop="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+            <TextView
+                android:paddingStart="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Nota: Como egresado, debes tener en cuenta que el monto mínimo a donar es de S/100."
+                android:textColor="#B3E35959"
+                tools:ignore="RtlSymmetry" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:paddingStart="20dp"
+                android:text="¿Ya donaste?"
+                android:textColor="#000000"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                tools:ignore="RtlSymmetry" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:paddingStart="20dp"
+                android:paddingBottom="10dp"
+                android:text="Porfavor, envía una captura de tu transferencia para que el delegado general pueda verificarla"
+                android:textColor="#000000"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                tools:ignore="RtlSymmetry" />
+
+            <ScrollView
+                android:contentDescription="SubirFoto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" >
+                    <!-- ImageView for default image -->
+                    <ImageView
+                        android:id="@+id/imageViewCaptura"
+                        android:layout_width="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_height="150dp"
+                        android:src="@drawable/regalito"  />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingTop="10dp"
+                    android:paddingStart="60dp"
+
+                    tools:ignore="RtlSymmetry">
+
+
+                    <Button
+                        android:id="@+id/buttonSubirCaptura"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:text="Subir Captura"
+                        android:textColor="@color/white"
+                        android:backgroundTint="@drawable/button_background_black"
+                        app:cornerRadius="8dp"
+                        />
+
+
+                    <View
+                        android:id="@+id/textView3"
+
+                        android:layout_width="17dp"
+                        android:layout_height="1dp"
+                        android:layout_gravity="center"
+                         />
+
+                    <Button
+                        android:id="@+id/buttonEnviarCaptura"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:text="Enviar Captura"
+                        android:textColor="@color/white"
+                        android:enabled="false"
+                        android:backgroundTint="@drawable/button_background_black"
+                        app:cornerRadius="8dp" />
+
+
+                </LinearLayout>
+
+
+
+
+
+
+                </LinearLayout>
+            </ScrollView>
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+    <!-- Este es tu BottomNavigationView -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="@android:color/white"
+        app:menu="@menu/bottom_nav_user" />
+</LinearLayout>

@@ -13,11 +13,11 @@
         android:title="Notificaciones"
         android:icon="@drawable/bell"/>
     <item
-        android:id="@+id/gift"
+        android:id="@+id/navigation_donacion"
         android:title="Donaciones"
         android:icon="@drawable/gift"/>
     <item
-        android:id="@+id/perfil"
+        android:id="@+id/navigation_mi_perfil"
         android:title="Perfil"
         android:icon="@drawable/user"/>
 
