@@ -24,6 +24,12 @@
             android:name=".DelegadoGeneral.EditarUsuario"
             android:exported="false" />
         <activity
+            android:name=".DelegadoGeneral.AdmActividades"
+            android:exported="false"/>
+        <activity
+            android:name=".DelegadoGeneral.ActividadesCurso"
+            android:exported="false"/>
+        <activity
             android:name=".CambiarContra"
             android:exported="false" />
         <activity
@@ -37,6 +43,9 @@
             android:exported="false" />
         <activity
             android:name=".RealizarDonacion"
+            android:exported="false" />
+        <activity
+            android:name=".Notificaciones"
             android:exported="false" />
         <activity
             android:name=".RegistroUsuario"

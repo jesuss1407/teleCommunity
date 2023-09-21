@@ -155,9 +155,18 @@
                 android:layout_width="200dp"
                 android:layout_height="50dp"
                 android:layout_marginTop="40dp"
-                android:backgroundTint="@color/black"
+                android:backgroundTint="@drawable/button_background_black"
                 android:layout_gravity="center"
                 android:text="Aplicar Cambios"
+                app:cornerRadius="8dp" />
+
+            <Button
+                android:id="@+id/delegadogeneral"
+                android:layout_width="200dp"
+                android:layout_height="60dp"
+                android:backgroundTint="@drawable/button_background_black"
+                android:layout_gravity="center"
+                android:text="Modo Delegado General"
                 app:cornerRadius="8dp" />
 
 

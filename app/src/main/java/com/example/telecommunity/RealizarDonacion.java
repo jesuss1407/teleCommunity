@@ -60,6 +60,12 @@ public class RealizarDonacion extends AppCompatActivity {
                     overridePendingTransition(0, 0);
                     return true;
                 }
+                else if (menuItem.getItemId() == R.id.navigation_notificacion) {
+
+                    startActivity(new Intent(getApplicationContext(), Notificaciones.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
                 // Agrega más casos 'if' para otros items si es necesario
                 return false;
             }
