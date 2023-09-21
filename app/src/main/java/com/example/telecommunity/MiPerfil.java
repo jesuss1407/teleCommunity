@@ -17,13 +17,13 @@ public class MiPerfil extends AppCompatActivity {
 
 
         //redireccionar a registro
-        ImageView atras = findViewById(R.id.atras);
-        atras.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View view) {
-                Intent intent = new Intent(MiPerfil.this, IniciarSesion.class);
-                startActivity(intent);
-            }
-        });
+//        ImageView atras = findViewById(R.id.atras);
+//        atras.setOnClickListener(new View.OnClickListener() {
+//
+//            public void onClick(View view) {
+//                Intent intent = new Intent(MiPerfil.this, IniciarSesion.class);
+//                startActivity(intent);
+//            }
+//        });
     }
 }
