@@ -10,6 +10,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.telecommunity.Notificaciones;
 import com.example.telecommunity.R;
 import com.example.telecommunity.RealizarDonacion;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -24,6 +28,8 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.charts.PieChart;
+
 import java.util.ArrayList;
 
 
@@ -96,6 +102,34 @@ public class Estadisticas extends AppCompatActivity {
 
         // Actualiza el gráfico
         barChart.invalidate();
+
+        // Encuentra el PieChart en tu XML
+        PieChart pieChart = findViewById(R.id.pieChart);
+
+        // Crea un conjunto de datos para el gráfico de pastel y agrega datos de ejemplo
+        ArrayList<PieEntry> pieEntries = new ArrayList<>();
+        pieEntries.add(new PieEntry(30f, "Etiqueta 1"));
+        pieEntries.add(new PieEntry(45f, "Etiqueta 2"));
+        pieEntries.add(new PieEntry(25f, "Etiqueta 3"));
+
+        PieDataSet pieDataSet = new PieDataSet(pieEntries, "Datos de Ejemplo");
+
+        // Personaliza la apariencia del conjunto de datos (colores, borde, etc.)
+        pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS); // Colores predeterminados
+
+        // Crea un objeto PieData y establece el conjunto de datos
+        PieData pieData = new PieData(pieDataSet);
+
+        // Asigna los datos al gráfico de pastel
+        pieChart.setData(pieData);
+
+        // Personaliza el centro del gráfico de pastel (opcional)
+        pieChart.setCenterText("Estadísticas");
+        pieChart.setCenterTextSize(18f);
+
+// Actualiza el gráfico de pastel
+        pieChart.invalidate();
+
     }
 
 
