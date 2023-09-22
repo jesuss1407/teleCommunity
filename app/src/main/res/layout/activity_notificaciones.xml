@@ -59,7 +59,7 @@
 
                     <!-- Foto redonda (puedes cambiar el atributo src por la URL de la foto) -->
                     <ImageView
-                        android:id="@+id/profile_image1"
+                        android:id="@+id/notification_photo"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:src="@drawable/gato"
@@ -83,7 +83,7 @@
 
                             <!-- Nombre del usuario y acción -->
                             <TextView
-                                android:id="@+id/notification_header1"
+                                android:id="@+id/notification_titulo"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Marcelo ha comentado"
@@ -93,7 +93,7 @@
 
                             <!-- Hora de publicación -->
                             <TextView
-                                android:id="@+id/timestamp1"
+                                android:id="@+id/notification_tiempo"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Hace 5 minutos"
@@ -103,7 +103,7 @@
 
                         <!-- Contenido de la notificación -->
                         <TextView
-                            android:id="@+id/notification_content1"
+                            android:id="@+id/notification_contenido"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="🔥Necesitamos barra para basket masculinoooo!! entren y vean los eventos que ya hemos empezado con las reuniones!!" />
@@ -172,9 +172,6 @@
 
                     </LinearLayout>
                 </LinearLayout>
-
-                <!-- Puedes agregar más notificaciones según sea necesario -->
-
             </LinearLayout>
         </ScrollView>
 
