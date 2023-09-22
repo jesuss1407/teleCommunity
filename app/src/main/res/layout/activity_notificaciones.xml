@@ -38,22 +38,71 @@
 
         </LinearLayout>
 
+        <!-- Agrega este código dentro de tu LinearLayout vertical principal -->
+
+        <!-- Elemento de notificación -->
         <LinearLayout
-            android:layout_marginTop="30dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center">
+            android:padding="16dp"
+            android:gravity="start">
 
-            <TextView
-                android:paddingStart="20dp"
-                android:layout_width="match_parent"
+            <!-- Foto redonda (puedes cambiar el atributo src por la URL de la foto) -->
+            <ImageView
+                android:id="@+id/profile_image"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:src="@drawable/gato"
+                android:layout_gravity="center"
+                app:shapeAppearanceOverlay="@style/Circular"
+                android:contentDescription="Foto de perfil" />
+
+            <!-- Contenido de la notificación -->
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Sin notificaciones hasta ahora."
-                android:textColor="#80000000"
-                tools:ignore="RtlSymmetry" />
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="16dp">
 
+                <!-- Nombre del usuario y acción -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <!-- Nombre del usuario y acción -->
+                    <TextView
+                        android:id="@+id/notification_header"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Marcelo ha comentado"
+                        android:textColor="#000000"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <!-- Hora de publicación -->
+                    <TextView
+                        android:id="@+id/timestamp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Hace 5 minutos"
+                        android:textColor="#808080"
+                        android:layout_marginStart="48dp" /> <!-- Añade un margen entre el nombre y la hora si es necesario -->
+                </LinearLayout>
+
+                <!-- Contenido de la notificación -->
+                <TextView
+                    android:id="@+id/notification_content"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🔥 Necesitamos barra para basket masculinoooo!! entren y vean los eventos que ya hemos empezado con las reuniones!!" />
+
+            </LinearLayout>
         </LinearLayout>
+
+
 
 
 
