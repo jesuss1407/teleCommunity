@@ -10,8 +10,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import com.example.telecommunity.Notificaciones;
 import com.example.telecommunity.R;
 
+import com.example.telecommunity.RealizarDonacion;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class AdmActividades extends AppCompatActivity {
@@ -39,10 +41,15 @@ public class AdmActividades extends AppCompatActivity {
         listView.setOnItemClickListener((parent, view, position, id) -> {
             switch (position) {
                 case 0:
-                    // Navegar a ActividadesCurso.java
                     startActivity(new Intent(AdmActividades.this, ActividadesCurso.class));
                     break;
-                // ... otros casos
+                case 1:
+                    startActivity(new Intent(AdmActividades.this, ActividadesFinalizadas.class));
+                    break;
+                case 2:
+                    startActivity(new Intent(AdmActividades.this, ActividadesEliminadas.class));
+                    break;
+
             }
         });
 
@@ -58,7 +65,19 @@ public class AdmActividades extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
 
-                // Agrega más casos 'if' para otros items si es necesario
+                if (menuItem.getItemId() == R.id.navigation_estadistica) {
+                    // Ir a la actividad Estadisticas
+                    startActivity(new Intent(getApplicationContext(), Estadisticas.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+                else if (menuItem.getItemId() == R.id.navigation_admdonacion) {
+                    // Ir a la actividad AdministrarDonaión
+                    startActivity(new Intent(getApplicationContext(), AdmDonacion.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+
                 return false;
             }
         });

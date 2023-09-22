@@ -9,7 +9,7 @@
         android:title="Alumnos"
         android:icon="@drawable/users"/>
     <item
-        android:id="@+id/navigation_donacion"
+        android:id="@+id/navigation_admdonacion"
         android:title="Donaciones"
         android:icon="@drawable/camera"/>
     <item

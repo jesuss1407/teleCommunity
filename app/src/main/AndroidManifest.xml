@@ -30,6 +30,18 @@
             android:name=".DelegadoGeneral.ActividadesCurso"
             android:exported="false"/>
         <activity
+            android:name=".DelegadoGeneral.ActividadesEliminadas"
+            android:exported="false"/>
+        <activity
+            android:name=".DelegadoGeneral.ActividadesFinalizadas"
+            android:exported="false"/>
+        <activity
+            android:name=".DelegadoGeneral.AdmDonacion"
+            android:exported="false"/>
+        <activity
+            android:name=".DelegadoGeneral.Estadisticas"
+            android:exported="false"/>
+        <activity
             android:name=".CambiarContra"
             android:exported="false" />
         <activity
