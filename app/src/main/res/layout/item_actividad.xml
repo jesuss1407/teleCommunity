@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp">
+
+    <ImageView
+        android:id="@+id/imagenactividad"
+        android:layout_width="78dp"
+        android:layout_height="74dp"
+        android:layout_alignParentStart="true"
+        android:background="@drawable/rounded_image_view"
+        android:clipToOutline="true"
+        android:scaleType="centerCrop"
+        android:src="@drawable/regalito"/>
+
+    <ImageView
+        android:id="@+id/ivChevronRight"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/chevron_right" />
+
+    <TextView
+        android:id="@+id/tvnumeventos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/imagenactividad"
+        android:layout_alignTop="@+id/imagenactividad"
+        android:layout_marginStart="8dp"
+        android:textSize="12sp"
+        android:textColor="#000000"/>
+
+    <TextView
+        android:id="@+id/tvnombreactividad"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/imagenactividad"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="8dp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textColor="#000000"/>
+
+    <TextView
+        android:id="@+id/tvnumapoyos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toEndOf="@+id/imagenactividad"
+        android:layout_alignBottom="@+id/imagenactividad"
+        android:layout_marginStart="8dp"
+        android:textSize="12sp"
+        android:textColor="#000000"/>
+</RelativeLayout>

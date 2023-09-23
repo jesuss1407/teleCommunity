@@ -41,15 +41,31 @@
 
 
         <LinearLayout
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="10dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center">
 
-
+            <androidx.appcompat.widget.SearchView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="12dp"
+                android:layout_marginStart="12dp"
+                android:id="@+id/buscarActividades"
+                app:iconifiedByDefault="false"
+                app:searchHintIcon="@null"
+                app:queryHint="Buscar..."
+                android:focusable="false"/>
 
         </LinearLayout>
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/listarActividades"
+            android:layout_marginEnd="12dp"
+            android:layout_marginStart="12dp"
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
 
 

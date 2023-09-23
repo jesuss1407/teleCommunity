@@ -37,8 +37,24 @@ public class ActividadesFinalizadas extends AppCompatActivity {
                     startActivity(intent);
                     return true; // devuelve true para indicar que el evento ha sido manejado
                 }
+
+                if (menuItem.getItemId() == R.id.navigation_estadistica) {
+                    // Ir a la actividad Estadisticas
+                    startActivity(new Intent(getApplicationContext(), Estadisticas.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+                else if (menuItem.getItemId() == R.id.navigation_admdonacion) {
+                    // Ir a la actividad AdministrarDonaión
+                    startActivity(new Intent(getApplicationContext(), AdmDonacion.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+
                 return false; // devuelve false para indicar que el evento no ha sido manejado
             }
+
+
         });
 
 
