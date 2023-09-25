@@ -1,38 +1,35 @@
 package com.example.telecommunity.DelegadoGeneral;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
-
-import com.example.telecommunity.Notificaciones;
 import com.example.telecommunity.R;
-
-import com.example.telecommunity.RealizarDonacion;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class AdmActividades extends AppCompatActivity {
+public class AdmUsuarios extends AppCompatActivity {
+
 
     @Override
     protected void onResume() {
         super.onResume();
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
-        bottomNavigationView.setSelectedItemId(R.id.navigation_actividades);
+        bottomNavigationView.setSelectedItemId(R.id.navigation_alumnos);
     }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_general_actividades);
+        setContentView(R.layout.activity_adm_usuarios);
+
 
         ListView listView = findViewById(R.id.opcionesActividades); // Reemplaza con el ID de tu ListView
 
-        String[] actividadesOptions = {"Actividades en Curso", "Actividades Finalizadas", "Actividades Eliminadas"};
+        String[] actividadesOptions = {"Alumnos activos", "Alumnos baneados", "Solicitudes de activacion"};
 
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.list_item_actividad, R.id.tvActividadName, actividadesOptions);
         listView.setAdapter(adapter);
@@ -41,13 +38,13 @@ public class AdmActividades extends AppCompatActivity {
         listView.setOnItemClickListener((parent, view, position, id) -> {
             switch (position) {
                 case 0:
-                    startActivity(new Intent(AdmActividades.this, ActividadesCurso.class));
+                    startActivity(new Intent(AdmUsuarios.this, UsuariosActivos.class));
                     break;
                 case 1:
-                    startActivity(new Intent(AdmActividades.this, ActividadesFinalizadas.class));
+                    startActivity(new Intent(AdmUsuarios.this, UsuariosBaneados.class));
                     break;
                 case 2:
-                    startActivity(new Intent(AdmActividades.this, ActividadesEliminadas.class));
+                    startActivity(new Intent(AdmUsuarios.this, SolicitudesDeActivacion.class));
                     break;
 
             }
@@ -58,7 +55,7 @@ public class AdmActividades extends AppCompatActivity {
 
         // Encontrar la BottomNavigationView y setear el item seleccionado
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
-        bottomNavigationView.setSelectedItemId(R.id.navigation_actividades);
+        bottomNavigationView.setSelectedItemId(R.id.navigation_alumnos);
 
         // Configurar el Listener
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -77,9 +74,9 @@ public class AdmActividades extends AppCompatActivity {
                     overridePendingTransition(0, 0);
                     return true;
                 }
-                else if (menuItem.getItemId() == R.id.navigation_alumnos) {
-                    // Ir a la actividad ver usuario
-                    startActivity(new Intent(getApplicationContext(), AdmUsuarios.class));
+                else if (menuItem.getItemId() == R.id.navigation_actividades) {
+                    // Ir a la actividad AdministrarDonaión
+                    startActivity(new Intent(getApplicationContext(), AdmActividades.class));
                     overridePendingTransition(0, 0);
                     return true;
                 }

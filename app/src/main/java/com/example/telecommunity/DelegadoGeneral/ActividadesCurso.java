@@ -116,6 +116,7 @@ public class ActividadesCurso extends AppCompatActivity {
                     return true;
                 }
 
+
                 return false; // devuelve false para indicar que el evento no ha sido manejado
             }
         });

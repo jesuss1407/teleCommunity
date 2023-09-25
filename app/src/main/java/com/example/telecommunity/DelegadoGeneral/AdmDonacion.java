@@ -46,7 +46,12 @@ public class AdmDonacion extends AppCompatActivity {
                     overridePendingTransition(0, 0);
                     return true;
                 }
-
+                else if (menuItem.getItemId() == R.id.navigation_alumnos) {
+                    // Ir a la actividad ver usuario
+                    startActivity(new Intent(getApplicationContext(), AdmUsuarios.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
                 return false;
             }
         });
