@@ -29,45 +29,44 @@
             android:orientation="vertical"
             android:layout_marginStart="16dp">
 
-            <!-- Primera línea (nombre, hora, fecha, ubicación) -->
+            <!-- Nombre, Hora, Fecha y Ubicación en la misma línea horizontal -->
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_marginBottom="4dp">
+                android:layout_marginTop="4dp">
 
                 <TextView
                     android:id="@+id/post_nombre"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="18sp"
+                    android:textSize="14sp"
                     android:textStyle="bold"
-                    android:textColor="#000000"
-                    android:layout_weight="1" />
+                    android:textColor="#000000" />
 
                 <TextView
                     android:id="@+id/post_hora"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
-                    android:textColor="#808080"
-                    android:layout_gravity="center" />
+                    android:textSize="14sp"
+                    android:textColor="#808080" />
 
                 <TextView
                     android:id="@+id/post_fecha"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:textColor="#808080"
-                    android:layout_gravity="center" />
+                    android:layout_marginStart="4dp" />
 
                 <TextView
                     android:id="@+id/post_ubicacion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="16sp"
+                    android:textSize="14sp"
                     android:textColor="#808080"
-                    android:layout_gravity="center" />
+                    android:layout_marginStart="4dp"
+                    android:layout_gravity="end"/>
             </LinearLayout>
 
             <!-- Título de la publicación -->
@@ -78,7 +77,7 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:textColor="#000000"
-                android:layout_marginBottom="4dp" />
+                android:layout_marginTop="4dp" />
 
             <!-- Contenido de la publicación -->
             <TextView
@@ -90,11 +89,18 @@
         </LinearLayout>
     </LinearLayout>
 
+    <ImageView
+        android:id="@+id/photo_space"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_gravity="center" />
+
     <!-- Segundo elemento (botones "Comentar" y "Unirse") -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_gravity="end">
 
         <Button
             android:id="@+id/button_comentar"
