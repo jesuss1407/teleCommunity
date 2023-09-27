@@ -81,7 +81,7 @@ public class ActividadesCurso extends AppCompatActivity {
 // Pasar la lista filtrada al adaptador
         recyclerView = findViewById(R.id.listarActividades);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new GeneralActividadesadapter(filteredList);
+        adapter = new GeneralActividadesadapter(ActividadesCurso.this, filteredList);
         recyclerView.setAdapter(adapter);
 
 
