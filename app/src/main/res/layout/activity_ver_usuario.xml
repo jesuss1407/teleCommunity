@@ -81,6 +81,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="40dp"
                                 android:gravity="center"
+                                android:id="@+id/nombreUsuario"
                                 android:text="Stuardo Lucho"
                                 android:textColor="@color/black"
                                 android:textSize="28sp"
@@ -100,6 +101,7 @@
             <com.google.android.material.imageview.ShapeableImageView
                 android:src="@drawable/gato"
                 android:scaleType="fitCenter"
+                android:id="@+id/foto"
                 app:shapeAppearanceOverlay="@style/Circular"
                 android:elevation="15dp"
                 android:padding="5dp"
@@ -154,6 +156,7 @@
                     </LinearLayout>
                     <TextView
                         android:text="Estudiante"
+                        android:id="@+id/condicion"
                         android:textStyle="bold"
                         android:textColor="@color/black"
                         android:textSize="18sp"
@@ -200,6 +203,7 @@
                     </LinearLayout>
                     <TextView
                         android:text="+51 961234569"
+                        android:id="@+id/telefono"
                         android:textStyle="bold"
                         android:textColor="@color/black"
                         android:textSize="18sp"
@@ -247,6 +251,7 @@
                     <TextView
                         android:text="lucho.stuardo@pucp.edu.pe"
                         android:textStyle="bold"
+                        android:id="@+id/correo"
                         android:textColor="@color/black"
                         android:textSize="18sp"
                         android:layout_marginStart="25dp"

@@ -6,49 +6,30 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.telecommunity.IniciarSesion;
-import com.example.telecommunity.PantallaPrincipal;
 import com.example.telecommunity.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-public class VerUsuario extends AppCompatActivity {
+public class VerActividad extends AppCompatActivity {
 
-    TextView detailDesc, detailTitle, detailCodigo;
-    ImageView detailImage;
+    TextView detailApoyos, detailTitle, detailEventos;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ver_usuario);
+        setContentView(R.layout.activity_ver_actividad);
 
-
-        //ir a editar usuario
-        Button iniciar = findViewById(R.id.editarButton);
-        iniciar.setOnClickListener(view -> {
-            Intent intent = new Intent(VerUsuario.this, EditarUsuario.class);
-            startActivity(intent);
-        });
-        //ir a banear usuario
-        Button banear = findViewById(R.id.banearButton);
-        banear.setOnClickListener(view -> {
-            Intent intent = new Intent(VerUsuario.this, BanearUsuario.class);
-            startActivity(intent);
-        });
 
         //mandar info del usuario seleccionado
-        detailDesc = findViewById(R.id.condicion);
-        detailTitle = findViewById(R.id.nombreUsuario);
+        detailEventos= findViewById(R.id.numeventos);
+        detailTitle = findViewById(R.id.nombre);
         //detailImage = findViewById(R.id.foto);
-        detailCodigo = findViewById(R.id.correo);
+        detailApoyos = findViewById(R.id.numapoyos);
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null){
-            detailDesc.setText(bundle.getString("Desc"));
-            detailCodigo.setText(bundle.getString("Image"));
+            detailEventos.setText(bundle.getString("Numeventos"));
+            detailApoyos.setText(bundle.getString("Numapoyos"));
             detailTitle.setText(bundle.getString("Title"));
         }
 
@@ -56,7 +37,7 @@ public class VerUsuario extends AppCompatActivity {
 
         // Encontrar la BottomNavigationView y setear el item seleccionado
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
-        bottomNavigationView.setSelectedItemId(R.id.navigation_alumnos);
+        bottomNavigationView.setSelectedItemId(R.id.navigation_actividades);
 
         // Configurar el Listener
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
@@ -75,9 +56,9 @@ public class VerUsuario extends AppCompatActivity {
                     overridePendingTransition(0, 0);
                     return true;
                 }
-                else if (menuItem.getItemId() == R.id.navigation_actividades) {
+                else if (menuItem.getItemId() == R.id.navigation_alumnos) {
                     // Ir a la actividad AdministrarDonaión
-                    startActivity(new Intent(getApplicationContext(), AdmActividades.class));
+                    startActivity(new Intent(getApplicationContext(), AdmUsuarios.class));
                     overridePendingTransition(0, 0);
                     return true;
                 }

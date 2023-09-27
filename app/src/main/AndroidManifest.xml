@@ -15,6 +15,9 @@
         android:theme="@style/Theme.TeleCommunity"
         tools:targetApi="31">
         <activity
+            android:name=".DelegadoGeneral.VerActividad"
+            android:exported="false" />
+        <activity
             android:name=".DetalleUbicacionActivity"
             android:exported="false"
             android:theme="@style/EventoDetalleDialog" />
@@ -45,6 +48,9 @@
         <activity
             android:name=".DelegadoGeneral.UsuariosBaneados"
             android:exported="false" />
+        <activity
+            android:name=".DetailActivity"
+            android:exported="false" /> <!-- Intent filters go here, if any -->
         <activity
             android:name=".DelegadoGeneral.UsuariosActivos"
             android:exported="false" />
