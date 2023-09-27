@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.example.telecommunity.adapter.NotificationAdapter;
+import com.example.telecommunity.adapter.PublicacionAdapter;
 import com.example.telecommunity.entity.NotificationItem;
 import com.example.telecommunity.entity.Publicaciondto;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -19,21 +20,23 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 public class InicioActivity extends AppCompatActivity {
 
     private RecyclerView recyclerView;
-    private NotificationAdapter notificationAdapter;
+    private PublicacionAdapter publicacionAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inicio);
 
-        recyclerView = findViewById(R.id.recyclerViewInicio);
+        recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         List<Publicaciondto> publicacionList = new ArrayList<>();
-        //publicacionList.add(new Publicaciondto(R.drawable.gato,));
-        //publicacionList.add(new Publicaciondto(R.drawable.gato,));
-        //publicacionList.add(new Publicaciondto(R.drawable.bell,));
+        publicacionList.add(new Publicaciondto(R.drawable.gato, "Marcelo Rojas", "Basquet Damas","25/09/23","13:30",2,"Pabellón","aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"));
+        publicacionList.add(new Publicaciondto(R.drawable.gato, "Marcelo Rojas", "Basquet Damas","25/09/23","13:30",2,"Pabellón","aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"));
+        publicacionList.add(new Publicaciondto(R.drawable.gato, "Marcelo Rojas", "Basquet Damas","25/09/23","13:30",2,"Pabellón","aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"));
 
+        publicacionAdapter = new PublicacionAdapter(publicacionList,this);
+        recyclerView.setAdapter(publicacionAdapter);
 
 
 
@@ -71,7 +74,7 @@ public class InicioActivity extends AppCompatActivity {
 
         // Encontrar la BottomNavigationView y setear el item seleccionado
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
-        bottomNavigationView.setSelectedItemId(R.id.navigation_notificacion);
+        bottomNavigationView.setSelectedItemId(R.id.navigation_inicio);
 
         // Configurar el Listener
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {

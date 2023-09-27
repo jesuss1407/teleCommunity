@@ -48,6 +48,11 @@ public class MiPerfil extends AppCompatActivity {
                     overridePendingTransition(0, 0);
                     return true;
                 }
+                else if (menuItem.getItemId() == R.id.navigation_inicio){
+                    startActivity(new Intent(getApplicationContext(), InicioActivity.class));
+                    overridePendingTransition(0,0);
+                    return true;
+                }
                 // Agrega más casos 'if' para otros items si es necesario
                 return false;
             }

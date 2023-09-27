@@ -7,77 +7,73 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.telecommunity.NotificationDetailActivity;
 import com.example.telecommunity.R;
 import com.example.telecommunity.entity.NotificationItem;
+import com.example.telecommunity.entity.Publicaciondto;
 
 import java.util.List;
 
-public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.NotificationViewHolder> {
-    private List<NotificationItem> notificationList;
+public class PublicacionAdapter extends RecyclerView.Adapter<PublicacionAdapter.PublicacionViewHolder> {
+    private List<Publicaciondto> publicacionList;
     private Context context;
 
-    public NotificationAdapter(List<NotificationItem> notificationList, Context context) {
-        this.notificationList = notificationList;
+    public PublicacionAdapter(List<Publicaciondto> publicacionList, Context context) {
+        this.publicacionList = publicacionList;
         this.context = context;
     }
 
     @NonNull
     @Override
-    public NotificationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.notification_item, parent, false);
-        return new NotificationViewHolder(view);
+    public PublicacionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_publicacion, parent, false);
+        return new PublicacionViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull NotificationViewHolder holder, int position) {
-        NotificationItem notification = notificationList.get(position);
+    public void onBindViewHolder(@NonNull PublicacionViewHolder holder, int position) {
+        Publicaciondto publicacion = publicacionList.get(position);
 
         // Rellena los elementos de notificación con los datos
-        holder.photoImageView.setImageResource(notification.getPhotoResId());
-        holder.titleTextView.setText(notification.getTitle());
-        holder.timestampTextView.setText(notification.getTimestamp());
-        holder.contentTextView.setText(notification.getContent());
+        holder.fotouser.setImageResource(publicacion.getPhotoResId());
+        holder.nameuser.setText(publicacion.getUsuario());
+        holder.timestamp.setText(publicacion.getTimestamp());
+        holder.date.setText(publicacion.getDate());
+        holder.location.setText(publicacion.getLocation());
+        holder.actividad.setText(publicacion.getActividad());
+        holder.contenido.setText(publicacion.getContenido());
 
-        // Configura un OnClickListener para los elementos de notificación
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int position = holder.getAdapterPosition();
-                if (position != RecyclerView.NO_POSITION) {
-                    NotificationItem clickedItem = notificationList.get(position);
 
-                    // Inicia la actividad de detalle y pasa los datos de la notificación
-                    Intent intent = new Intent(context, NotificationDetailActivity.class);
-                    intent.putExtra("title", clickedItem.getTitle());
-                    intent.putExtra("desc", clickedItem.getContent());
-                    intent.putExtra("imageResource", clickedItem.getPhotoResId());
-                    context.startActivity(intent);
-                }
-            }
-        });
+
     }
 
     @Override
     public int getItemCount() {
-        return notificationList.size();
+        return publicacionList.size();
     }
 
-    public static class NotificationViewHolder extends RecyclerView.ViewHolder {
-        ImageView photoImageView;
-        TextView titleTextView;
-        TextView timestampTextView;
-        TextView contentTextView;
+    public static class PublicacionViewHolder extends RecyclerView.ViewHolder {
+        ImageView fotouser;
+        TextView nameuser;
+        TextView timestamp;
+        TextView date;
+        TextView location;
+        TextView actividad;
+        TextView contenido;
 
-        public NotificationViewHolder(@NonNull View itemView) {
+        public PublicacionViewHolder(@NonNull View itemView) {
             super(itemView);
-            photoImageView = itemView.findViewById(R.id.notification_photo);
-            titleTextView = itemView.findViewById(R.id.notification_titulo);
-            timestampTextView = itemView.findViewById(R.id.notification_tiempo);
-            contentTextView = itemView.findViewById(R.id.notification_contenido);
+            fotouser = itemView.findViewById(R.id.user_photo);
+            nameuser = itemView.findViewById(R.id.post_nombre);
+            timestamp = itemView.findViewById(R.id.post_hora);
+            date = itemView.findViewById(R.id.post_fecha);
+            location = itemView.findViewById(R.id.post_ubicacion);
+            actividad = itemView.findViewById(R.id.post_activity);
+            contenido = itemView.findViewById(R.id.post_contenido);
         }
     }
 }

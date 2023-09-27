@@ -8,8 +8,9 @@ public class Publicaciondto {
     private String timestamp;
     private int comentarios;
     private String location;
+    private String contenido;
 
-    public Publicaciondto(int photoResId, String usuario, String actividad, String date, String timestamp, int comentarios, String location) {
+    public Publicaciondto(int photoResId, String usuario, String actividad, String date, String timestamp, int comentarios, String location, String contenido) {
         this.photoResId = photoResId;
         this.usuario = usuario;
         this.actividad = actividad;
@@ -17,6 +18,7 @@ public class Publicaciondto {
         this.timestamp = timestamp;
         this.comentarios = comentarios;
         this.location = location;
+        this.contenido = contenido;
     }
 
     public int getPhotoResId() {
@@ -73,5 +75,13 @@ public class Publicaciondto {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public String getContenido() {
+        return contenido;
+    }
+
+    public void setContenido(String contenido) {
+        this.contenido = contenido;
     }
 }
