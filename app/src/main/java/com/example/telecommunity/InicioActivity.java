@@ -30,9 +30,9 @@ public class InicioActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         List<Publicaciondto> publicacionList = new ArrayList<>();
-        publicacionList.add(new Publicaciondto(R.drawable.gato,));
-        publicacionList.add(new Publicaciondto(R.drawable.gato,));
-        publicacionList.add(new Publicaciondto(R.drawable.bell,));
+        //publicacionList.add(new Publicaciondto(R.drawable.gato,));
+        //publicacionList.add(new Publicaciondto(R.drawable.gato,));
+        //publicacionList.add(new Publicaciondto(R.drawable.bell,));
 
 
 
