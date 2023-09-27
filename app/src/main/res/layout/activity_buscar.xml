@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- Encabezado con título "Buscar" -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Buscar"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:contentDescription="Título de la página de búsqueda" />
+
+        <ImageView
+            android:layout_marginTop="10dp"
+            android:layout_width="112dp"
+            android:layout_height="6dp"
+            android:src="@drawable/lineasup"
+            android:contentDescription="Separador" />
+    </LinearLayout>
+
+    <!-- Toolbar con la barra de búsqueda -->
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <!-- Contenido desplazable (NestedScrollView) -->
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:contentDescription="Menú desplazable"
+            tools:ignore="HardcodedText">
+            <!-- Contenido de la página de búsqueda -->
+        </androidx.core.widget.NestedScrollView>
+
+        <!-- AppBarLayout con la barra de búsqueda -->
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- Barra de búsqueda -->
+            <com.google.android.material.search.SearchBar
+                android:id="@+id/searchView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Buscar"
+                android:contentDescription="Campo de búsqueda" />
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <!-- Contenedor del mapa -->
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/maps"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/bottomNavigationView"
+            app:layout="@layout/fragment_map_preview"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"/>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+    <!-- BottomNavigationView -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="@android:color/white"
+        app:menu="@menu/bottom_nav_user"
+        android:contentDescription="Menú de navegación inferior"
+        tools:ignore="HardcodedText" />
+</LinearLayout>
+
+
