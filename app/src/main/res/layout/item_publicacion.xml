@@ -5,14 +5,16 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:paddingTop="8dp">
 
-    <!-- Primer elemento (notificación) -->
-    <LinearLayout
+
+        <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginBottom="16dp">
+        android:layout_marginBottom="8dp">
 
         <ImageView
             android:id="@+id/user_photo"
@@ -87,31 +89,71 @@
                 android:textSize="16sp"
                 android:textColor="#000000" />
         </LinearLayout>
-    </LinearLayout>
+        </LinearLayout>
 
-    <ImageView
+            <!-- Espacio para la foto -->
+        <ImageView
         android:id="@+id/photo_space"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_gravity="center" />
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="center"
+        android:visibility="gone" />
 
-    <!-- Segundo elemento (botones "Comentar" y "Unirse") -->
-    <LinearLayout
+
+        <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_gravity="end">
 
-        <Button
-            android:id="@+id/button_comentar"
-            android:layout_width="wrap_content"
+        <!-- Espacio entre los botones y los bordes -->
+        <Space
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Comentar" />
+            android:layout_weight="1" />
 
-        <Button
-            android:id="@+id/button_unirse"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Unirse" />
-    </LinearLayout>
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                style="@style/Widget.Material3.Button.TonalButton.Icon"
+                android:id="@+id/button_comentar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Comentar"
+                app:icon="@drawable/ic_comment"
+                />
+
+
+            <Space
+                android:layout_width="16dp"
+            android:layout_height="wrap_content"
+            />
+
+            <Button
+                style="@style/Widget.Material3.Button.TonalButton.Icon"
+                android:id="@+id/button_unirse"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Unirse"
+                app:icon="@drawable/ic_add"
+                />
+        </LinearLayout>
+
+        <!-- Espacio entre los botones y los bordes -->
+        <Space
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        </LinearLayout>
+
+        <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="8dp"
+        android:background="#C0C0C0" />
 </LinearLayout>

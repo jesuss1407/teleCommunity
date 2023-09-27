@@ -2,9 +2,11 @@ package com.example.telecommunity.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -46,7 +48,36 @@ public class PublicacionAdapter extends RecyclerView.Adapter<PublicacionAdapter.
         holder.location.setText(publicacion.getLocation());
         holder.actividad.setText(publicacion.getActividad());
         holder.contenido.setText(publicacion.getContenido());
+        Button comentariosButton = holder.itemView.findViewById(R.id.button_comentar);
+        String mensaje = "Comentarios (" + publicacion.getComentarios() + ")";
+        comentariosButton.setText(mensaje);
+        holder.fotoAdjunta.setImageResource(publicacion.getFotoId());
+        holder.fotoAdjunta.setVisibility(publicacion.getFotoId() != 0 ? View.VISIBLE : View.GONE);
+        int fotoId = publicacion.getFotoId();
+        if (fotoId != 0) {
+            Drawable fotoDrawable = holder.itemView.getContext().getDrawable(fotoId);
+            if (fotoDrawable != null) {
+                int anchoReal = fotoDrawable.getIntrinsicWidth();
+                int altoReal = fotoDrawable.getIntrinsicHeight();
 
+                // Establecer un límite de altura máximo para la imagen
+                int alturaMaxima = holder.itemView.getResources().getDimensionPixelSize(R.dimen.max_image_height);
+                if (altoReal > alturaMaxima) {
+                    // Si la altura real de la imagen es mayor que la altura máxima permitida, redimensionarla
+                    float proporcion = (float) alturaMaxima / (float) altoReal;
+                    anchoReal = (int) (anchoReal * proporcion);
+                    altoReal = alturaMaxima;
+                }
+
+                // Establece el tamaño del ImageView en función de las dimensiones reales o redimensionadas de la imagen
+                holder.fotoAdjunta.getLayoutParams().width = anchoReal;
+                holder.fotoAdjunta.getLayoutParams().height = altoReal;
+                holder.fotoAdjunta.setImageResource(fotoId);
+                holder.fotoAdjunta.setVisibility(View.VISIBLE);
+            }
+        } else {
+            holder.fotoAdjunta.setVisibility(View.GONE);
+        }
 
 
     }
@@ -64,6 +95,7 @@ public class PublicacionAdapter extends RecyclerView.Adapter<PublicacionAdapter.
         TextView location;
         TextView actividad;
         TextView contenido;
+        ImageView fotoAdjunta;
 
         public PublicacionViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -74,6 +106,7 @@ public class PublicacionAdapter extends RecyclerView.Adapter<PublicacionAdapter.
             location = itemView.findViewById(R.id.post_ubicacion);
             actividad = itemView.findViewById(R.id.post_activity);
             contenido = itemView.findViewById(R.id.post_contenido);
+            fotoAdjunta = itemView.findViewById(R.id.photo_space);
         }
     }
 }
