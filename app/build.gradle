@@ -68,5 +68,6 @@ dependencies {
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
     implementation 'com.google.android.gms:play-services-maps:17.0.1'
 
+
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 }

@@ -14,6 +14,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TeleCommunity"
         tools:targetApi="31">
+        <activity
+            android:name=".DetalleUbicacionActivity"
+            android:exported="false"
+            android:theme="@style/EventoDetalleDialog" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
