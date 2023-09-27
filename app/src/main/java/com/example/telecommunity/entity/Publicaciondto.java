@@ -1,62 +1,77 @@
 package com.example.telecommunity.entity;
 
-import java.io.Serializable;
+public class Publicaciondto {
+    private int photoResId;
+    private String usuario;
+    private String actividad;
+    private String date;
+    private String timestamp;
+    private int comentarios;
+    private String location;
 
-public class GeneralActividadesdto {
-
-    private int numeventos;
-    private String name;
-    private int numapoyos;
-    private int estado; //En curso,Finalizado,Eliminado...
-    private String link;
-
-    public GeneralActividadesdto(int numeventos, String name, int numapoyos, int estado, String link) {
-        this.numeventos = numeventos;
-        this.name = name;
-        this.numapoyos = numapoyos;
-        this.estado = estado;
-        this.link = link;
+    public Publicaciondto(int photoResId, String usuario, String actividad, String date, String timestamp, int comentarios, String location) {
+        this.photoResId = photoResId;
+        this.usuario = usuario;
+        this.actividad = actividad;
+        this.date = date;
+        this.timestamp = timestamp;
+        this.comentarios = comentarios;
+        this.location = location;
     }
 
-    public int getNumeventos() {
-        return numeventos;
+    public int getPhotoResId() {
+        return photoResId;
     }
 
-    public void setNumeventos(int numeventos) {
-        this.numeventos = numeventos;
+    public void setPhotoResId(int photoResId) {
+        this.photoResId = photoResId;
     }
 
-    public String getName() {
-        return name;
+    public String getUsuario() {
+        return usuario;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
     }
 
-    public int getNumapoyos() {
-        return numapoyos;
+    public String getActividad() {
+        return actividad;
     }
 
-    public void setNumapoyos(int numapoyos) {
-        this.numapoyos = numapoyos;
+    public void setActividad(String actividad) {
+        this.actividad = actividad;
     }
 
-    public int getEstado() {
-        return estado;
+    public String getDate() {
+        return date;
     }
 
-    public void setEstado(int estado) {
-        this.estado = estado;
+    public void setDate(String date) {
+        this.date = date;
     }
 
-    public String getLink() {
-        return link;
+    public String getTimestamp() {
+        return timestamp;
     }
 
-    public void setLink(String link) {
-        this.link = link;
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
     }
 
+    public int getComentarios() {
+        return comentarios;
+    }
 
+    public void setComentarios(int comentarios) {
+        this.comentarios = comentarios;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
 }
