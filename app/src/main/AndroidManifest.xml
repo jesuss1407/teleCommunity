@@ -14,16 +14,24 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TeleCommunity"
         tools:targetApi="31">
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyALVGH0i8Z8hjdi8oQFEY4WqY5k5dcH_Ps" />
+
+        <activity
+            android:name=".BuscarActivity"
+            android:exported="false" />
         <activity
             android:name=".NotificationDetailActivity"
             android:label="Detalle de notificación"
             android:parentActivityName=".Notificaciones">
+
             <!-- Agrega metadatos para configurar la navegación hacia atrás -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Notificaciones" />
         </activity>
-
         <activity
             android:name=".DelegadoGeneral.SolicitudesDeActivacion"
             android:exported="false" />
@@ -47,22 +55,22 @@
             android:exported="false" />
         <activity
             android:name=".DelegadoGeneral.AdmActividades"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".DelegadoGeneral.ActividadesCurso"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".DelegadoGeneral.ActividadesEliminadas"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".DelegadoGeneral.ActividadesFinalizadas"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".DelegadoGeneral.AdmDonacion"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".DelegadoGeneral.Estadisticas"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".CambiarContra"
             android:exported="false" />
