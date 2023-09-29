@@ -18,6 +18,15 @@ public class MiPerfil extends AppCompatActivity {
     // ... Tus otros métodos y variables de instancia
 
     @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, InicioActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+
+
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mi_perfil);
@@ -75,4 +84,7 @@ public class MiPerfil extends AppCompatActivity {
         //-------temporal--------------:
 
     }
+
+
+
 }

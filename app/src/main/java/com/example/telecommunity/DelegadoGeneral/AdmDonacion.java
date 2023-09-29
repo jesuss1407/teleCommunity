@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import com.example.telecommunity.InicioActivity;
 import com.example.telecommunity.Notificaciones;
 import com.example.telecommunity.R;
 
@@ -17,6 +18,13 @@ import com.example.telecommunity.RealizarDonacion;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class AdmDonacion extends AppCompatActivity {
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, AdmActividades.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

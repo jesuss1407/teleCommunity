@@ -22,6 +22,15 @@ public class InicioActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private PublicacionAdapter publicacionAdapter;
 
+
+    @Override
+    public void onBackPressed() {
+        finishAffinity();  // Esto cerrará todas las actividades y saldrá de la aplicación
+    }
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,26 +59,6 @@ public class InicioActivity extends AppCompatActivity {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         //Navbar
 
         // Encontrar la BottomNavigationView y setear el item seleccionado
@@ -80,21 +69,38 @@ public class InicioActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                if (menuItem.getItemId() == R.id.navigation_mi_perfil) {
-                    // Ir a la actividad RealizarDonacion
-                    startActivity(new Intent(getApplicationContext(), MiPerfil.class));
-                    overridePendingTransition(0, 0);
-                    return true;
-                }
-                else if (menuItem.getItemId() == R.id.navigation_donacion) {
+                if (menuItem.getItemId() == R.id.navigation_donacion) {
                     // Ir a la actividad RealizarDonacion
                     startActivity(new Intent(getApplicationContext(), RealizarDonacion.class));
                     overridePendingTransition(0, 0);
+                    return true;
+                }
+                else if (menuItem.getItemId() == R.id.navigation_notificacion) {
+                    // Ir a la actividad RealizarDonacion
+                    startActivity(new Intent(getApplicationContext(), Notificaciones.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+                else if (menuItem.getItemId() == R.id.navigation_buscar) {
+                    // Ir a la actividad BUscar
+                    startActivity(new Intent(getApplicationContext(), BuscarActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+                else if (menuItem.getItemId() == R.id.navigation_mi_perfil){
+                    startActivity(new Intent(getApplicationContext(), MiPerfil.class));
+                    overridePendingTransition(0,0);
                     return true;
                 }
                 // Agrega más casos 'if' para otros items si es necesario
                 return false;
             }
         });
+
+
     }
+
+
+
+
 }

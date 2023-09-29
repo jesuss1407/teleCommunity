@@ -23,6 +23,16 @@ public class RealizarDonacion extends AppCompatActivity {
     private Button buttonSubirCaptura;
     private Button buttonEnviarCaptura;
 
+
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, InicioActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +80,11 @@ public class RealizarDonacion extends AppCompatActivity {
                     // Ir a la actividad BUscar
                     startActivity(new Intent(getApplicationContext(), BuscarActivity.class));
                     overridePendingTransition(0, 0);
+                    return true;
+                }
+                else if (menuItem.getItemId() == R.id.navigation_inicio){
+                    startActivity(new Intent(getApplicationContext(), InicioActivity.class));
+                    overridePendingTransition(0,0);
                     return true;
                 }
                 // Agrega más casos 'if' para otros items si es necesario

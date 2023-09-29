@@ -89,4 +89,8 @@ public class AdmActividades extends AppCompatActivity {
         });
 
     }
+    @Override
+    public void onBackPressed() {
+        finishAffinity();  // Esto cerrará todas las actividades y saldrá de la aplicación
+    }
 }

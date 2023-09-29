@@ -14,6 +14,13 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class AdmUsuarios extends AppCompatActivity {
 
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, AdmActividades.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+
 
     @Override
     protected void onResume() {

@@ -28,6 +28,8 @@ public class ActividadesCurso extends AppCompatActivity {
     private GeneralActividadesadapter adapter;
     private List<GeneralActividadesdto> actividadList;
 
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

@@ -25,6 +25,16 @@ public class BuscarActivity extends FragmentActivity implements OnMapReadyCallba
     private GoogleMap map;
     private com.google.android.material.search.SearchBar searchView;
 
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, InicioActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,11 +58,11 @@ public class BuscarActivity extends FragmentActivity implements OnMapReadyCallba
 
         // Navbar
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
-        bottomNavigationView.setSelectedItemId(R.id.navigation_notificacion);
+        bottomNavigationView.setSelectedItemId(R.id.navigation_buscar);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem) {
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 if (menuItem.getItemId() == R.id.navigation_mi_perfil) {
                     startActivity(new Intent(getApplicationContext(), MiPerfil.class));
                     overridePendingTransition(0, 0);
@@ -65,7 +75,14 @@ public class BuscarActivity extends FragmentActivity implements OnMapReadyCallba
                     startActivity(new Intent(getApplicationContext(), Notificaciones.class));
                     overridePendingTransition(0, 0);
                     return true;
+                } else if (menuItem.getItemId() == R.id.navigation_inicio) {
+                    startActivity(new Intent(getApplicationContext(), InicioActivity.class));
+                    overridePendingTransition(0, 0);
+                    return true;
                 }
+
+
+
                 return false;
             }
         });

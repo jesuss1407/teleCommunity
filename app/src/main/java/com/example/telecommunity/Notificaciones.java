@@ -27,6 +27,15 @@ public class Notificaciones extends AppCompatActivity {
     private RecyclerView recyclerView;
     private NotificationAdapter notificationAdapter;
 
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(this, InicioActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+    }
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,6 +72,12 @@ public class Notificaciones extends AppCompatActivity {
                 else if (menuItem.getItemId() == R.id.navigation_donacion) {
                     // Ir a la actividad RealizarDonacion
                     startActivity(new Intent(getApplicationContext(), RealizarDonacion.class));
+                    overridePendingTransition(0, 0);
+                    return true;
+                }
+                else if (menuItem.getItemId() == R.id.navigation_inicio) {
+                    // Ir a la actividad RealizarDonacion
+                    startActivity(new Intent(getApplicationContext(), InicioActivity.class));
                     overridePendingTransition(0, 0);
                     return true;
                 }
