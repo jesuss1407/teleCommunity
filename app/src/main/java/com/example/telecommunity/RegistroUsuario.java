@@ -13,14 +13,22 @@ import android.widget.Toast;
 import com.example.telecommunity.databinding.ActivityRegistroUsuarioBinding;
 import com.example.telecommunity.entity.UsuariosDto;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.DocumentSnapshot;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import androidx.annotation.NonNull;
 public class RegistroUsuario extends AppCompatActivity {
     FirebaseFirestore db;
     ActivityRegistroUsuarioBinding binding;
     ListenerRegistration snapshotListener;
+
+    private FirebaseAuth auth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,6 +38,10 @@ public class RegistroUsuario extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         db = FirebaseFirestore.getInstance();
+
+
+        //
+        auth = FirebaseAuth.getInstance();
 
         //redireccionar a logueo
         TextView iniciarme = findViewById(R.id.loginRedirectText);
@@ -71,9 +83,24 @@ public class RegistroUsuario extends AppCompatActivity {
                         .document(codigoStr)
                         .set(usuario)
                         .addOnSuccessListener(unused -> {
-                            Toast.makeText(this, "Usuario registrado correctamente", Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(RegistroUsuario.this, IniciarSesion.class);
-                            startActivity(intent);
+
+                            //registrarlo con email y contrasena en firebase auth
+
+                            auth.createUserWithEmailAndPassword(correo, contrasena).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                @Override
+                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(RegistroUsuario.this, "SignUp Successful", Toast.LENGTH_SHORT).show();
+                                        startActivity(new Intent(RegistroUsuario.this, IniciarSesion.class));
+                                    } else {
+                                        Toast.makeText(RegistroUsuario.this, "SignUp Failed" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+
+                            //Toast.makeText(this, "Usuario registrado correctamente", Toast.LENGTH_SHORT).show();
+                            //Intent intent = new Intent(RegistroUsuario.this, IniciarSesion.class);
+                            //startActivity(intent);
                         })
                         .addOnFailureListener(e -> {
                             Toast.makeText(this, "Ocurrió un error, intente nuevamente ", Toast.LENGTH_SHORT).show();

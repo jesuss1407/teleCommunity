@@ -18,6 +18,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 
+//
+
+
 public class IniciarSesion extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
@@ -75,7 +78,7 @@ public class IniciarSesion extends AppCompatActivity {
                                         FirebaseUser user = mAuth.getCurrentUser();
                                         Toast.makeText(IniciarSesion.this, "Inicio de sesión exitoso.", Toast.LENGTH_SHORT).show();
                                         // Redirigir a la actividad principal
-                                        startActivity(new Intent(IniciarSesion.this, MainActivity.class));
+                                        startActivity(new Intent(IniciarSesion.this, MiPerfil.class));
                                     } else {
                                         Toast.makeText(IniciarSesion.this, "Error en el inicio de sesión.", Toast.LENGTH_SHORT).show();
                                     }
