@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "12016059905",
+    "project_id": "telecommunity-cbff5",
+    "storage_bucket": "telecommunity-cbff5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:12016059905:android:0492d5db70d33fc62a2200",
+        "android_client_info": {
+          "package_name": "com.example.telecommunity"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD86yDOQhmjKmbTuT4qVpeWF7treY_O6mI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
