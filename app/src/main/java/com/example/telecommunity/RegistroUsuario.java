@@ -54,7 +54,9 @@ public class RegistroUsuario extends AppCompatActivity {
         });
 
         //registro
+
         binding.crearBtn.setOnClickListener(view -> {
+
             String nombre = binding.nombre.getText().toString();
             String apellido = binding.apellido.getText().toString();
             String codigoStr = binding.codigo.getText().toString();
@@ -65,49 +67,47 @@ public class RegistroUsuario extends AppCompatActivity {
             String rol = "Usuario";
             String estado = "1";
             String foto = "link";
-
-            if (contrasena.equals(contrasena2)) {
-                UsuariosDto usuario = new UsuariosDto();
-                usuario.setNombre(nombre);
-                usuario.setApellido(apellido);
-                usuario.setCodigo(Integer.parseInt(codigoStr));
-                usuario.setCorreo(correo);
-                usuario.setContrasena(contrasena);
-                usuario.setCondicion(condicion);
-                usuario.setRol(rol);
-                usuario.setEstado(Integer.parseInt(estado));
-                usuario.setFoto(foto);
-
-
-                db.collection("usuarios")
-                        .document(codigoStr)
-                        .set(usuario)
-                        .addOnSuccessListener(unused -> {
-
-                            //registrarlo con email y contrasena en firebase auth
-
-                            auth.createUserWithEmailAndPassword(correo, contrasena).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if (task.isSuccessful()) {
-                                        Toast.makeText(RegistroUsuario.this, "SignUp Successful", Toast.LENGTH_SHORT).show();
-                                        startActivity(new Intent(RegistroUsuario.this, IniciarSesion.class));
-                                    } else {
-                                        Toast.makeText(RegistroUsuario.this, "SignUp Failed" + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
-
-                            //Toast.makeText(this, "Usuario registrado correctamente", Toast.LENGTH_SHORT).show();
-                            //Intent intent = new Intent(RegistroUsuario.this, IniciarSesion.class);
-                            //startActivity(intent);
-                        })
-                        .addOnFailureListener(e -> {
-                            Toast.makeText(this, "Ocurrió un error, intente nuevamente ", Toast.LENGTH_SHORT).show();
-                        });
+            if (nombre.isEmpty() || apellido.isEmpty() ||codigoStr.isEmpty() ||correo.isEmpty() ||contrasena.isEmpty() ||contrasena2.isEmpty() ||condicion.isEmpty()){
+                Toast.makeText(RegistroUsuario.this, "Llene todos los campos ", Toast.LENGTH_SHORT).show();
             } else {
-                System.out.println("Las palabras son diferentes.");
+                if (contrasena.equals(contrasena2)) {
+
+                    //registrarlo con email y contrasena en firebase auth
+                    auth.createUserWithEmailAndPassword(correo, contrasena).addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            //registro en firestore database
+                            UsuariosDto usuario = new UsuariosDto();
+                            usuario.setNombre(nombre);
+                            usuario.setApellido(apellido);
+                            usuario.setCodigo(Integer.parseInt(codigoStr));
+                            usuario.setCorreo(correo);
+                            usuario.setContrasena(contrasena);
+                            usuario.setCondicion(condicion);
+                            usuario.setRol(rol);
+                            usuario.setEstado(Integer.parseInt(estado));
+                            usuario.setFoto(foto);
+
+                            db.collection("usuarios")
+                                    .document(codigoStr)
+                                    .set(usuario)
+                                    .addOnSuccessListener(unused -> {
+                                        Toast.makeText(this, "Usuario registrado correctamente", Toast.LENGTH_SHORT).show();
+                                        Intent intent = new Intent(RegistroUsuario.this, IniciarSesion.class);
+                                        startActivity(intent);
+                                    })
+                                    .addOnFailureListener(e -> {
+                                        Toast.makeText(this, "Ocurrió un error, intente nuevamente ", Toast.LENGTH_SHORT).show();
+                                    });
+                        } else {
+                            Toast.makeText(RegistroUsuario.this, "Registro fallido " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                } else {
+                    Toast.makeText(RegistroUsuario.this, "Las contraseñas deben ser iguales", Toast.LENGTH_SHORT).show();
+                }
             }
+
 
 
         });
