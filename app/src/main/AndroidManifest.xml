@@ -15,6 +15,9 @@
         android:theme="@style/Theme.TeleCommunity"
         tools:targetApi="31">
         <activity
+            android:name=".BaseActivity"
+            android:exported="false" />
+        <activity
             android:name=".DelegadoGeneral.VerActividad"
             android:exported="false" />
         <activity
