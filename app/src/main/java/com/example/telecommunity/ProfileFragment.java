@@ -36,40 +36,7 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-        // Encontrar la BottomNavigationView y setear el item seleccionado
-        BottomNavigationView bottomNavigationView = view.findViewById(R.id.bottomNavigationView);
-        bottomNavigationView.setSelectedItemId(R.id.navigation_mi_perfil);
 
-        // Configurar el Listener
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-
-            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                if (menuItem.getItemId() == R.id.navigation_donacion) {
-                    // Ir a la actividad RealizarDonacion
-                    startActivity(new Intent(getActivity(), RealizarDonacion.class));
-                    getActivity().overridePendingTransition(0, 0);
-                    return true;
-                } else if (menuItem.getItemId() == R.id.navigation_notificacion) {
-                    // Ir a la actividad RealizarDonacion
-                    startActivity(new Intent(getActivity(), Notificaciones.class));
-                    getActivity().overridePendingTransition(0, 0);
-                    return true;
-                } else if (menuItem.getItemId() == R.id.navigation_buscar) {
-                    // Ir a la actividad BUscar
-                    startActivity(new Intent(getActivity(), BuscarActivity.class));
-                    getActivity().overridePendingTransition(0, 0);
-                    return true;
-                } else if (menuItem.getItemId() == R.id.navigation_inicio) {
-                    startActivity(new Intent(getActivity(), InicioActivity.class));
-                    getActivity().overridePendingTransition(0, 0);
-                    return true;
-                }
-                // Agrega más casos 'if' para otros items si es necesario
-                return false;
-            }
-        });
-
-        // ... El resto de tu código
 
         return view;
     }
