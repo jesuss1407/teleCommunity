@@ -7,7 +7,10 @@ import android.content.Intent;
 import androidx.annotation.NonNull;
 
 import com.example.telecommunity.DelegadoGeneral.AdmActividades;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -30,6 +33,19 @@ public class MiPerfil extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mi_perfil);
+
+        //logout
+        Button logout = findViewById(R.id.logout);
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
+        logout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mAuth.signOut();
+                startActivity(new Intent(MiPerfil.this, IniciarSesion.class));
+
+            }
+        });
 
         // Encontrar la BottomNavigationView y setear el item seleccionado
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigationView);
@@ -67,20 +83,7 @@ public class MiPerfil extends AppCompatActivity {
             }
         });
 
-        //-------temporal--------------:
-        // Encontrar el botón por su ID
-        Button delegadoGeneralButton = findViewById(R.id.delegadogeneral);
 
-        // Establecer un OnClickListener para el botón
-        delegadoGeneralButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Crear un nuevo Intent para abrir la actividad AdmActividades
-                Intent intent = new Intent(MiPerfil.this, AdmActividades.class);
-
-                // Iniciar la actividad
-                startActivity(intent);            }
-        });
         //-------temporal--------------:
 
     }

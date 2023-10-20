@@ -41,7 +41,18 @@
                 android:background="@drawable/custom_edittext"
                 android:layout_marginTop="20dp"
                 android:padding="8dp"
-                android:hint="Nombre y Apellido"
+                android:hint="Nombre"
+                android:drawableLeft="@drawable/baseline_person_2_24"
+                android:drawablePadding="8dp"
+                android:textColor="@color/black"/>
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="44dp"
+                android:id="@+id/apellido"
+                android:background="@drawable/custom_edittext"
+                android:layout_marginTop="20dp"
+                android:padding="8dp"
+                android:hint="Apellido"
                 android:drawableLeft="@drawable/baseline_person_2_24"
                 android:drawablePadding="8dp"
                 android:textColor="@color/black"/>
@@ -77,6 +88,7 @@
                 android:layout_marginTop="20dp"
                 android:padding="8dp"
                 android:hint="Contraseña"
+                android:inputType="textPassword"
                 android:drawableLeft="@drawable/baseline_lock_24"
                 android:drawablePadding="8dp"
                 android:textColor="@color/black"/>
@@ -88,6 +100,7 @@
                 android:layout_marginTop="20dp"
                 android:padding="8dp"
                 android:hint="Repetir contraseña"
+                android:inputType="textPassword"
                 android:drawableLeft="@drawable/baseline_lock_24"
                 android:drawablePadding="8dp"
                 android:textColor="@color/black"/>
@@ -107,9 +120,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:text="Crear"
-                android:id="@+id/signup_button"
+                android:id="@+id/crearBtn"
                 android:textSize="18sp"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="20dp"
                 android:backgroundTint="@color/purple"
                 app:cornerRadius = "20dp"/>
 
