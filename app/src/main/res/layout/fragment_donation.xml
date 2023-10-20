@@ -1,14 +1,92 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DonationFragment">
+    android:orientation="vertical">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <!-- Contenido principal de tu fragmento -->
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:orientation="vertical">
 
-</FrameLayout>
+        <!-- Aquí puedes colocar el contenido que tenías en tu actividad -->
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/plin"
+                android:paddingEnd="70dp"
+                tools:ignore="RtlSymmetry" />
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/yape" />
+
+        </LinearLayout>
+
+        <!-- ... (resto del contenido) -->
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- ImageView para la imagen por defecto -->
+                <ImageView
+                    android:id="@+id/imageViewCaptura"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_height="150dp"
+                    android:src="@drawable/regalito" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingTop="10dp"
+                    android:paddingStart="60dp">
+
+                    <Button
+                        android:id="@+id/buttonSubirCaptura"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:text="Subir Captura"
+                        android:textColor="@color/white"
+                        android:backgroundTint="@drawable/button_background_black"
+                        app:cornerRadius="8dp" />
+
+                    <View
+                        android:layout_width="17dp"
+                        android:layout_height="1dp" />
+
+                    <Button
+                        android:id="@+id/buttonEnviarCaptura"
+                        android:layout_width="wrap_content"
+                        android:layout_height="50dp"
+                        android:text="Enviar Captura"
+                        android:textColor="@color/white"
+                        android:enabled="false"
+                        android:backgroundTint="@drawable/button_background_black"
+                        app:cornerRadius="8dp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+        </ScrollView>
+
+    </LinearLayout>
+</LinearLayout>
