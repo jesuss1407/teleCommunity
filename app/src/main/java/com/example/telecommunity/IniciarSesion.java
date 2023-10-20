@@ -65,7 +65,7 @@ public class IniciarSesion extends AppCompatActivity {
         perfil.setOnClickListener(new View.OnClickListener() {
 
             public void onClick(View view) {
-                Intent intent = new Intent(IniciarSesion.this,MiPerfil.class);
+                Intent intent = new Intent(IniciarSesion.this,BaseActivity.class);
                 startActivity(intent);
             }
         });
