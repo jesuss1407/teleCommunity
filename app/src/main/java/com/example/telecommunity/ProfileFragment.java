@@ -17,8 +17,10 @@ import android.widget.Button;
 import android.util.Log;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -38,7 +40,8 @@ public class ProfileFragment extends Fragment {
     private Spinner spinnerCondicion;
 
     private TextView editTextTelefono;
-
+    private Button btnSave;
+    private String documentId;
 
 
     @Override
@@ -52,6 +55,7 @@ public class ProfileFragment extends Fragment {
         editTextNombres = view.findViewById(R.id.editTextNombres);
         editTextCorreo = view.findViewById(R.id.editTextCorreo);
         editTextTelefono = view.findViewById(R.id.editTextTelefono);
+        btnSave = view.findViewById(R.id.btnSave);
 
         spinnerCondicion = view.findViewById(R.id.spinnerCondicion);
 
@@ -77,6 +81,7 @@ public class ProfileFragment extends Fragment {
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
                             for (DocumentSnapshot document : task.getResult()) {
+                                documentId = document.getId();
                                 String nombres=document.getString("nombre")+" "+document.getString("apellido");
                                 editTextNombres.setText(nombres);
                                 editTextCorreo.setText(document.getString("correo"));
@@ -91,6 +96,36 @@ public class ProfileFragment extends Fragment {
                         }
                     }
                 });
+
+
+        // Botón para guardar los cambios
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Recoge los datos de los EditText y del Spinner
+                String nombres = editTextNombres.getText().toString();
+                String correo = editTextCorreo.getText().toString();
+                String telefono = editTextTelefono.getText().toString();
+                String condicion = spinnerCondicion.getSelectedItem().toString();
+
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                DocumentReference docRef = db.collection("usuarios").document(documentId);
+
+                // Actualiza los datos en Firestore
+                docRef.update(
+                        "nombre", nombres,
+                        "correo", correo,
+                        "telefono", telefono,
+                        "condicion", condicion
+                ).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toast.makeText(getActivity(), "Datos actualizados", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+        });
+
 
 
 
