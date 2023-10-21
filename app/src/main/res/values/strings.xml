@@ -3,4 +3,13 @@
     <string name="title_activity_registro_usuario">RegistroUsuario</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <string-array name="condiciones_array">
+        <item>Estudiante</item>
+        <item>Egresado</item>
+    </string-array>
+
 </resources>
+
+

@@ -114,9 +114,9 @@ public class IniciarSesion extends AppCompatActivity {
                                                         if(rol.equals("Delegado general")){
                                                             startActivity(new Intent(IniciarSesion.this, AdmActividades.class));
                                                         }else if (rol.equals("Delegado de actividad")){
-                                                            //startActivity(new Intent(IniciarSesion.this, AdmActividades.class));
+                                                            startActivity(new Intent(IniciarSesion.this, BaseActivity.class));
                                                         }else{
-                                                            startActivity(new Intent(IniciarSesion.this, MiPerfil.class));
+                                                            startActivity(new Intent(IniciarSesion.this, BaseActivity.class));
                                                             Toast.makeText(IniciarSesion.this, "ola usuario.", Toast.LENGTH_SHORT).show();
 
                                                         }
