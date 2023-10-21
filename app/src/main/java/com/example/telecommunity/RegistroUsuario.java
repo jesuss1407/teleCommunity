@@ -63,11 +63,11 @@ public class RegistroUsuario extends AppCompatActivity {
             String correo = binding.correo.getText().toString();
             String contrasena = binding.contrasena.getText().toString();
             String contrasena2 = binding.contrasena2.getText().toString();
-            String condicion = binding.condicion.getText().toString();
+            String condicion = binding.condicion.getSelectedItem().toString();
             String rol = "Usuario";
             String estado = "1";
             String foto = "link";
-            if (nombre.isEmpty() || apellido.isEmpty() ||codigoStr.isEmpty() ||correo.isEmpty() ||contrasena.isEmpty() ||contrasena2.isEmpty() ||condicion.isEmpty()){
+            if (nombre.isEmpty() || apellido.isEmpty() ||codigoStr.isEmpty() ||correo.isEmpty() ||contrasena.isEmpty() ||contrasena2.isEmpty() ||condicion.isEmpty() ||condicion.equals("¿Estudiante o egresado?")){
                 Toast.makeText(RegistroUsuario.this, "Llene todos los campos ", Toast.LENGTH_SHORT).show();
             } else {
                 if (contrasena.equals(contrasena2)) {

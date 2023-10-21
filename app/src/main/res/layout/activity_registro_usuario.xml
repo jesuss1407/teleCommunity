@@ -65,6 +65,7 @@
                 android:layout_marginTop="20dp"
                 android:padding="8dp"
                 android:hint="Código"
+                android:inputType="number"
                 android:drawableLeft="@drawable/baseline_person_2_24"
                 android:drawablePadding="8dp"
                 android:textColor="@color/black"/>
@@ -104,17 +105,18 @@
                 android:drawableLeft="@drawable/baseline_lock_24"
                 android:drawablePadding="8dp"
                 android:textColor="@color/black"/>
-            <EditText
+
+            <Spinner
+                android:id="@+id/condicion"
                 android:layout_width="match_parent"
                 android:layout_height="44dp"
-                android:id="@+id/condicion"
-                android:background="@drawable/custom_edittext"
                 android:layout_marginTop="20dp"
+                android:background="@drawable/custom_edittext"
                 android:padding="8dp"
-                android:hint="¿Estudiante o egresado?"
                 android:drawableLeft="@drawable/baseline_book_24"
-                android:drawablePadding="8dp"
-                android:textColor="@color/black"/>
+                android:spinnerMode="dropdown"
+                android:entries="@array/condicion_options" />
+
 
             <Button
                 android:layout_width="match_parent"
