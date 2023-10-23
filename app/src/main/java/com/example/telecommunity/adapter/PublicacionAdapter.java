@@ -3,6 +3,7 @@ package com.example.telecommunity.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,6 +80,20 @@ public class PublicacionAdapter extends RecyclerView.Adapter<PublicacionAdapter.
             holder.fotoAdjunta.setVisibility(View.GONE);
         }
 
+        holder.btnMaps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Obtener la latitud y longitud de la publicación
+                double latitud = publicacion.getLatitud();
+                double longitud = publicacion.getLongitud();
+
+                // Abrir la aplicación de Maps con la ruta desde la ubicación actual hasta la ubicación de la publicación
+                String uri = "http://maps.google.com/maps?daddr=" + latitud + "," + longitud;
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+                context.startActivity(intent);
+            }
+        });
+
 
     }
 
@@ -88,6 +103,7 @@ public class PublicacionAdapter extends RecyclerView.Adapter<PublicacionAdapter.
     }
 
     public static class PublicacionViewHolder extends RecyclerView.ViewHolder {
+        ImageView btnMaps;
         ImageView fotouser;
         TextView nameuser;
         TextView timestamp;
@@ -107,7 +123,10 @@ public class PublicacionAdapter extends RecyclerView.Adapter<PublicacionAdapter.
             actividad = itemView.findViewById(R.id.post_activity);
             contenido = itemView.findViewById(R.id.post_contenido);
             fotoAdjunta = itemView.findViewById(R.id.photo_space);
+            btnMaps= itemView.findViewById(R.id.btnMaps);
         }
     }
+
+
 }
 

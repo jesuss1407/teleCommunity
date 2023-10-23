@@ -10,8 +10,14 @@ public class Publicaciondto {
     private String location;
     private String contenido;
     private int fotoId;
+    private double latitud;
+    private double longitud;
 
-    public Publicaciondto(int photoResId, String usuario, String actividad, String date, String timestamp, int comentarios, String location, String contenido, int fotoId) {
+
+
+
+
+    public Publicaciondto(int photoResId, String usuario, String actividad, String date, String timestamp, int comentarios, String location, String contenido, int fotoId, double latitud, double longitud) {
         this.photoResId = photoResId;
         this.usuario = usuario;
         this.actividad = actividad;
@@ -21,6 +27,8 @@ public class Publicaciondto {
         this.location = location;
         this.contenido = contenido;
         this.fotoId = fotoId;
+        this.latitud = latitud;
+        this.longitud = longitud;
     }
 
 
@@ -94,5 +102,21 @@ public class Publicaciondto {
 
     public void setFotoId(int fotoId) {
         this.fotoId = fotoId;
+    }
+
+    public double getLatitud() {
+        return latitud;
+    }
+
+    public void setLatitud(double latitud) {
+        this.latitud = latitud;
+    }
+
+    public double getLongitud() {
+        return longitud;
+    }
+
+    public void setLongitud(double longitud) {
+        this.longitud = longitud;
     }
 }

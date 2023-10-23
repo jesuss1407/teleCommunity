@@ -1,6 +1,10 @@
 package com.example.telecommunity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -8,6 +12,7 @@ import android.view.View;
 import androidx.annotation.NonNull;
 
 import com.example.telecommunity.entity.Evento;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -15,16 +20,19 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.GoogleMap;
+
+import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentTransaction;
 import com.google.android.gms.maps.CameraUpdateFactory;
 
 import android.view.inputmethod.InputMethodManager;
+import android.Manifest;
 
 public class BuscarActivity extends FragmentActivity implements OnMapReadyCallback {
     private GoogleMap map;
     private com.google.android.material.search.SearchBar searchView;
-
+    private static final int CODIGO_DE_PERMISO = 1;
 
     @Override
     public void onBackPressed() {
@@ -112,6 +120,29 @@ public class BuscarActivity extends FragmentActivity implements OnMapReadyCallba
         LatLng defaultLocation = new LatLng(-12.072257, -77.079859);
         float zoomLevel = 17;
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, zoomLevel));
+
+        // Crea un LocationManager para obtener la ubicación actual
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            // Obtiene la ubicación actual
+            Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+            if (location != null) {
+                // Obtiene la latitud y longitud de la ubicación actual
+                double latitud = location.getLatitude();
+                double longitud = location.getLongitude();
+
+                // Crea un marcador para la ubicación actual
+                MarkerOptions markerOptions = new MarkerOptions();
+                markerOptions.position(new LatLng(latitud, longitud));
+                markerOptions.title("Mi Ubicación");
+                markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)); // Icono azul
+                map.addMarker(markerOptions);
+            }
+        } else {
+            // Si no tienes permiso, solicita permisos de ubicación
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, CODIGO_DE_PERMISO);
+        }
 
         // Crea dos eventos de ejemplo
         Evento evento1 = new Evento("Evento 1", "Descripción del Evento 1", "10:00 AM", "Juan Pérez");
