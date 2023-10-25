@@ -3,6 +3,7 @@ package com.example.telecommunity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -85,6 +86,8 @@ public class IniciarSesion extends AppCompatActivity {
                 String password = passwordEditText.getText().toString();
 
                 if (!email.isEmpty() && !password.isEmpty()) {
+                    // ...
+
                     mAuth.signInWithEmailAndPassword(email, password)
                             .addOnCompleteListener(IniciarSesion.this, new OnCompleteListener<AuthResult>() {
                                 @Override
@@ -108,21 +111,28 @@ public class IniciarSesion extends AppCompatActivity {
                                                     Map<String, Object> data = document.getData();
                                                     // Ahora puedes acceder a los campos de datos del documento
                                                     String rol = (String) data.get("rol");
-                                                    int estado = document.getLong("estado").intValue();
-                                                    Log.d(rol, "keke");
-                                                    if(estado==1){
-                                                        if(rol.equals("Delegado general")){
-                                                            startActivity(new Intent(IniciarSesion.this, AdmActividades.class));
-                                                        }else if (rol.equals("Delegado de actividad")){
-                                                            startActivity(new Intent(IniciarSesion.this, BaseActivity.class));
-                                                            Toast.makeText(IniciarSesion.this, "hola dele actividad.", Toast.LENGTH_SHORT).show();
-                                                        }else{
-                                                            startActivity(new Intent(IniciarSesion.this, BaseActivity.class));
-                                                            Toast.makeText(IniciarSesion.this, "hola usuario.", Toast.LENGTH_SHORT).show();
 
+                                                    // Guarda el tipo de usuario en las preferencias compartidas
+                                                    SharedPreferences sharedPreferences = getSharedPreferences("prefs", MODE_PRIVATE);
+                                                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                                                    editor.putString("tipoUsuario", rol);
+                                                    editor.apply();
+
+                                                    // ...
+
+                                                    int estado = document.getLong("estado").intValue();
+                                                    if(estado == 1){
+                                                        if("Delegado general".equals(rol)){
+                                                            startActivity(new Intent(IniciarSesion.this, AdmActividades.class));
+                                                        } else if ("Delegado de actividad".equals(rol)) {
+                                                            startActivity(new Intent(IniciarSesion.this, BaseActivity.class));
+                                                            Toast.makeText(IniciarSesion.this, "Hola delegado de actividad.", Toast.LENGTH_SHORT).show();
+                                                        } else {
+                                                            startActivity(new Intent(IniciarSesion.this, BaseActivity.class));
+                                                            Toast.makeText(IniciarSesion.this, "Hola usuario.", Toast.LENGTH_SHORT).show();
                                                         }
-                                                    }else{
-                                                        Toast.makeText(IniciarSesion.this, "La cuenta no se encuentra habilitada, comuniquese con el administrador.", Toast.LENGTH_SHORT).show();
+                                                    } else {
+                                                        Toast.makeText(IniciarSesion.this, "La cuenta no se encuentra habilitada, comuníquese con el administrador.", Toast.LENGTH_SHORT).show();
                                                     }
                                                 } else {
                                                     // El documento no existe
@@ -136,13 +146,14 @@ public class IniciarSesion extends AppCompatActivity {
                                                 }
                                             }
                                         });
-
-
                                     } else {
                                         Toast.makeText(IniciarSesion.this, "Error en el inicio de sesión.", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             });
+
+// ...
+
                 } else {
                     Toast.makeText(IniciarSesion.this, "Por favor, complete todos los campos.", Toast.LENGTH_SHORT).show();
                 }

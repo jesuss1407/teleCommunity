@@ -31,14 +31,44 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.example.telecommunity.entity.Publicaciondto;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.provider.MediaStore;
+import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Spinner;
+import android.widget.Toast;
+
+import com.example.telecommunity.entity.Publicaciondto;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class CrearPublicacionActivity extends AppCompatActivity {
 
     private static final int SELECT_IMAGE_REQUEST_CODE = 1001;
     private FirebaseFirestore db;
     private StorageReference storageRef;
 
-
-    EditText etUsuario, etActividad, etFecha, etContenido, etFotoId, etLatitud, etLongitud;
+    EditText etActividad, etContenido;
     Spinner spinnerUbicacion;
     Button btnGuardarPublicacion;
     ImageView ivSelectedImage;
@@ -83,9 +113,6 @@ public class CrearPublicacionActivity extends AppCompatActivity {
         spinnerUbicacion.setAdapter(adapter);
 
         // Configurar botón para guardar publicación
-        // ...
-
-// Configurar botón para guardar publicación
         btnGuardarPublicacion.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,66 +142,70 @@ public class CrearPublicacionActivity extends AppCompatActivity {
                                             String userApellido = document.getString("apellido");
                                             String userFotoPerfil = document.getString("foto");
 
-                                            // Sube la imagen a Firebase Storage y obtén el URL
+                                            // Verifica si se seleccionó una imagen
                                             if (selectedImageUri != null) {
+                                                // Sube la imagen a Firebase Storage y obtén el URL
                                                 StorageReference fileRef = storageRef.child("images/" + System.currentTimeMillis() + ".jpg");
                                                 fileRef.putFile(selectedImageUri)
                                                         .addOnSuccessListener(taskSnapshot -> fileRef.getDownloadUrl()
                                                                 .addOnSuccessListener(uri -> {
-                                                                    // Crea un objeto de tipo Publicaciondto
-                                                                    Publicaciondto publicacion = new Publicaciondto(
-                                                                            nombre,
-                                                                            System.currentTimeMillis(),
-                                                                            contenido,
-                                                                            uri.toString(),
-                                                                            latitud,
-                                                                            longitud,
-                                                                            userName,
-                                                                            userApellido,
-                                                                            userFotoPerfil
-                                                                    );
-                                                                    // Sube el objeto a la colección "publicaciones" en Firestore
-                                                                    db.collection("publicaciones")
-                                                                            .add(publicacion)
-                                                                            .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                                                                                @Override
-                                                                                public void onComplete(@NonNull Task<DocumentReference> task) {
-                                                                                    if (task.isSuccessful()) {
-                                                                                        // Publicación guardada con éxito
-                                                                                        // Puedes mostrar un mensaje o hacer algo más aquí
-                                                                                        Toast.makeText(CrearPublicacionActivity.this, "Publicación guardada con éxito", Toast.LENGTH_SHORT).show();
-                                                                                    } else {
-                                                                                        // Ocurrió un error al guardar la publicación
-                                                                                        // Puedes mostrar un mensaje o hacer algo más aquí
-                                                                                        Toast.makeText(CrearPublicacionActivity.this, "Error al guardar la publicación", Toast.LENGTH_SHORT).show();
-                                                                                    }
-                                                                                }
-                                                                            });
+                                                                    // Crea y guarda la publicación con la URL de la imagen
+                                                                    guardarPublicacion(nombre, contenido, latitud, longitud, userName, userApellido, userFotoPerfil, uri.toString());
                                                                 }))
                                                         .addOnFailureListener(e -> {
                                                             // Ocurrió un error al subir la imagen
                                                             // Puedes mostrar un mensaje o hacer algo más aquí
                                                             Toast.makeText(CrearPublicacionActivity.this, "Error al subir la imagen", Toast.LENGTH_SHORT).show();
                                                         });
+                                            } else {
+                                                // Crea y guarda la publicación sin URL de imagen
+                                                guardarPublicacion(nombre, contenido, latitud, longitud, userName, userApellido, userFotoPerfil, "");
                                             }
                                         }
                                     } else {
                                         // Ocurrió un error al buscar el usuario
                                         // Puedes mostrar un mensaje o hacer algo más aquí
                                         Toast.makeText(CrearPublicacionActivity.this, "Error al buscar el usuario", Toast.LENGTH_SHORT).show();
-
                                     }
                                 }
-
-
                             });
                 }
-                finish();
             }
         });
-
     }
-    //Toast.makeText(CrearPublicacionActivity.this, "Error  al subir la imagen", Toast.LENGTH_SHORT).show();
+
+    private void guardarPublicacion(String nombre, String contenido, double latitud, double longitud, String userName, String userApellido, String userFotoPerfil, String urlImagen) {
+        Publicaciondto publicacion = new Publicaciondto(
+                nombre,
+                System.currentTimeMillis(),
+                contenido,
+                urlImagen,
+                latitud,
+                longitud,
+                userName,
+                userApellido,
+                userFotoPerfil
+        );
+
+        db.collection("publicaciones")
+                .add(publicacion)
+                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                        if (task.isSuccessful()) {
+                            // Publicación guardada con éxito
+                            // Puedes mostrar un mensaje o hacer algo más aquí
+                            Toast.makeText(CrearPublicacionActivity.this, "Publicación guardada con éxito", Toast.LENGTH_SHORT).show();
+                            finish();
+                        } else {
+                            // Ocurrió un error al guardar la publicación
+                            // Puedes mostrar un mensaje o hacer algo más aquí
+                            Toast.makeText(CrearPublicacionActivity.this, "Error al guardar la publicación", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

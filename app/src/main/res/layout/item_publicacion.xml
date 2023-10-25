@@ -17,12 +17,17 @@
         android:orientation="horizontal"
         android:layout_marginBottom="8dp">
 
-        <ImageView
-            android:id="@+id/user_photo"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            app:shapeAppearanceOverlay="@style/Circular"
-            android:layout_gravity="center" />
+            <com.google.android.material.imageview.ShapeableImageView
+                android:id="@+id/user_photo"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_centerHorizontal="true"
+                android:background="@color/white"
+                android:elevation="15dp"
+                android:padding="5dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/gato"
+                app:shapeAppearanceOverlay="@style/Circular" />
 
         <!-- Contenido de la notificación -->
         <LinearLayout
@@ -30,7 +35,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:orientation="vertical"
-            android:layout_marginStart="16dp">
+            android:layout_marginStart="8dp">
 
             <!-- Nombre, Hora, Fecha y Ubicación en la misma línea horizontal -->
             <LinearLayout
@@ -45,6 +50,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
                     android:textStyle="bold"
+                    android:text="Juan Pérez"
                     android:textColor="#000000" />
 
                 <Space
@@ -57,9 +63,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
+                    android:text="18:00"
                     android:textColor="#808080" />
                 <Space
-                    android:layout_width="0dp"
+                    android:layout_width="8dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1" />
 
@@ -69,9 +76,10 @@
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
                     android:textColor="#808080"
+                    android:text="25/10/23"
                     android:layout_marginStart="4dp" />
                 <Space
-                    android:layout_width="0dp"
+                    android:layout_width="8dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1" />
 
@@ -80,8 +88,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
-                    android:textColor="#808080"
+                    android:textColor="#222121"
                     android:layout_marginStart="4dp"
+                    android:text="Digimundo"
                     android:layout_gravity="end"/>
             </LinearLayout>
 
@@ -93,6 +102,7 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:textColor="#000000"
+                android:text="Hay que jugar"
                 android:layout_marginTop="4dp" />
 
             <!-- Contenido de la publicación -->
@@ -101,23 +111,29 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
+                android:text="pruebaaaaaaaaaaa ajsjfakf"
                 android:textColor="#000000" />
         </LinearLayout>
-
-
         </LinearLayout>
 
-
-
-
-
-
-    <ImageView
-        android:id="@+id/photo_space"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="visible" />
+        android:orientation="horizontal"
+        android:layout_gravity="end">
 
+        <Space
+            android:layout_width="54dp"
+            android:layout_height="match_parent" />
+
+        <ImageView
+            android:id="@+id/photo_space"
+            android:layout_width="0dp"
+            android:layout_height="216dp"
+            android:layout_weight="1"
+            android:src="@drawable/gato"
+            android:visibility="visible" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -127,15 +143,15 @@
 
         <!-- Espacio entre los botones y los bordes -->
         <Space
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_width="55dp"
+            android:layout_height="match_parent" />
+
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="horizontal">
 
             <Button
                 style="@style/Widget.Material3.Button.TonalButton.Icon"
@@ -149,8 +165,7 @@
 
             <Space
                 android:layout_width="16dp"
-            android:layout_height="wrap_content"
-            />
+                android:layout_height="wrap_content" />
 
             <Button
                 style="@style/Widget.Material3.Button.TonalButton.Icon"
@@ -161,10 +176,11 @@
                 app:icon="@drawable/ic_add"
                 />
 
+
             <Space
                 android:layout_width="16dp"
-                android:layout_height="wrap_content"
-                />
+                android:layout_height="wrap_content" />
+
             <ImageView
                 android:id="@+id/btnMaps"
                 android:layout_width="48dp"
