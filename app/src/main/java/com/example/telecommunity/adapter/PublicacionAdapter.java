@@ -2,7 +2,6 @@ package com.example.telecommunity.adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,123 +9,140 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.telecommunity.NotificationDetailActivity;
+import com.bumptech.glide.Glide;
 import com.example.telecommunity.R;
-import com.example.telecommunity.entity.NotificationItem;
 import com.example.telecommunity.entity.Publicaciondto;
-
 import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.TimeZone;
+
 
 public class PublicacionAdapter extends RecyclerView.Adapter<PublicacionAdapter.PublicacionViewHolder> {
-    private List<Publicaciondto> publicacionList;
+    private List<Publicaciondto> publicaciones;
     private Context context;
 
-    public PublicacionAdapter(List<Publicaciondto> publicacionList, Context context) {
-        this.publicacionList = publicacionList;
+    public PublicacionAdapter(List<Publicaciondto> publicaciones, Context context) {
+        this.publicaciones = publicaciones;
         this.context = context;
     }
 
     @NonNull
     @Override
     public PublicacionViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_publicacion, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.item_publicacion, parent, false);
         return new PublicacionViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull PublicacionViewHolder holder, int position) {
-        Publicaciondto publicacion = publicacionList.get(position);
-
-        // Rellena los elementos de notificación con los datos
-        holder.fotouser.setImageResource(publicacion.getPhotoResId());
-        holder.nameuser.setText(publicacion.getUsuario());
-        holder.timestamp.setText(publicacion.getTimestamp());
-        holder.date.setText(publicacion.getDate());
-        holder.location.setText(publicacion.getLocation());
-        holder.actividad.setText(publicacion.getActividad());
-        holder.contenido.setText(publicacion.getContenido());
-        Button comentariosButton = holder.itemView.findViewById(R.id.button_comentar);
-        String mensaje = "Comentarios (" + publicacion.getComentarios() + ")";
-        comentariosButton.setText(mensaje);
-        holder.fotoAdjunta.setImageResource(publicacion.getFotoId());
-        holder.fotoAdjunta.setVisibility(publicacion.getFotoId() != 0 ? View.VISIBLE : View.GONE);
-        int fotoId = publicacion.getFotoId();
-        if (fotoId != 0) {
-            Drawable fotoDrawable = holder.itemView.getContext().getDrawable(fotoId);
-            if (fotoDrawable != null) {
-                int anchoReal = fotoDrawable.getIntrinsicWidth();
-                int altoReal = fotoDrawable.getIntrinsicHeight();
-
-                // Establecer un límite de altura máximo para la imagen
-                int alturaMaxima = holder.itemView.getResources().getDimensionPixelSize(R.dimen.max_image_height);
-                if (altoReal > alturaMaxima) {
-                    // Si la altura real de la imagen es mayor que la altura máxima permitida, redimensionarla
-                    float proporcion = (float) alturaMaxima / (float) altoReal;
-                    anchoReal = (int) (anchoReal * proporcion);
-                    altoReal = alturaMaxima;
-                }
-
-                // Establece el tamaño del ImageView en función de las dimensiones reales o redimensionadas de la imagen
-                holder.fotoAdjunta.getLayoutParams().width = anchoReal;
-                holder.fotoAdjunta.getLayoutParams().height = altoReal;
-                holder.fotoAdjunta.setImageResource(fotoId);
-                holder.fotoAdjunta.setVisibility(View.VISIBLE);
-            }
-        } else {
-            holder.fotoAdjunta.setVisibility(View.GONE);
-        }
-
-        holder.btnMaps.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Obtener la latitud y longitud de la publicación
-                double latitud = publicacion.getLatitud();
-                double longitud = publicacion.getLongitud();
-
-                // Abrir la aplicación de Maps con la ruta desde la ubicación actual hasta la ubicación de la publicación
-                String uri = "http://maps.google.com/maps?daddr=" + latitud + "," + longitud;
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
-                context.startActivity(intent);
-            }
-        });
-
-
+        Publicaciondto publicacion = publicaciones.get(position);
+        holder.bind(publicacion);
     }
 
     @Override
     public int getItemCount() {
-        return publicacionList.size();
+        return publicaciones.size();
     }
 
-    public static class PublicacionViewHolder extends RecyclerView.ViewHolder {
+    class PublicacionViewHolder extends RecyclerView.ViewHolder {
+        TextView postNombre;
+        TextView postHora;
+        TextView postFecha;
+        TextView postUbicacion;
+        TextView postActivity;
+        TextView postContenido;
+        ImageView userPhoto;
+        ImageView photoSpace;
+        Button btnComentar;
+        Button btnUnirse;
         ImageView btnMaps;
-        ImageView fotouser;
-        TextView nameuser;
-        TextView timestamp;
-        TextView date;
-        TextView location;
-        TextView actividad;
-        TextView contenido;
-        ImageView fotoAdjunta;
 
         public PublicacionViewHolder(@NonNull View itemView) {
             super(itemView);
-            fotouser = itemView.findViewById(R.id.user_photo);
-            nameuser = itemView.findViewById(R.id.post_nombre);
-            timestamp = itemView.findViewById(R.id.post_hora);
-            date = itemView.findViewById(R.id.post_fecha);
-            location = itemView.findViewById(R.id.post_ubicacion);
-            actividad = itemView.findViewById(R.id.post_activity);
-            contenido = itemView.findViewById(R.id.post_contenido);
-            fotoAdjunta = itemView.findViewById(R.id.photo_space);
-            btnMaps= itemView.findViewById(R.id.btnMaps);
+            postNombre = itemView.findViewById(R.id.post_nombre);
+            postHora = itemView.findViewById(R.id.post_hora);
+            postFecha = itemView.findViewById(R.id.post_fecha);
+            postUbicacion = itemView.findViewById(R.id.post_ubicacion);
+            postActivity = itemView.findViewById(R.id.post_activity);
+            postContenido = itemView.findViewById(R.id.post_contenido);
+            userPhoto = itemView.findViewById(R.id.user_photo);
+            photoSpace = itemView.findViewById(R.id.photo_space);
+            btnComentar = itemView.findViewById(R.id.button_comentar);
+            btnUnirse = itemView.findViewById(R.id.button_unirse);
+            btnMaps = itemView.findViewById(R.id.btnMaps);
+
+            btnMaps.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    Publicaciondto publicacion = publicaciones.get(position);
+
+                    double latitudDestino = publicacion.getLatitud();
+                    double longitudDestino = publicacion.getLongitud();
+
+                    // Crear una URI para la dirección de Google Maps con las coordenadas de destino
+                    Uri gmmIntentUri = Uri.parse("google.navigation:q=" + latitudDestino + "," + longitudDestino);
+
+                    // Crear un intent para abrir Google Maps con la ruta
+                    Intent mapIntent = new Intent(Intent.ACTION_VIEW, gmmIntentUri);
+                    mapIntent.setPackage("com.google.android.apps.maps"); // Forzar el uso de la aplicación de Google Maps
+
+                    // Verificar si Google Maps está instalado en el dispositivo
+                    if (mapIntent.resolveActivity(context.getPackageManager()) != null) {
+                        context.startActivity(mapIntent);
+                    } else {
+                        // Si Google Maps no está instalado, puedes mostrar un mensaje de error
+                        Toast.makeText(context, "Google Maps no está instalado en este dispositivo.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+
+        }
+
+        public void bind(Publicaciondto publicacion) {
+            String nombreCompleto = publicacion.getNombreUsuario() + " " + publicacion.getApellidoUsuario();
+            postNombre.setText(nombreCompleto);
+
+            long timestamp = publicacion.getHoraCreacion();
+            Date date = new Date(timestamp);
+
+            // Formatear la hora
+            SimpleDateFormat sdfHora = new SimpleDateFormat("HH:mm");
+            sdfHora.setTimeZone(TimeZone.getDefault());
+            String hora = sdfHora.format(date);
+            postHora.setText(hora);
+
+            // Formatear la fecha
+            SimpleDateFormat sdfFecha = new SimpleDateFormat("dd/MM/yy");
+            sdfFecha.setTimeZone(TimeZone.getDefault());
+            String fecha = sdfFecha.format(date);
+            postFecha.setText(fecha);
+
+            // Aquí debes mostrar el nombre de la ubicación
+            postUbicacion.setText("");
+
+            postActivity.setText(publicacion.getNombre());
+            postContenido.setText(publicacion.getContenido());
+
+            // Cargar la imagen del perfil del usuario
+            Glide.with(context)
+                    .load(publicacion.getFotoUsuario())
+                    .into(userPhoto);
+
+            // Cargar la imagen de la publicación si existe
+            if (publicacion.getUrlImagen() != null && !publicacion.getUrlImagen().isEmpty()) {
+                photoSpace.setVisibility(View.VISIBLE);
+                Glide.with(context)
+                        .load(publicacion.getUrlImagen())
+                        .into(photoSpace);
+            } else {
+                photoSpace.setVisibility(View.GONE);
+            }
         }
     }
-
-
 }
-

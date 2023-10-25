@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".CrearPublicacionActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/white"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Crear Evento"
+            android:textColor="@color/black"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:layout_marginTop="10dp"
+
+            android:layout_width="112dp"
+            android:layout_height="6dp"
+
+            android:src="@drawable/lineasup" />
+
+
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nombre del Evento"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"
+        android:paddingTop="8dp"/>
+
+
+    <EditText
+        android:background="@drawable/custom_edittext"
+        android:textColor="@color/black"
+        android:textColorHighlight="@color/cardview_dark_background"
+        android:id="@+id/etActividad"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="Ingresa el nombre del Evento"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Ubicación del evento"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"
+        android:paddingTop="8dp"/>
+    <Spinner
+        android:id="@+id/spinnerUbicacion"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Escoge la Ubicación"
+        android:minHeight="48dp"
+        android:background="@drawable/custom_edittext"
+        android:textColor="@color/black"
+        android:textColorHighlight="@color/cardview_dark_background"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Descripcion del evento"
+        android:textStyle="bold"
+        android:layout_marginBottom="8dp"
+        android:paddingTop="8dp"/>
+
+    <EditText
+        android:id="@+id/etContenido"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Ingresa el contenido del evento"
+        android:minHeight="48dp"
+        android:background="@drawable/custom_edittext"
+        android:textColor="@color/black"
+        android:textColorHighlight="@color/cardview_dark_background"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"/>
+
+    <ImageView
+        android:id="@+id/ivSelectedImage"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="16dp"
+        android:contentDescription="@string/desc_selected_image"
+        android:scaleType="centerCrop" />
+
+
+    <Button
+        android:id="@+id/btnSelectImage"
+        android:layout_width="200dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="40dp"
+        android:backgroundTint="@drawable/button_background_black"
+        android:layout_gravity="center"
+        android:text="@string/select_image_from_gallery"
+        app:cornerRadius="8dp" />
+
+
+    <Button
+        android:id="@+id/btnGuardarPublicacion"
+        android:layout_width="200dp"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:backgroundTint="@drawable/button_background_green"
+        android:insetTop="8dp"
+        android:text="Guardar Evento"
+        app:cornerRadius="8dp" />
+</LinearLayout>

@@ -47,12 +47,21 @@
                     android:textStyle="bold"
                     android:textColor="#000000" />
 
+                <Space
+                    android:layout_width="8dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="16" />
+
                 <TextView
                     android:id="@+id/post_hora"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textSize="14sp"
                     android:textColor="#808080" />
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
 
                 <TextView
                     android:id="@+id/post_fecha"
@@ -61,6 +70,10 @@
                     android:textSize="14sp"
                     android:textColor="#808080"
                     android:layout_marginStart="4dp" />
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
 
                 <TextView
                     android:id="@+id/post_ubicacion"
@@ -97,23 +110,15 @@
 
 
 
-    <!-- Espacio para la foto -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="32dp"
-        android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/photo_space"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center"
-            android:visibility="gone" />
 
-        <!-- ... Otros elementos dentro del LinearLayout ... -->
+    <ImageView
+        android:id="@+id/photo_space"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="visible" />
 
-    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

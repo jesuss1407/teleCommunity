@@ -4,18 +4,19 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import com.example.telecommunity.R;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
+import android.view.View;
 public class BaseActivity extends AppCompatActivity {
     private TextView titleTextView;
     BottomNavigationView navView;
     private boolean enMisActividades = false;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,13 +83,9 @@ public class BaseActivity extends AppCompatActivity {
             titleTextView.setText("Inicio");
         }
 
-
-
-
-
-
-
-
-
+    }
+    public void crearPublicacion(View view) {
+        Intent intent = new Intent(this, CrearPublicacionActivity.class);
+        startActivity(intent);
     }
 }

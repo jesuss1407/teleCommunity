@@ -1,91 +1,59 @@
 package com.example.telecommunity.entity;
 
 public class Publicaciondto {
-    private int photoResId;
-    private String usuario;
-    private String actividad;
-    private String date;
-    private String timestamp;
-    private int comentarios;
-    private String location;
+    private String nombre;
+    private long horaCreacion;
     private String contenido;
-    private int fotoId;
+    private String urlImagen;
     private double latitud;
     private double longitud;
+    private String nombreUsuario;
+    private String apellidoUsuario;
+    private String fotoUsuario;
 
+    public Publicaciondto() {
+    }
 
+    // Constructor con argumentos
+    public Publicaciondto(String nombre, long horaCreacion, String contenido, String urlImagen, double latitud, double longitud, String userName) {
+        // ... (inicialización de campos)
+    }
 
-
-
-    public Publicaciondto(int photoResId, String usuario, String actividad, String date, String timestamp, int comentarios, String location, String contenido, int fotoId, double latitud, double longitud) {
-        this.photoResId = photoResId;
-        this.usuario = usuario;
-        this.actividad = actividad;
-        this.date = date;
-        this.timestamp = timestamp;
-        this.comentarios = comentarios;
-        this.location = location;
+    public Publicaciondto(String nombre, long horaCreacion, String contenido, String urlImagen, double latitud, double longitud, String userName, String userApellido, String userFotoPerfil) {
+        this.nombre = nombre;
+        this.horaCreacion = horaCreacion;
         this.contenido = contenido;
-        this.fotoId = fotoId;
+        this.urlImagen = urlImagen;
         this.latitud = latitud;
         this.longitud = longitud;
+        this.nombreUsuario = userName; // Asignar el valor de userName al campo nombreUsuario
+        this.apellidoUsuario = userApellido;
+        this.fotoUsuario = userFotoPerfil;
     }
 
 
-    public int getPhotoResId() {
-        return photoResId;
+    // Getters y setters para cada campo
+    public String getNombreUsuario() {
+        return nombreUsuario;
     }
 
-    public void setPhotoResId(int photoResId) {
-        this.photoResId = photoResId;
+    public void setNombreUsuario(String nombreUsuario) {
+        this.nombreUsuario = nombreUsuario;
+    }
+    public String getNombre() {
+        return nombre;
     }
 
-    public String getUsuario() {
-        return usuario;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
-    public void setUsuario(String usuario) {
-        this.usuario = usuario;
+    public long getHoraCreacion() {
+        return horaCreacion;
     }
 
-    public String getActividad() {
-        return actividad;
-    }
-
-    public void setActividad(String actividad) {
-        this.actividad = actividad;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public String getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(String timestamp) {
-        this.timestamp = timestamp;
-    }
-
-    public int getComentarios() {
-        return comentarios;
-    }
-
-    public void setComentarios(int comentarios) {
-        this.comentarios = comentarios;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
+    public void setHoraCreacion(long horaCreacion) {
+        this.horaCreacion = horaCreacion;
     }
 
     public String getContenido() {
@@ -96,12 +64,12 @@ public class Publicaciondto {
         this.contenido = contenido;
     }
 
-    public int getFotoId() {
-        return fotoId;
+    public String getUrlImagen() {
+        return urlImagen;
     }
 
-    public void setFotoId(int fotoId) {
-        this.fotoId = fotoId;
+    public void setUrlImagen(String urlImagen) {
+        this.urlImagen = urlImagen;
     }
 
     public double getLatitud() {
@@ -119,4 +87,45 @@ public class Publicaciondto {
     public void setLongitud(double longitud) {
         this.longitud = longitud;
     }
+
+    public String getApellidoUsuario() {
+        return apellidoUsuario;
+    }
+
+    public void setApellidoUsuario(String apellidoUsuario) {
+        this.apellidoUsuario = apellidoUsuario;
+    }
+
+    public String getFotoUsuario() {
+        return fotoUsuario;
+    }
+
+    public void setFotoUsuario(String fotoUsuario) {
+        this.fotoUsuario = fotoUsuario;
+    }
+
+
+    /*
+    public Publicaciondto(int photoResId, String usuario, String actividad, String date, String timestamp, int comentarios, String location, String contenido, int fotoId, double latitud, double longitud) {
+        this.photoResId = photoResId;
+        this.usuario = usuario;
+        this.actividad = actividad;
+        this.date = date;
+        this.timestamp = timestamp;
+        this.location = location;
+        this.contenido = contenido;
+        this.fotoId = fotoId;
+        this.latitud = latitud;
+        this.longitud = longitud;
+    }
+    */
 }
+
+
+
+
+
+
+
+
+
