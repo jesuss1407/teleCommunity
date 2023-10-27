@@ -74,6 +74,7 @@ public class CrearActividad extends AppCompatActivity {
                 String contenido = etContenido.getText().toString().trim();
                 String codigoDelegadoStr = etCodigoDelegado.getText().toString().trim();
                 int codigoDelegado = Integer.parseInt(codigoDelegadoStr);
+                String estado = "En curso";
 
                 // Obtén el usuario logueado
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -97,7 +98,7 @@ public class CrearActividad extends AppCompatActivity {
                                                         .addOnSuccessListener(taskSnapshot -> fileRef.getDownloadUrl()
                                                                 .addOnSuccessListener(uri -> {
                                                                     // Crea y guarda la publicación con la URL de la imagen
-                                                                    guardarActividad(codigoDelegado, nombre, contenido, uri.toString());
+                                                                    guardarActividad(codigoDelegado, nombre, contenido, uri.toString(),estado);
                                                                 }))
                                                         .addOnFailureListener(e -> {
                                                             // Ocurrió un error al subir la imagen
@@ -106,7 +107,7 @@ public class CrearActividad extends AppCompatActivity {
                                                         });
                                             } else {
                                                 // Crea y guarda la publicación sin URL de imagen
-                                                guardarActividad(codigoDelegado, nombre, contenido, "");
+                                                guardarActividad(codigoDelegado, nombre, contenido, "https://firebasestorage.googleapis.com/v0/b/telecommunity-cbff5.appspot.com/o/images%2Factividad_generica.jpg?alt=media&token=d4ce19a7-e44a-4d2a-8b98-4e90072aeb56",estado);
                                             }
                                         }
                                     } else {
@@ -122,14 +123,15 @@ public class CrearActividad extends AppCompatActivity {
 
     }
 
-    private void guardarActividad(int delegadoCodigo, String nombre, String contenido, String fotoLink) {
+    private void guardarActividad(int delegadoCodigo, String nombre, String contenido, String fotoLink, String estado) {
         String id = UUID.randomUUID().toString();
         ActividadDto actividad = new ActividadDto(
                 id,
                 delegadoCodigo,
                 nombre,
                 contenido,
-                fotoLink
+                fotoLink,
+                estado
         );
 
         db.collection("actividades")

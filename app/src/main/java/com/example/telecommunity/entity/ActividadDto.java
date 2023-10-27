@@ -9,13 +9,15 @@ public class ActividadDto implements Serializable {
     private String descripcion;
     private String fotoLink;
     private String id;
+    private String estado;
 
-    public ActividadDto(String id, int delegadoCodigo, String nombre, String contenido, String fotoLink) {
+    public ActividadDto(String id, int delegadoCodigo, String nombre, String contenido, String fotoLink, String estado) {
         this.id = id;
         this.delegadoCode = delegadoCodigo;
         this.nombre = nombre;
         this.descripcion = contenido;
         this.fotoLink = fotoLink;
+        this.estado = estado;
     }
 
     public int getDelegadoCode() {
@@ -56,5 +58,13 @@ public class ActividadDto implements Serializable {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public String getEstado() {
+        return estado;
+    }
+
+    public void setEstado(String estado) {
+        this.estado = estado;
     }
 }
