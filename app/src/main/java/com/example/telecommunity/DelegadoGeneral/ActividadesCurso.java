@@ -1,8 +1,11 @@
 package com.example.telecommunity.DelegadoGeneral;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
@@ -14,8 +17,18 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.telecommunity.R;
 
 import com.example.telecommunity.adapter.GeneralActividadesadapter;
+import com.example.telecommunity.entity.ActividadDto;
 import com.example.telecommunity.entity.GeneralActividadesdto;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -24,66 +37,59 @@ import java.util.List;
 
 public class ActividadesCurso extends AppCompatActivity {
 
+    private static final int SELECT_IMAGE_REQUEST_CODE = 1001;
+    private FirebaseFirestore db;
+    private StorageReference storageRef;
     private RecyclerView recyclerView;
     private GeneralActividadesadapter adapter;
-    private List<GeneralActividadesdto> actividadList;
+    private List<ActividadDto> actividadList;
+    private List<ActividadDto> activityList;
 
+    Uri selectedImageUri;
 
-
+    private static final String TAG = "YourActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_general_actividades_curso);
+        db = FirebaseFirestore.getInstance();
+        storageRef = FirebaseStorage.getInstance().getReference();
 
 
+        // Obtén el usuario logueado
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            String userEmail = user.getEmail();
+            // Consulta la colección
+            db.collection("activities")
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                List<ActividadDto> activityList = new ArrayList<>();
+                                for (QueryDocumentSnapshot document : task.getResult()) {
+                                    ActividadDto activity = document.toObject(ActividadDto.class);
+                                    actividadList.add(activity);
+                                }
 
-        // Hardcoded data
-        List<GeneralActividadesdto> actividadList = Arrays.asList(
-                new GeneralActividadesdto(80, "FutbolFemenino", 56, 1, "some_link"),
-                new GeneralActividadesdto(52, "FutbolMasculino", 24, 2, "some_link"),
-                new GeneralActividadesdto(100, "BasquetFemenino", 49, 2, "some_link"),
-                new GeneralActividadesdto(21, "BasquetMasculino", 85, 2, "some_link"),
-                new GeneralActividadesdto(96, "Ajedrez", 6, 2, "some_link"),
-                new GeneralActividadesdto(65, "Valorant", 3, 1, "some_link"),
-                new GeneralActividadesdto(96, "Dota", 85, 3, "some_link"),
-                new GeneralActividadesdto(1, "VoleyballFemenino", 3, 2, "some_link"),
-                new GeneralActividadesdto(73, "VoleyballMasculino", 98, 2, "some_link"),
-                new GeneralActividadesdto(62, "NatacionFemenino", 56, 1, "some_link"),
-                new GeneralActividadesdto(27, "NatacionMasculino", 34, 3, "some_link"),
-                new GeneralActividadesdto(47, "TenisFemenino", 15, 2, "some_link"),
-                new GeneralActividadesdto(41, "TenisMasculino", 3, 2, "some_link"),
-                new GeneralActividadesdto(69, "PingPong", 89, 3, "some_link"),
-                new GeneralActividadesdto(53, "KarateFemenino", 88, 3, "some_link"),
-                new GeneralActividadesdto(45, "KarateMasculino", 53, 3, "some_link"),
-                new GeneralActividadesdto(13, "Judo", 29, 2, "some_link"),
-                new GeneralActividadesdto(32, "Boxeo", 65, 3, "some_link"),
-                new GeneralActividadesdto(15, "GimnasiaFemenino", 33, 1, "some_link"),
-                new GeneralActividadesdto(90, "GimnasiaMasculino", 22, 1, "some_link"),
-                new GeneralActividadesdto(34, "Yoga", 9, 2, "some_link"),
-                new GeneralActividadesdto(25, "CrossFit", 70, 2, "some_link"),
-                new GeneralActividadesdto(83, "Ciclismo", 89, 2, "some_link"),
-                new GeneralActividadesdto(56, "AtletismoFemenino", 48, 2, "some_link"),
-                new GeneralActividadesdto(34, "AtletismoMasculino", 63, 2, "some_link"),
-                new GeneralActividadesdto(37, "RugbyFemenino", 86, 1, "some_link"),
-                new GeneralActividadesdto(95, "RugbyMasculino", 49, 1, "some_link"),
-                new GeneralActividadesdto(7, "HockeyFemenino", 67, 1, "some_link"),
-                new GeneralActividadesdto(68, "HockeyMasculino", 27, 3, "some_link"),
-                new GeneralActividadesdto(1, "Golf", 94, 2, "some_link")
-        );
+                                // Ahora activityList contiene todos tus documentos como objetos ActivityDTO
+                                // Puedes procesarlos como desees
 
 
-
-        List<GeneralActividadesdto> filteredList = new ArrayList<>();
-        for (GeneralActividadesdto actividad : actividadList) {
-            if (actividad.getEstado() == 1) {
-                filteredList.add(actividad);
-            }
+                            } else {
+                                Log.w(TAG, "Error getting documents.", task.getException());
+                            }
+                        }
+                    });
         }
+
+
 
 // Pasar la lista filtrada al adaptador
         recyclerView = findViewById(R.id.listarActividades);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new GeneralActividadesadapter(ActividadesCurso.this, filteredList);
+        adapter = new GeneralActividadesadapter(ActividadesCurso.this, actividadList);
         recyclerView.setAdapter(adapter);
 
 
