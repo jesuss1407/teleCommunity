@@ -3,17 +3,21 @@ package com.example.telecommunity.DelegadoGeneral;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 
+import com.example.telecommunity.IniciarSesion;
 import com.example.telecommunity.Notificaciones;
 import com.example.telecommunity.R;
 
 import com.example.telecommunity.RealizarDonacion;
+import com.example.telecommunity.RegistroUsuario;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class AdmActividades extends AppCompatActivity {
@@ -53,6 +57,16 @@ public class AdmActividades extends AppCompatActivity {
             }
         });
 
+
+
+        Button btnCrearPublicacion = findViewById(R.id.btnGuardarPublicacion);
+        btnCrearPublicacion.setOnClickListener(new View.OnClickListener() {
+
+            public void onClick(View view) {
+                Intent intent = new Intent(AdmActividades.this, CrearActividad.class);
+                startActivity(intent);
+            }
+        });
 
         //Navbar
 

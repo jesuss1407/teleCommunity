@@ -16,6 +16,10 @@
         android:id="@+id/navigation_estadistica"
         android:title="Estadística"
         android:icon="@drawable/pie_chart"/>
+    <item
+        android:id="@+id/navigation_mi_perfil"
+        android:title="Perfil"
+        android:icon="@drawable/user"/>
 
 
 </menu>

@@ -24,6 +24,9 @@
         android:theme="@style/Theme.TeleCommunity"
         tools:targetApi="31">
         <activity
+            android:name=".DelegadoGeneral.CrearActividad"
+            android:exported="false" />
+        <activity
             android:name=".DetallePublicacionActivity"
             android:exported="false" />
         <activity
