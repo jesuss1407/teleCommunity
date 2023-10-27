@@ -172,7 +172,7 @@
                 android:backgroundTint="@drawable/button_background_green"
                 android:insetTop="8dp"
                 android:text="Guardar Actividad"
-                android:layout_marginBottom="8dp"
+                android:layout_marginBottom="12dp"
                 app:cornerRadius="8dp" />
         </LinearLayout>
         </ScrollView>
