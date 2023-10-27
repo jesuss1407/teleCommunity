@@ -61,6 +61,7 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class CrearPublicacionActivity extends AppCompatActivity {
 
@@ -122,6 +123,7 @@ public class CrearPublicacionActivity extends AppCompatActivity {
                 Ubicacion ubicacionSeleccionada = (Ubicacion) spinnerUbicacion.getSelectedItem();
                 double latitud = ubicacionSeleccionada.latitud;
                 double longitud = ubicacionSeleccionada.longitud;
+                String nombreUbicacion = ubicacionSeleccionada.nombre;  // Obtén el nombre de la ubicación
 
                 // Obtén el usuario logueado
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -150,7 +152,7 @@ public class CrearPublicacionActivity extends AppCompatActivity {
                                                         .addOnSuccessListener(taskSnapshot -> fileRef.getDownloadUrl()
                                                                 .addOnSuccessListener(uri -> {
                                                                     // Crea y guarda la publicación con la URL de la imagen
-                                                                    guardarPublicacion(nombre, contenido, latitud, longitud, userName, userApellido, userFotoPerfil, uri.toString());
+                                                                    guardarPublicacion(nombre, contenido, latitud, longitud, userName, userApellido, userFotoPerfil, uri.toString(), nombreUbicacion);
                                                                 }))
                                                         .addOnFailureListener(e -> {
                                                             // Ocurrió un error al subir la imagen
@@ -159,7 +161,7 @@ public class CrearPublicacionActivity extends AppCompatActivity {
                                                         });
                                             } else {
                                                 // Crea y guarda la publicación sin URL de imagen
-                                                guardarPublicacion(nombre, contenido, latitud, longitud, userName, userApellido, userFotoPerfil, "");
+                                                guardarPublicacion(nombre, contenido, latitud, longitud, userName, userApellido, userFotoPerfil, "", nombreUbicacion);
                                             }
                                         }
                                     } else {
@@ -172,10 +174,13 @@ public class CrearPublicacionActivity extends AppCompatActivity {
                 }
             }
         });
+
     }
 
-    private void guardarPublicacion(String nombre, String contenido, double latitud, double longitud, String userName, String userApellido, String userFotoPerfil, String urlImagen) {
+    private void guardarPublicacion(String nombre, String contenido, double latitud, double longitud, String userName, String userApellido, String userFotoPerfil, String urlImagen, String nombreUbicacion) {
+        String id = UUID.randomUUID().toString();
         Publicaciondto publicacion = new Publicaciondto(
+                id,
                 nombre,
                 System.currentTimeMillis(),
                 contenido,
@@ -184,22 +189,22 @@ public class CrearPublicacionActivity extends AppCompatActivity {
                 longitud,
                 userName,
                 userApellido,
-                userFotoPerfil
+                userFotoPerfil,
+                nombreUbicacion
         );
 
         db.collection("publicaciones")
-                .add(publicacion)
-                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                .document(id)
+                .set(publicacion)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
-                    public void onComplete(@NonNull Task<DocumentReference> task) {
+                    public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             // Publicación guardada con éxito
-                            // Puedes mostrar un mensaje o hacer algo más aquí
                             Toast.makeText(CrearPublicacionActivity.this, "Publicación guardada con éxito", Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
                             // Ocurrió un error al guardar la publicación
-                            // Puedes mostrar un mensaje o hacer algo más aquí
                             Toast.makeText(CrearPublicacionActivity.this, "Error al guardar la publicación", Toast.LENGTH_SHORT).show();
                         }
                     }

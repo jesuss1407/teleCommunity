@@ -1,6 +1,8 @@
 package com.example.telecommunity.entity;
 
-public class Publicaciondto {
+import java.io.Serializable;
+
+public class Publicaciondto implements Serializable {
     private String nombre;
     private long horaCreacion;
     private String contenido;
@@ -10,16 +12,34 @@ public class Publicaciondto {
     private String nombreUsuario;
     private String apellidoUsuario;
     private String fotoUsuario;
+    private String id;
+    private String nombreUbicacion;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+    public String getNombreUbicacion() {
+        return nombreUbicacion;
+    }
+
+    public void setNombreUbicacion(String nombreUbicacion) {
+        this.nombreUbicacion = nombreUbicacion;
+    }
 
     public Publicaciondto() {
     }
 
     // Constructor con argumentos
-    public Publicaciondto(String nombre, long horaCreacion, String contenido, String urlImagen, double latitud, double longitud, String userName) {
+    public Publicaciondto(String id, String nombre, long horaCreacion, String contenido, String urlImagen, double latitud, double longitud, String userName,String nombreUbicacion) {
         // ... (inicialización de campos)
     }
 
-    public Publicaciondto(String nombre, long horaCreacion, String contenido, String urlImagen, double latitud, double longitud, String userName, String userApellido, String userFotoPerfil) {
+    public Publicaciondto(String id, String nombre, long horaCreacion, String contenido, String urlImagen, double latitud, double longitud, String userName, String userApellido, String userFotoPerfil,String nombreUbicacion) {
+        this.id = id;
         this.nombre = nombre;
         this.horaCreacion = horaCreacion;
         this.contenido = contenido;
@@ -29,6 +49,7 @@ public class Publicaciondto {
         this.nombreUsuario = userName; // Asignar el valor de userName al campo nombreUsuario
         this.apellidoUsuario = userApellido;
         this.fotoUsuario = userFotoPerfil;
+        this.nombreUbicacion = nombreUbicacion;
     }
 
 
@@ -104,7 +125,22 @@ public class Publicaciondto {
         this.fotoUsuario = fotoUsuario;
     }
 
-
+    // Método toString para depuración
+    @Override
+    public String toString() {
+        return "Publicaciondto{" +
+                "id='" + id + '\'' +
+                ", nombreUsuario='" + nombreUsuario + '\'' +
+                ", apellidoUsuario='" + apellidoUsuario + '\'' +
+                ", horaCreacion=" + horaCreacion +
+                ", latitud=" + latitud +
+                ", longitud=" + longitud +
+                ", nombre='" + nombre + '\'' +
+                ", contenido='" + contenido + '\'' +
+                ", fotoUsuario='" + fotoUsuario + '\'' +
+                ", urlImagen='" + urlImagen + '\'' +
+                '}';
+    }
     /*
     public Publicaciondto(int photoResId, String usuario, String actividad, String date, String timestamp, int comentarios, String location, String contenido, int fotoId, double latitud, double longitud) {
         this.photoResId = photoResId;

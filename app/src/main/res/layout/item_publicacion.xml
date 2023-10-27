@@ -83,28 +83,39 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1" />
 
+
+            </LinearLayout>
+
+            <!-- Título de la publicación -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="4dp">
+                <TextView
+                    android:id="@+id/post_activity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:textColor="#000000"
+                    android:text="Hay que jugar"
+                    android:layout_marginTop="4dp"
+                    android:layout_gravity="end"/>
+                <Space
+                    android:layout_width="8dp"
+                    android:layout_height="match_parent" />
                 <TextView
                     android:id="@+id/post_ubicacion"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
                     android:textColor="#222121"
                     android:layout_marginStart="4dp"
                     android:text="Digimundo"
+                    android:layout_marginTop="4dp"
                     android:layout_gravity="end"/>
             </LinearLayout>
-
-            <!-- Título de la publicación -->
-            <TextView
-                android:id="@+id/post_activity"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="#000000"
-                android:text="Hay que jugar"
-                android:layout_marginTop="4dp" />
-
             <!-- Contenido de la publicación -->
             <TextView
                 android:id="@+id/post_contenido"

@@ -3,6 +3,7 @@ package com.example.telecommunity.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
+import com.example.telecommunity.DetallePublicacionActivity;
 import com.example.telecommunity.R;
 import com.example.telecommunity.entity.Publicaciondto;
 import java.util.List;
@@ -23,8 +25,10 @@ import java.util.TimeZone;
 
 
 public class PublicacionAdapter extends RecyclerView.Adapter<PublicacionAdapter.PublicacionViewHolder> {
+    private static final String TAG = "PublicacionAdapter";
     private List<Publicaciondto> publicaciones;
     private Context context;
+
 
     public PublicacionAdapter(List<Publicaciondto> publicaciones, Context context) {
         this.publicaciones = publicaciones;
@@ -42,7 +46,38 @@ public class PublicacionAdapter extends RecyclerView.Adapter<PublicacionAdapter.
     public void onBindViewHolder(@NonNull PublicacionViewHolder holder, int position) {
         Publicaciondto publicacion = publicaciones.get(position);
         holder.bind(publicacion);
+
+        // OnClickListener para abrir la actividad de detalle de publicación
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, DetallePublicacionActivity.class);
+            intent.putExtra("publicacionId", publicacion.getId());
+            intent.putExtra("latitud", publicacion.getLatitud());
+            intent.putExtra("longitud", publicacion.getLongitud());
+            Log.d(TAG, "Publicacion ID: " + publicacion.getId());
+            context.startActivity(intent);
+        });
+
+        holder.btnComentar.setOnClickListener(v -> {
+            Intent intent = new Intent(context, DetallePublicacionActivity.class);
+            intent.putExtra("publicacionId", publicacion.getId());
+            intent.putExtra("latitud", publicacion.getLatitud());
+            intent.putExtra("longitud", publicacion.getLongitud());
+            Log.d(TAG, "Publicacion ID: " + publicacion.getId());
+            context.startActivity(intent);
+        });
+
+        holder.btnUnirse.setOnClickListener(v -> {
+            Intent intent = new Intent(context, DetallePublicacionActivity.class);
+            intent.putExtra("publicacionId", publicacion.getId());
+            intent.putExtra("latitud", publicacion.getLatitud());
+            intent.putExtra("longitud", publicacion.getLongitud());
+            Log.d(TAG, "Publicacion ID: " + publicacion.getId());
+            context.startActivity(intent);
+        });
+
+
     }
+
 
     @Override
     public int getItemCount() {
@@ -143,6 +178,8 @@ public class PublicacionAdapter extends RecyclerView.Adapter<PublicacionAdapter.
             } else {
                 photoSpace.setVisibility(View.GONE);
             }
+            // Mostrar el nombre de la ubicación
+            postUbicacion.setText(publicacion.getNombreUbicacion());
         }
     }
 }
