@@ -2,8 +2,10 @@ package com.example.telecommunity.DelegadoGeneral;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -131,8 +133,22 @@ public class CrearActividad extends AppCompatActivity {
                                                         fileRef.putFile(selectedImageUri)
                                                                 .addOnSuccessListener(taskSnapshot -> fileRef.getDownloadUrl()
                                                                         .addOnSuccessListener(uri -> {
-                                                                            // Crea y guarda la publicación con la URL de la imagen
-                                                                            guardarActividad(codigoDelegado, delegadoNombre, nombre, contenido, uri.toString(),estado);
+
+                                                                            //estas seguro?
+                                                                            // Crea un diálogo de alerta para confirmar la acción.
+                                                                            new AlertDialog.Builder(CrearActividad.this)
+                                                                                    .setTitle("Confirmar acción")
+                                                                                    .setMessage("¿Estás seguro de que deseas asignar a '"+delegadoNombre+"' como delegado de esta actividad")
+                                                                                    .setPositiveButton("Sí", (dialog, which) -> {
+                                                                                        // Usuario ha confirmado la acción.
+                                                                                        // Crea y guarda la publicación con la URL de la imagen
+                                                                                        guardarActividad(codigoDelegado, delegadoNombre, nombre, contenido, uri.toString(),estado);
+                                                                                    })
+                                                                                    .setNegativeButton("Cancelar", (dialog, which) -> {
+                                                                                        // Usuario ha cancelado la acción.
+                                                                                        dialog.dismiss(); // Cierra el diálogo.
+                                                                                    })
+                                                                                    .show();
                                                                         }))
                                                                 .addOnFailureListener(e -> {
                                                                     // Ocurrió un error al subir la imagen
@@ -140,8 +156,22 @@ public class CrearActividad extends AppCompatActivity {
                                                                     Toast.makeText(CrearActividad.this, "Error al subir la imagen", Toast.LENGTH_SHORT).show();
                                                                 });
                                                     } else {
-                                                        // Crea y guarda la publicación sin URL de imagen
-                                                        guardarActividad(codigoDelegado, delegadoNombre, nombre, contenido, "https://firebasestorage.googleapis.com/v0/b/telecommunity-cbff5.appspot.com/o/images%2Factividad_generica.jpg?alt=media&token=d4ce19a7-e44a-4d2a-8b98-4e90072aeb56",estado);
+                                                        //estas seguro?
+                                                        // Crea un diálogo de alerta para confirmar la acción.
+                                                        new AlertDialog.Builder(CrearActividad.this)
+                                                                .setTitle("Confirmar acción")
+                                                                .setMessage("¿Estás seguro de que deseas asignar a '"+delegadoNombre+"' como delegado de esta actividad")
+                                                                .setPositiveButton("Sí", (dialog, which) -> {
+                                                                    // Usuario ha confirmado la acción.
+                                                                    // Crea y guarda la publicación sin URL de imagen
+                                                                    guardarActividad(codigoDelegado, delegadoNombre, nombre, contenido, "https://firebasestorage.googleapis.com/v0/b/telecommunity-cbff5.appspot.com/o/images%2Factividad_generica.jpg?alt=media&token=d4ce19a7-e44a-4d2a-8b98-4e90072aeb56",estado);
+                                                                })
+                                                                .setNegativeButton("Cancelar", (dialog, which) -> {
+                                                                    // Usuario ha cancelado la acción.
+                                                                    dialog.dismiss(); // Cierra el diálogo.
+                                                                })
+                                                                .show();
+
                                                     }
                                                 }
                                             } else {

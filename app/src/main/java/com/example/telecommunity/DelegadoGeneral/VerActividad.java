@@ -62,29 +62,26 @@ public class VerActividad extends AppCompatActivity {
 
         //cerrar actividad
         Button cambiarEstadoButton = findViewById(R.id.cerrarButton);
-        cambiarEstadoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Crea un diálogo de alerta para confirmar la acción.
-                new AlertDialog.Builder(VerActividad.this)
-                        .setTitle("Confirmar acción")
-                        .setMessage("¿Estás seguro de que deseas cambiar el estado de esta actividad a 'Finalizado'?")
-                        .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // Usuario ha confirmado la acción.
-                                cerrarActividad(idActividad); // Función para cambiar el estado.
-                            }
-                        })
-                        .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // Usuario ha cancelado la acción.
-                                dialog.dismiss(); // Cierra el diálogo.
-                            }
-                        })
-                        .show();
-            }
+        cambiarEstadoButton.setOnClickListener(v -> {
+            // Crea un diálogo de alerta para confirmar la acción.
+            new AlertDialog.Builder(VerActividad.this)
+                    .setTitle("Confirmar acción")
+                    .setMessage("¿Estás seguro de que deseas cambiar el estado de esta actividad a 'Finalizado'?")
+                    .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Usuario ha confirmado la acción.
+                            cerrarActividad(idActividad); // Función para cambiar el estado.
+                        }
+                    })
+                    .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Usuario ha cancelado la acción.
+                            dialog.dismiss(); // Cierra el diálogo.
+                        }
+                    })
+                    .show();
         });
 
 

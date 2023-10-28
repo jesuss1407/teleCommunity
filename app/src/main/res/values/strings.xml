@@ -11,7 +11,7 @@
     </string-array>
 
     <string name="desc_selected_image">Imagen seleccionada para la publicación</string>
-    <string name="select_image_from_gallery">Seleccionar imagen de la galería</string>
+    <string name="select_image_from_gallery">Escoger imagen de la galería</string>
 
 </resources>
 
