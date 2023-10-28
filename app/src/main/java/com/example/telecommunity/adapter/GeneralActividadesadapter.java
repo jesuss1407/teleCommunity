@@ -63,9 +63,6 @@ public class GeneralActividadesadapter extends RecyclerView.Adapter<GeneralActiv
                 .into(holder.imagenactividad); // imageView donde se mostrará la imagen
 
 
-
-
-
         holder.recCard.setOnClickListener(view -> {
             Intent intent = new Intent(context, VerActividad.class);
             intent.putExtra("Image", actividadList.get(holder.getAdapterPosition()).getFotoLink());

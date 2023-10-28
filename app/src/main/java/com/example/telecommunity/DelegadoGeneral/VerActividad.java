@@ -57,8 +57,7 @@ public class VerActividad extends AppCompatActivity {
             //detailApoyos.setText(bundle.getString("Numapoyos"));
             detailTitle.setText(bundle.getString("Title"));
             detailDescripcion.setText(bundle.getString("Descripcion"));
-            //detailDelegado.setText(bundle.getString("Delegado")+ " - "+bundle.getString("DelegadoCode") );
-            detailDelegado.setText(bundle.getString("DelegadoCode") );
+            detailDelegado.setText(bundle.getString("Delegado")+ " - "+bundle.getString("DelegadoCode") );
             idActividad=bundle.getString("Id");
 
         }
@@ -70,7 +69,7 @@ public class VerActividad extends AppCompatActivity {
 
             Intent intent = new Intent(VerActividad.this, EditarActividad.class);
             intent.putExtra("IdAct", idActividad);
-            context.startActivity(intent);
+            startActivity(intent);
 
         });
 

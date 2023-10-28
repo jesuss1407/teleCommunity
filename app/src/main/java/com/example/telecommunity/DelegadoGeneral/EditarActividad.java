@@ -91,7 +91,13 @@ public class EditarActividad extends AppCompatActivity {
                         for (DocumentSnapshot document : task.getResult()) {
                             etActividad.setText(document.getString("nombre"));
                             etContenido.setText(document.getString("descripcion"));
-                            long codigo = document.getLong("codigo"); // Utiliza getLong para campos numéricos
+                            Long codigo = document.getLong("codigo");
+                            if (codigo != null) {
+                                etCodigoDelegado.setText((int) codigo.longValue());
+                            } else {
+                                // Maneja el caso en que el valor sea nulo, por ejemplo, establece un valor predeterminado.
+                                etCodigoDelegado.setText("Valor nulo o no encontrado");
+                            }
                             etCodigoDelegado.setText(String.valueOf(codigo));
                             String linkFoto = document.getString("fotoLink");
 
