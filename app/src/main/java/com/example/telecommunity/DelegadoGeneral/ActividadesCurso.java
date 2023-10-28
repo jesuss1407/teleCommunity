@@ -64,6 +64,7 @@ public class ActividadesCurso extends AppCompatActivity {
             String userEmail = user.getEmail();
             // Consulta la colección
             db.collection("actividades")
+                    .whereEqualTo("estado", "En curso")
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
