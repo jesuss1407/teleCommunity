@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ public class VerActividad extends AppCompatActivity {
     ImageView detailImagen;
     private String idActividad;
     private FirebaseFirestore db;
+    private Context context;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,10 +57,25 @@ public class VerActividad extends AppCompatActivity {
             //detailApoyos.setText(bundle.getString("Numapoyos"));
             detailTitle.setText(bundle.getString("Title"));
             detailDescripcion.setText(bundle.getString("Descripcion"));
-            detailDelegado.setText(bundle.getString("Delegado")+ " - "+bundle.getString("DelegadoCode") );
+            //detailDelegado.setText(bundle.getString("Delegado")+ " - "+bundle.getString("DelegadoCode") );
+            detailDelegado.setText(bundle.getString("DelegadoCode") );
             idActividad=bundle.getString("Id");
 
         }
+
+
+        //editar actividad
+        Button editarButton = findViewById(R.id.editarButton);
+        editarButton.setOnClickListener(v -> {
+
+            Intent intent = new Intent(VerActividad.this, EditarActividad.class);
+            intent.putExtra("IdAct", idActividad);
+            context.startActivity(intent);
+
+        });
+
+
+
 
         //cerrar actividad
         Button cambiarEstadoButton = findViewById(R.id.cerrarButton);

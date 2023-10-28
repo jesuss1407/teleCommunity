@@ -1,31 +1,24 @@
 package com.example.telecommunity.DelegadoGeneral;
 
+import static android.content.ContentValues.TAG;
+
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
-import android.view.View;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.Spinner;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.telecommunity.CrearPublicacionActivity;
 import com.example.telecommunity.R;
-import com.example.telecommunity.RegistroUsuario;
 import com.example.telecommunity.entity.ActividadDto;
-import com.example.telecommunity.entity.Publicaciondto;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -37,27 +30,33 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
-public class CrearActividad extends AppCompatActivity {
+public class EditarActividad extends AppCompatActivity {
+
 
     private static final int SELECT_IMAGE_REQUEST_CODE = 1001;
     private FirebaseFirestore db;
     private StorageReference storageRef;
     private String delegadoNombre;
+    private String myIdAct;
 
     EditText etActividad, etContenido, etCodigoDelegado;
 
     Button btnGuardarPublicacion;
     ImageView ivSelectedImage;
     Button btnSelectImage;
+    private String idActividad;
 
     Uri selectedImageUri;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_crear_actividad);
+        setContentView(R.layout.activity_editar_actividad);
         db = FirebaseFirestore.getInstance();
         storageRef = FirebaseStorage.getInstance().getReference();
 
@@ -75,6 +74,36 @@ public class CrearActividad extends AppCompatActivity {
         });
 
 
+        //mostrar la info
+
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null){
+            idActividad=bundle.getString("IdAct");
+
+        }
+
+        FirebaseFirestore db2 = FirebaseFirestore.getInstance();
+        db2.collection("actividades")
+                .whereEqualTo("id", idActividad)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (DocumentSnapshot document : task.getResult()) {
+                            etActividad.setText(document.getString("nombre"));
+                            etContenido.setText(document.getString("descripcion"));
+                            long codigo = document.getLong("codigo"); // Utiliza getLong para campos numéricos
+                            etCodigoDelegado.setText(String.valueOf(codigo));
+                            String linkFoto = document.getString("fotoLink");
+
+                            Picasso.get().load(linkFoto).into(ivSelectedImage);
+
+                        }
+                    } else {
+                        Log.d(TAG, "No coincide");
+                    }
+                });
+
+
         // Configurar botón para crear actividad
         btnGuardarPublicacion.setOnClickListener(v -> {
 
@@ -88,11 +117,11 @@ public class CrearActividad extends AppCompatActivity {
 
 
             if (nombre.isEmpty() || contenido.isEmpty() ||codigoDelegadoStr.isEmpty() ){
-                Toast.makeText(CrearActividad.this, "Llene todos los campos ", Toast.LENGTH_SHORT).show();
+                Toast.makeText(EditarActividad.this, "Llene todos los campos ", Toast.LENGTH_SHORT).show();
             } else if(!(!TextUtils.isEmpty(codigoDelegadoStr) && TextUtils.isDigitsOnly(codigoDelegadoStr))){
-                Toast.makeText(CrearActividad.this, "Ingrese solo numeros en el Código", Toast.LENGTH_SHORT).show();
+                Toast.makeText(EditarActividad.this, "Ingrese solo numeros en el Código", Toast.LENGTH_SHORT).show();
             } else if(docRef1.getId().isEmpty()){
-                Toast.makeText(CrearActividad.this, "Ingrese un codigo de usuario existente", Toast.LENGTH_SHORT).show();
+                Toast.makeText(EditarActividad.this, "Ingrese un codigo de usuario existente", Toast.LENGTH_SHORT).show();
             }else {
 
                 int codigoDelegado = Integer.parseInt(codigoDelegadoStr);
@@ -106,7 +135,7 @@ public class CrearActividad extends AppCompatActivity {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if (!documentSnapshot.exists()) {
-                            Toast.makeText(CrearActividad.this, "Ingrese un codigo de usuario existente", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(EditarActividad.this, "Ingrese un codigo de usuario existente", Toast.LENGTH_SHORT).show();
                         }else{
                             // El documento existe, ahora puedes obtener el campo "nombre"
                             String nombredele = documentSnapshot.getString("nombre");
@@ -119,8 +148,8 @@ public class CrearActividad extends AppCompatActivity {
                             if (user != null) {
                                 String userEmail = user.getEmail();
                                 // Busca el nombre del usuario en la colección de usuarios
-                                db.collection("usuarios")
-                                        .whereEqualTo("correo", userEmail)
+                                db.collection("actividades")
+                                        .whereEqualTo("id", myIdAct)
                                         .get()
                                         .addOnCompleteListener(task -> {
                                             if (task.isSuccessful()) {
@@ -136,13 +165,13 @@ public class CrearActividad extends AppCompatActivity {
 
                                                                             //estas seguro?
                                                                             // Crea un diálogo de alerta para confirmar la acción.
-                                                                            new AlertDialog.Builder(CrearActividad.this)
+                                                                            new AlertDialog.Builder(EditarActividad.this)
                                                                                     .setTitle("Confirmar acción")
                                                                                     .setMessage("¿Estás seguro de que deseas asignar a '"+delegadoNombre+"' como delegado de esta actividad")
                                                                                     .setPositiveButton("Sí", (dialog, which) -> {
                                                                                         // Usuario ha confirmado la acción.
                                                                                         // Crea y guarda la publicación con la URL de la imagen
-                                                                                        crearActividad(codigoDelegado, delegadoNombre, nombre, contenido, uri.toString(),estado);
+                                                                                        editarActividad(myIdAct, codigoDelegado, delegadoNombre, nombre, contenido, uri.toString(),estado);
                                                                                     })
                                                                                     .setNegativeButton("Cancelar", (dialog, which) -> {
                                                                                         // Usuario ha cancelado la acción.
@@ -153,18 +182,18 @@ public class CrearActividad extends AppCompatActivity {
                                                                 .addOnFailureListener(e -> {
                                                                     // Ocurrió un error al subir la imagen
                                                                     // Puedes mostrar un mensaje o hacer algo más aquí
-                                                                    Toast.makeText(CrearActividad.this, "Error al subir la imagen", Toast.LENGTH_SHORT).show();
+                                                                    Toast.makeText(EditarActividad.this, "Error al subir la imagen", Toast.LENGTH_SHORT).show();
                                                                 });
                                                     } else {
                                                         //estas seguro?
                                                         // Crea un diálogo de alerta para confirmar la acción.
-                                                        new AlertDialog.Builder(CrearActividad.this)
+                                                        new AlertDialog.Builder(EditarActividad.this)
                                                                 .setTitle("Confirmar acción")
                                                                 .setMessage("¿Estás seguro de que deseas asignar a '"+delegadoNombre+"' como delegado de esta actividad")
                                                                 .setPositiveButton("Sí", (dialog, which) -> {
                                                                     // Usuario ha confirmado la acción.
                                                                     // Crea y guarda la publicación sin URL de imagen
-                                                                    crearActividad(codigoDelegado, delegadoNombre, nombre, contenido, "https://firebasestorage.googleapis.com/v0/b/telecommunity-cbff5.appspot.com/o/images%2Factividad_generica.jpg?alt=media&token=d4ce19a7-e44a-4d2a-8b98-4e90072aeb56",estado);
+                                                                    editarActividad(myIdAct, codigoDelegado, delegadoNombre, nombre, contenido, "https://firebasestorage.googleapis.com/v0/b/telecommunity-cbff5.appspot.com/o/images%2Factividad_generica.jpg?alt=media&token=d4ce19a7-e44a-4d2a-8b98-4e90072aeb56",estado);
                                                                 })
                                                                 .setNegativeButton("Cancelar", (dialog, which) -> {
                                                                     // Usuario ha cancelado la acción.
@@ -177,7 +206,7 @@ public class CrearActividad extends AppCompatActivity {
                                             } else {
                                                 // Ocurrió un error al buscar el usuario
                                                 // Puedes mostrar un mensaje o hacer algo más aquí
-                                                Toast.makeText(CrearActividad.this, "Error al buscar el usuario", Toast.LENGTH_SHORT).show();
+                                                Toast.makeText(EditarActividad.this, "Error al buscar el usuario", Toast.LENGTH_SHORT).show();
                                             }
                                         });
                             }
@@ -195,44 +224,34 @@ public class CrearActividad extends AppCompatActivity {
 
     }
 
-    private void crearActividad(int delegadoCodigo, String delegadoNombre, String nombre, String contenido, String fotoLink, String estado) {
-        String id = UUID.randomUUID().toString();
-        ActividadDto actividad = new ActividadDto(
-                id,
-                delegadoCodigo,
-                delegadoNombre,
-                nombre,
-                contenido,
-                fotoLink,
-                estado
-        );
+    private void editarActividad(String actividadId,int nuevoDelegadoCodigo, String nuevoDelegadoNombre, String nuevoNombre, String nuevoContenido, String nuevoFotoLink, String nuevoEstado) {
+        // Obtén una referencia al documento que deseas editar
+        DocumentReference docRef = db.collection("actividades").document(actividadId);
 
-        db.collection("actividades")
-                .document(id)
-                .set(actividad)
+        // Crea un mapa con los campos que deseas actualizar
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("nombre", nuevoNombre);
+        updates.put("contenido", nuevoContenido);
+        updates.put("fotoLink", nuevoFotoLink);
+        updates.put("estado", nuevoEstado);
+        updates.put("delegadoCodigo", nuevoDelegadoCodigo);
+        updates.put("delegadoNombre", nuevoDelegadoNombre);
+
+        // Actualiza el documento con los nuevos valores
+        docRef.update(updates)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
-                            // Publicación guardada con éxito
-                            Toast.makeText(CrearActividad.this, "Actividad creada con éxito", Toast.LENGTH_SHORT).show();
+                            // Actividad editada con éxito
+                            Toast.makeText(EditarActividad.this, "Actividad editada con éxito", Toast.LENGTH_SHORT).show();
                             finish();
                         } else {
-                            // Ocurrió un error al guardar la publicación
-                            Toast.makeText(CrearActividad.this, "Error al crear la actividad", Toast.LENGTH_SHORT).show();
+                            // Ocurrió un error al editar la actividad
+                            Toast.makeText(EditarActividad.this, "Error al editar la actividad", Toast.LENGTH_SHORT).show();
                         }
                     }
                 });
     }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == SELECT_IMAGE_REQUEST_CODE && resultCode == RESULT_OK && data != null) {
-            selectedImageUri = data.getData();
-            ivSelectedImage.setImageURI(selectedImageUri);
-        }
-    }
-
-
 
 }

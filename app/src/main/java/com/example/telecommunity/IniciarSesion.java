@@ -53,12 +53,9 @@ public class IniciarSesion extends AppCompatActivity {
 
         //redireccionar a registro
         TextView registrarme = findViewById(R.id.signupText);
-        registrarme.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View view) {
-                Intent intent = new Intent(IniciarSesion.this, RegistroUsuario.class);
-                startActivity(intent);
-            }
+        registrarme.setOnClickListener(view -> {
+            Intent intent = new Intent(IniciarSesion.this, RegistroUsuario.class);
+            startActivity(intent);
         });
 
         //redireccionar a mi perfil
