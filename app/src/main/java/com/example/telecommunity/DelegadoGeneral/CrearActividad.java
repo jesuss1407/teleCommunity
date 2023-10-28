@@ -8,21 +8,28 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.telecommunity.CrearPublicacionActivity;
 import com.example.telecommunity.R;
+import com.example.telecommunity.RegistroUsuario;
 import com.example.telecommunity.entity.ActividadDto;
 import com.example.telecommunity.entity.Publicaciondto;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -36,6 +43,7 @@ public class CrearActividad extends AppCompatActivity {
     private static final int SELECT_IMAGE_REQUEST_CODE = 1001;
     private FirebaseFirestore db;
     private StorageReference storageRef;
+    private String delegadoNombre;
 
     EditText etActividad, etContenido, etCodigoDelegado;
 
@@ -65,69 +73,104 @@ public class CrearActividad extends AppCompatActivity {
         });
 
 
-        // Configurar botón para guardar publicación
-        btnGuardarPublicacion.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Obtén los datos del formulario
-                String nombre = etActividad.getText().toString().trim();
-                String contenido = etContenido.getText().toString().trim();
-                String codigoDelegadoStr = etCodigoDelegado.getText().toString().trim();
-                int codigoDelegado = Integer.parseInt(codigoDelegadoStr);
-                String estado = "En curso";
+        // Configurar botón para crear actividad
+        btnGuardarPublicacion.setOnClickListener(v -> {
 
-                // Obtén el usuario logueado
-                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                if (user != null) {
-                    String userEmail = user.getEmail();
-                    // Busca el nombre del usuario en la colección de usuarios
-                    db.collection("usuarios")
-                            .whereEqualTo("correo", userEmail)
-                            .get()
-                            .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                    if (task.isSuccessful()) {
-                                        QuerySnapshot querySnapshot = task.getResult();
-                                        if (!querySnapshot.isEmpty()) {
-                                            // Verifica si se seleccionó una imagen
-                                            if (selectedImageUri != null) {
-                                                // Sube la imagen a Firebase Storage y obtén el URL
-                                                StorageReference fileRef = storageRef.child("images/" + System.currentTimeMillis() + ".jpg");
-                                                fileRef.putFile(selectedImageUri)
-                                                        .addOnSuccessListener(taskSnapshot -> fileRef.getDownloadUrl()
-                                                                .addOnSuccessListener(uri -> {
-                                                                    // Crea y guarda la publicación con la URL de la imagen
-                                                                    guardarActividad(codigoDelegado, nombre, contenido, uri.toString(),estado);
-                                                                }))
-                                                        .addOnFailureListener(e -> {
-                                                            // Ocurrió un error al subir la imagen
-                                                            // Puedes mostrar un mensaje o hacer algo más aquí
-                                                            Toast.makeText(CrearActividad.this, "Error al subir la imagen", Toast.LENGTH_SHORT).show();
-                                                        });
+            // Obtén los datos del formulario
+            String nombre = etActividad.getText().toString().trim();
+            String contenido = etContenido.getText().toString().trim();
+            String codigoDelegadoStr = etCodigoDelegado.getText().toString().trim();
+            String estado = "En curso";
+            FirebaseFirestore db1 = FirebaseFirestore.getInstance();
+            DocumentReference docRef1 = db1.collection("usuarios").document(codigoDelegadoStr);
+
+
+            if (nombre.isEmpty() || contenido.isEmpty() ||codigoDelegadoStr.isEmpty() ){
+                Toast.makeText(CrearActividad.this, "Llene todos los campos ", Toast.LENGTH_SHORT).show();
+            } else if(!(!TextUtils.isEmpty(codigoDelegadoStr) && TextUtils.isDigitsOnly(codigoDelegadoStr))){
+                Toast.makeText(CrearActividad.this, "Ingrese solo numeros en el Código", Toast.LENGTH_SHORT).show();
+            } else if(docRef1.getId().isEmpty()){
+                Toast.makeText(CrearActividad.this, "Ingrese un codigo de usuario existente", Toast.LENGTH_SHORT).show();
+            }else {
+
+                int codigoDelegado = Integer.parseInt(codigoDelegadoStr);
+
+
+
+                // Crea una referencia a la colección "usuarios" y al documento específico con el ID en mycode
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                DocumentReference docRef = db.collection("usuarios").document(codigoDelegadoStr);
+                docRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        if (!documentSnapshot.exists()) {
+                            Toast.makeText(CrearActividad.this, "Ingrese un codigo de usuario existente", Toast.LENGTH_SHORT).show();
+                        }else{
+                            // El documento existe, ahora puedes obtener el campo "nombre"
+                            String nombredele = documentSnapshot.getString("nombre");
+                            String apellido = documentSnapshot.getString("apellido");
+                            delegadoNombre = nombredele + " "+apellido;
+
+
+                            // Obtén el usuario logueado
+                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                            if (user != null) {
+                                String userEmail = user.getEmail();
+                                // Busca el nombre del usuario en la colección de usuarios
+                                db.collection("usuarios")
+                                        .whereEqualTo("correo", userEmail)
+                                        .get()
+                                        .addOnCompleteListener(task -> {
+                                            if (task.isSuccessful()) {
+                                                QuerySnapshot querySnapshot = task.getResult();
+                                                if (!querySnapshot.isEmpty()) {
+                                                    // Verifica si se seleccionó una imagen
+                                                    if (selectedImageUri != null) {
+                                                        // Sube la imagen a Firebase Storage y obtén el URL
+                                                        StorageReference fileRef = storageRef.child("images/" + System.currentTimeMillis() + ".jpg");
+                                                        fileRef.putFile(selectedImageUri)
+                                                                .addOnSuccessListener(taskSnapshot -> fileRef.getDownloadUrl()
+                                                                        .addOnSuccessListener(uri -> {
+                                                                            // Crea y guarda la publicación con la URL de la imagen
+                                                                            guardarActividad(codigoDelegado, delegadoNombre, nombre, contenido, uri.toString(),estado);
+                                                                        }))
+                                                                .addOnFailureListener(e -> {
+                                                                    // Ocurrió un error al subir la imagen
+                                                                    // Puedes mostrar un mensaje o hacer algo más aquí
+                                                                    Toast.makeText(CrearActividad.this, "Error al subir la imagen", Toast.LENGTH_SHORT).show();
+                                                                });
+                                                    } else {
+                                                        // Crea y guarda la publicación sin URL de imagen
+                                                        guardarActividad(codigoDelegado, delegadoNombre, nombre, contenido, "https://firebasestorage.googleapis.com/v0/b/telecommunity-cbff5.appspot.com/o/images%2Factividad_generica.jpg?alt=media&token=d4ce19a7-e44a-4d2a-8b98-4e90072aeb56",estado);
+                                                    }
+                                                }
                                             } else {
-                                                // Crea y guarda la publicación sin URL de imagen
-                                                guardarActividad(codigoDelegado, nombre, contenido, "https://firebasestorage.googleapis.com/v0/b/telecommunity-cbff5.appspot.com/o/images%2Factividad_generica.jpg?alt=media&token=d4ce19a7-e44a-4d2a-8b98-4e90072aeb56",estado);
+                                                // Ocurrió un error al buscar el usuario
+                                                // Puedes mostrar un mensaje o hacer algo más aquí
+                                                Toast.makeText(CrearActividad.this, "Error al buscar el usuario", Toast.LENGTH_SHORT).show();
                                             }
-                                        }
-                                    } else {
-                                        // Ocurrió un error al buscar el usuario
-                                        // Puedes mostrar un mensaje o hacer algo más aquí
-                                        Toast.makeText(CrearActividad.this, "Error al buscar el usuario", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
-                }
+                                        });
+                            }
+                        }
+
+                    }
+                });
+
+
+
+
+
             }
         });
 
     }
 
-    private void guardarActividad(int delegadoCodigo, String nombre, String contenido, String fotoLink, String estado) {
+    private void guardarActividad(int delegadoCodigo, String delegadoNombre, String nombre, String contenido, String fotoLink, String estado) {
         String id = UUID.randomUUID().toString();
         ActividadDto actividad = new ActividadDto(
                 id,
                 delegadoCodigo,
+                delegadoNombre,
                 nombre,
                 contenido,
                 fotoLink,

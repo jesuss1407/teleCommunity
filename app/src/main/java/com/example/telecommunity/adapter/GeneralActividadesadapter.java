@@ -1,21 +1,34 @@
 package com.example.telecommunity.adapter;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.telecommunity.DelegadoGeneral.VerActividad;
 import com.example.telecommunity.DelegadoGeneral.VerUsuario;
 import com.example.telecommunity.R;
 import com.example.telecommunity.entity.ActividadDto;
 import com.example.telecommunity.entity.GeneralActividadesdto;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.List;
 
@@ -42,7 +55,16 @@ public class GeneralActividadesadapter extends RecyclerView.Adapter<GeneralActiv
         ActividadDto actividad = actividadList.get(position);
         holder.tvnombreactividad.setText(actividad.getNombre());
         //holder.tvnumeventos.setText("Evento(s): " + actividad.getNumeventos() );
-        holder.tvdelegado.setText("Delegado de actividad: " + actividad.getDelegadoCode() );
+        holder.tvdelegado.setText(actividad.getDelegadoName() );
+
+        // Cargar la imagen utilizando Glide
+        Glide.with(context)
+                .load(actividad.getFotoLink()) // URL de la imagen
+                .into(holder.imagenactividad); // imageView donde se mostrará la imagen
+
+
+
+
 
         holder.recCard.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,10 +96,13 @@ public class GeneralActividadesadapter extends RecyclerView.Adapter<GeneralActiv
         public TextView tvnombreactividad;
         //public TextView tvnumeventos;
         public TextView tvdelegado;
+
+        public ImageView imagenactividad;
         CardView recCard;
 
         public ViewHolder(View itemView) {
             super(itemView);
+            imagenactividad = itemView.findViewById(R.id.imagenactividad);
             tvnombreactividad = itemView.findViewById(R.id.tvnombreactividad);
             //tvnumeventos = itemView.findViewById(R.id.tvnumeventos);
             tvdelegado = itemView.findViewById(R.id.tvdelegado);

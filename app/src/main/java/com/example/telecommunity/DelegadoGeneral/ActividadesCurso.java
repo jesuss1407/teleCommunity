@@ -1,5 +1,6 @@
 package com.example.telecommunity.DelegadoGeneral;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -44,6 +45,7 @@ public class ActividadesCurso extends AppCompatActivity {
     private GeneralActividadesadapter adapter;
     private List<ActividadDto> actividadList;
     private List<ActividadDto> activityList;
+    final Context context = this;
 
     Uri selectedImageUri;
 
@@ -61,13 +63,13 @@ public class ActividadesCurso extends AppCompatActivity {
         if (user != null) {
             String userEmail = user.getEmail();
             // Consulta la colección
-            db.collection("activities")
+            db.collection("actividades")
                     .get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
-                                List<ActividadDto> activityList = new ArrayList<>();
+                                List<ActividadDto> actividadList = new ArrayList<>();
                                 for (QueryDocumentSnapshot document : task.getResult()) {
                                     ActividadDto activity = document.toObject(ActividadDto.class);
                                     actividadList.add(activity);
@@ -75,6 +77,12 @@ public class ActividadesCurso extends AppCompatActivity {
 
                                 // Ahora activityList contiene todos tus documentos como objetos ActivityDTO
                                 // Puedes procesarlos como desees
+
+                                // Pasar la lista filtrada al adaptador
+                                recyclerView = findViewById(R.id.listarActividades);
+                                recyclerView.setLayoutManager(new LinearLayoutManager(context));
+                                adapter = new GeneralActividadesadapter(ActividadesCurso.this, actividadList);
+                                recyclerView.setAdapter(adapter);
 
 
                             } else {
@@ -84,13 +92,6 @@ public class ActividadesCurso extends AppCompatActivity {
                     });
         }
 
-
-
-// Pasar la lista filtrada al adaptador
-        recyclerView = findViewById(R.id.listarActividades);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new GeneralActividadesadapter(ActividadesCurso.this, actividadList);
-        recyclerView.setAdapter(adapter);
 
 
 

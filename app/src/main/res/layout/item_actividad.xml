@@ -35,31 +35,37 @@
                 android:layout_alignParentEnd="true"
                 android:src="@drawable/chevron_right" />
 
-            <TextView
-                android:id="@+id/tvnumeventos"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@+id/imagenactividad"
-                android:layout_alignTop="@+id/imagenactividad"
-                android:layout_marginStart="8dp"
-                android:textSize="14sp"
-                android:textColor="#000000" />
 
             <TextView
                 android:id="@+id/tvnombreactividad"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="9dp"
+                android:layout_marginTop="19dp"
                 android:layout_toEndOf="@+id/imagenactividad"
-                android:layout_centerVertical="true"
-                android:layout_marginStart="8dp"
+                android:text="Delegado de actividad:"
+                android:textColor="#000000"
                 android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="#000000" />
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvdelegado0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/imagenactividad"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="27dp"
+                android:layout_toEndOf="@+id/imagenactividad"
+                android:text="Delegado de actividad:"
+                android:textColor="#000000"
+                android:textSize="14sp" />
 
             <TextView
                 android:id="@+id/tvdelegado"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="Delegado de actividad:"
                 android:layout_toEndOf="@+id/imagenactividad"
                 android:layout_alignBottom="@+id/imagenactividad"
                 android:layout_marginStart="8dp"
