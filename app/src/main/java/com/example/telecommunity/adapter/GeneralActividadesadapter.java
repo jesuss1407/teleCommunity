@@ -73,7 +73,8 @@ public class GeneralActividadesadapter extends RecyclerView.Adapter<GeneralActiv
                 intent.putExtra("Image", actividadList.get(holder.getAdapterPosition()).getFotoLink());
                 intent.putExtra("Title", actividadList.get(holder.getAdapterPosition()).getNombre());
                 //intent.putExtra("Numeventos", actividadList.get(holder.getAdapterPosition()).getNumeventos());
-                intent.putExtra("Delegado", actividadList.get(holder.getAdapterPosition()).getDelegadoCode());
+                intent.putExtra("DelegadoCode", actividadList.get(holder.getAdapterPosition()).getDelegadoCode());
+                intent.putExtra("Delegado", actividadList.get(holder.getAdapterPosition()).getDelegadoName());
                 intent.putExtra("Descripcion", actividadList.get(holder.getAdapterPosition()).getDescripcion());
                 intent.putExtra("Id", actividadList.get(holder.getAdapterPosition()).getId());
                 context.startActivity(intent);
