@@ -67,7 +67,18 @@ public class GeneralActividadesadapter extends RecyclerView.Adapter<GeneralActiv
             Intent intent = new Intent(context, VerActividad.class);
             intent.putExtra("Image", actividadList.get(holder.getAdapterPosition()).getFotoLink());
             intent.putExtra("Title", actividadList.get(holder.getAdapterPosition()).getNombre());
-            intent.putExtra("DelegadoCode", actividadList.get(holder.getAdapterPosition()).getDelegadoCode());
+
+            // Asumiendo que getDelegadoCode() devuelve un Number válido
+            Number delegadoCode = actividadList.get(holder.getAdapterPosition()).getDelegadoCode();
+            String delegadoCodeStr = delegadoCode.toString();
+            if (delegadoCode != null) {
+                intent.putExtra("DelegadoCode",delegadoCodeStr);
+            } else {
+                // Manejo de un valor nulo o inválido
+                intent.putExtra("DelegadoCode", 0L); // Puedes cambiar 0L por otro valor predeterminado
+            }
+
+            //intent.putExtra("DelegadoCode", actividadList.get(holder.getAdapterPosition()).getDelegadoCode());
             intent.putExtra("Delegado", actividadList.get(holder.getAdapterPosition()).getDelegadoName());
             intent.putExtra("Descripcion", actividadList.get(holder.getAdapterPosition()).getDescripcion());
             intent.putExtra("Id", actividadList.get(holder.getAdapterPosition()).getId());

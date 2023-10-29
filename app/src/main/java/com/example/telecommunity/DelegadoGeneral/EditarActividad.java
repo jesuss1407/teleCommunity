@@ -91,14 +91,7 @@ public class EditarActividad extends AppCompatActivity {
                         for (DocumentSnapshot document : task.getResult()) {
                             etActividad.setText(document.getString("nombre"));
                             etContenido.setText(document.getString("descripcion"));
-                            Long codigo = document.getLong("codigo");
-                            if (codigo != null) {
-                                etCodigoDelegado.setText((int) codigo.longValue());
-                            } else {
-                                // Maneja el caso en que el valor sea nulo, por ejemplo, establece un valor predeterminado.
-                                etCodigoDelegado.setText("Valor nulo o no encontrado");
-                            }
-                            etCodigoDelegado.setText(String.valueOf(codigo));
+                            etCodigoDelegado.setText(document.getString("codigo"));
                             String linkFoto = document.getString("fotoLink");
 
                             Picasso.get().load(linkFoto).into(ivSelectedImage);
