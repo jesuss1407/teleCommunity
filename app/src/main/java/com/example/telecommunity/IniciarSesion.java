@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.example.telecommunity.DelegadoGeneral.AdmActividades;
+import com.example.telecommunity.DelegadoGeneral.BaseGeneralActivity;
 import com.example.telecommunity.databinding.ActivityIniciarSesionBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -120,7 +121,7 @@ public class IniciarSesion extends AppCompatActivity {
                                                     int estado = document.getLong("estado").intValue();
                                                     if(estado == 1){
                                                         if("Delegado general".equals(rol)){
-                                                            startActivity(new Intent(IniciarSesion.this, AdmActividades.class));
+                                                            startActivity(new Intent(IniciarSesion.this, BaseGeneralActivity.class));
                                                         } else if ("Delegado de actividad".equals(rol)) {
                                                             startActivity(new Intent(IniciarSesion.this, BaseActivity.class));
                                                             Toast.makeText(IniciarSesion.this, "Hola delegado de actividad.", Toast.LENGTH_SHORT).show();
