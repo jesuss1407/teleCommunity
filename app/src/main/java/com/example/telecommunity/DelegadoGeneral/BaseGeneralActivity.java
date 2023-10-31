@@ -61,5 +61,13 @@ public class BaseGeneralActivity extends AppCompatActivity {
             navView.setSelectedItemId(R.id.navigation_actividades);
             titleTextView.setText("Actividades");
         }
+
+
+    }
+
+    public void setTitleTextView(String title) {
+        if (titleTextView != null) {
+            titleTextView.setText(title);
+        }
     }
 }
