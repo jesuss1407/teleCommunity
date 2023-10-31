@@ -15,6 +15,7 @@ public class BaseGeneralActivity extends AppCompatActivity {
 
     private TextView titleTextView;
     BottomNavigationView navView;
+    private Fragment currentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +50,7 @@ public class BaseGeneralActivity extends AppCompatActivity {
 
                 if (selectedFragment != null) {
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, selectedFragment).commit();
+                    currentFragment = selectedFragment;
                 }
 
                 return true;
@@ -68,6 +70,14 @@ public class BaseGeneralActivity extends AppCompatActivity {
     public void setTitleTextView(String title) {
         if (titleTextView != null) {
             titleTextView.setText(title);
+        }
+    }
+
+    public void onBackPressed() {
+        if (currentFragment instanceof ActividadesGeneralFragment || currentFragment instanceof AlumnosGeneralFragment || currentFragment instanceof DonacionesGeneralFragment || currentFragment instanceof EstadisticaGeneralFragment || currentFragment instanceof PerfilGeneralFragment) {
+            finish();
+        } else {
+            super.onBackPressed();
         }
     }
 }

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,16 +33,23 @@ public class AlumnosGeneralFragment extends Fragment {
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener((parent, view1, position, id) -> {
+            Fragment fragment = null;
             switch (position) {
                 case 0:
-                    startActivity(new Intent(getContext(), UsuariosActivos.class));
+                    fragment = new AlumnosActivosFragment();
                     break;
                 case 1:
-                    startActivity(new Intent(getContext(), UsuariosBaneados.class));
+                    fragment = new AlumnosBaneadosFragment();
                     break;
                 case 2:
-                    startActivity(new Intent(getContext(), SolicitudesDeActivacion.class));
+                    fragment = new AlumnosSolicitudActivacionFragment();
                     break;
+            }
+            if (fragment != null) {
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment_container, fragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
             }
         });
 

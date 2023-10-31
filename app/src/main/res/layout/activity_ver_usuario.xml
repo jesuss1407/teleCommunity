@@ -307,12 +307,6 @@
 
     </LinearLayout>
 
-    <!-- Este es tu BottomNavigationView -->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigationView"
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:background="@android:color/white"
-        app:menu="@menu/bottom_nav_general" />
+
 </LinearLayout>
 
