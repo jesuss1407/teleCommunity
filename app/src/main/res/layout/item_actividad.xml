@@ -44,7 +44,7 @@
                 android:layout_marginStart="9dp"
                 android:layout_marginTop="19dp"
                 android:layout_toEndOf="@+id/imagenactividad"
-                android:text="Delegado de actividad:"
+                android:text="Titulo actividad"
                 android:textColor="#000000"
                 android:textSize="20sp"
                 android:textStyle="bold" />
@@ -57,7 +57,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginBottom="27dp"
                 android:layout_toEndOf="@+id/imagenactividad"
-                android:text="Delegado de actividad:"
+                android:text="Nombre Delegado Actividad"
                 android:textColor="#000000"
                 android:textSize="14sp" />
 
@@ -65,7 +65,7 @@
                 android:id="@+id/tvdelegado"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Delegado de actividad:"
+                android:text="Participantes"
                 android:layout_toEndOf="@+id/imagenactividad"
                 android:layout_alignBottom="@+id/imagenactividad"
                 android:layout_marginStart="8dp"
