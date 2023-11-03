@@ -8,13 +8,69 @@
     android:orientation="vertical"
     tools:context=".ProfileFragment">
 
-    <include
-        android:layout_gravity="center"
-        layout="@layout/item_image"
+    <!-- Inclusión del layout de foto de perfil -->
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:layout_width="match_parent" />
+        android:gravity="center"
+        android:layout_centerInParent="true">
+
+        <RelativeLayout
+            android:layout_centerInParent="true"
+            android:layout_width="match_parent"
+            android:layout_height="250dp">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="240dp"
+                android:layout_marginTop="40dp"
+                app:cardCornerRadius="15dp"
+                app:cardElevation="10dp"
+                app:cardUseCompatPadding="true">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="23dp"
+                    android:orientation="vertical">
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:background="#79D6D1D1" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:gravity="center"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal">
+
+                        <Button
+                            android:id="@+id/buttonFoto"
+                            android:layout_width="200dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="40dp"
+                            android:backgroundTint="@drawable/button_background_black"
+                            android:text="Cambiar Foto"
+                            app:cornerRadius="8dp" />
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </RelativeLayout>
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/Foto"
+
+            android:scaleType="fitCenter"
+            app:shapeAppearanceOverlay="@style/Circular"
+            android:elevation="15dp"
+            android:padding="5dp"
+            android:background="@color/white"
+            android:layout_centerHorizontal="true"
+            android:layout_width="160dp"
+            android:layout_height="160dp"/>
+    </RelativeLayout>
 
     <ScrollView
         android:paddingStart="10dp"
@@ -39,6 +95,7 @@
                 android:paddingTop="8dp"/>
 
             <EditText
+
                 android:background="@drawable/custom_edittext"
                 android:textColor="@color/black"
                 android:textColorHighlight="@color/cardview_dark_background"
@@ -46,6 +103,29 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:hint="Ingresa tu nombre"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="8dp"/>
+
+
+            <!-- Campo para Apellidos -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Apellidos"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"
+                android:paddingTop="8dp"/>
+
+            <EditText
+                android:background="@drawable/custom_edittext"
+                android:textColor="@color/black"
+                android:textColorHighlight="@color/cardview_dark_background"
+                android:id="@+id/editTextApellidos"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:hint="Ingresa tu apellido"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 android:paddingTop="8dp"

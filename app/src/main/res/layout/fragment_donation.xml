@@ -1,15 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
     <!-- Barra de título -->
 
-
-    <!-- Contenido principal de tu fragmento -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,8 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/plin"
-            android:paddingEnd="70dp"
-            tools:ignore="RtlSymmetry" />
+            android:paddingEnd="70dp" />
 
         <ImageView
             android:layout_width="wrap_content"
@@ -29,14 +25,12 @@
             app:srcCompat="@drawable/yape" />
     </LinearLayout>
 
-    <!-- Textos informativos -->
     <TextView
         android:paddingStart="20dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Nota: Como egresado, debes tener en cuenta que el monto mínimo a donar es de S/100."
-        android:textColor="#B3E35959"
-        tools:ignore="RtlSymmetry" />
+        android:textColor="#B3E35959" />
 
     <TextView
         android:layout_width="match_parent"
@@ -46,8 +40,7 @@
         android:text="¿Ya donaste?"
         android:textColor="#000000"
         android:textSize="16sp"
-        android:textStyle="bold"
-        tools:ignore="RtlSymmetry" />
+        android:textStyle="bold" />
 
     <TextView
         android:layout_width="match_parent"
@@ -58,10 +51,8 @@
         android:text="Por favor, envía una captura de tu transferencia para que el delegado general pueda verificarla"
         android:textColor="#000000"
         android:textSize="14sp"
-        android:textStyle="bold"
-        tools:ignore="RtlSymmetry" />
+        android:textStyle="bold" />
 
-    <!-- Scroll View para la imagen y botones -->
     <ScrollView
         android:contentDescription="SubirFoto"
         android:layout_width="match_parent"
@@ -72,7 +63,6 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- ImageView para la imagen por defecto -->
             <ImageView
                 android:id="@+id/imageViewCaptura"
                 android:layout_width="wrap_content"
@@ -84,15 +74,17 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:gravity="center"
                 android:paddingTop="10dp"
-                android:paddingStart="60dp"
-                tools:ignore="RtlSymmetry">
+                android:paddingLeft="16dp"
+            android:paddingRight="16dp">
 
                 <Button
                     android:id="@+id/buttonSubirCaptura"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="50dp"
-                    android:text="Subir Captura"
+                    android:layout_weight="1"
+                    android:text="Seleccionar Captura"
                     android:textColor="@color/white"
                     android:backgroundTint="@drawable/button_background_black"
                     app:cornerRadius="8dp" />
@@ -105,8 +97,9 @@
 
                 <Button
                     android:id="@+id/buttonEnviarCaptura"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="50dp"
+                    android:layout_weight="1"
                     android:text="Enviar Captura"
                     android:textColor="@color/white"
                     android:enabled="false"
@@ -115,4 +108,6 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
+
+
 </LinearLayout>

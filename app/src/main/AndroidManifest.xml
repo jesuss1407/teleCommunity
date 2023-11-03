@@ -12,7 +12,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -53,22 +53,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyALVGH0i8Z8hjdi8oQFEY4WqY5k5dcH_Ps" />
 
-        <activity
-            android:name=".BuscarActivity"
-            android:exported="false" />
-        <activity
-            android:name=".InicioActivity"
-            android:exported="false" />
-        <activity
-            android:name=".NotificationDetailActivity"
-            android:label="Detalle de notificación"
-            android:parentActivityName=".Notificaciones">
-
-            <!-- Agrega metadatos para configurar la navegación hacia atrás -->
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Notificaciones" />
-        </activity>
         <activity
             android:name=".DelegadoGeneral.SolicitudesDeActivacion"
             android:exported="false" />
@@ -115,20 +99,12 @@
             android:name=".CambiarContra"
             android:exported="false" />
         <activity
-            android:name=".MiPerfil"
-            android:exported="false" />
-        <activity
             android:name=".PantallaPrincipal"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="false" />
-        <activity
-            android:name=".RealizarDonacion"
-            android:exported="false" />
-        <activity
-            android:name=".Notificaciones"
-            android:exported="false" />
+
         <activity
             android:name=".RegistroUsuario"
             android:exported="false"
