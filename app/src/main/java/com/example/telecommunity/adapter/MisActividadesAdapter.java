@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.telecommunity.R;
 import com.example.telecommunity.entity.ActividadDto;
 import java.util.List;
@@ -35,8 +36,14 @@ public class MisActividadesAdapter extends RecyclerView.Adapter<MisActividadesAd
     public void onBindViewHolder(ViewHolder holder, int position) {
         ActividadDto actividad = actividadList.get(position);
         holder.tvNombreActividad.setText(actividad.getNombre());
-        holder.tvDelegado.setText(actividad.getDelegadoName());
+        holder.tvDelegado.setText("Delegado: " + actividad.getDelegadoName());
         holder.tvDescripcion.setText(actividad.getDescripcion());
+
+        Glide.with(context)
+                .load(actividad.getFotoLink()) // URL de la imagen
+                .placeholder(R.drawable.regalito) // Una imagen de placeholder
+                .error(R.drawable.regalito) // Una imagen de error
+                .into(holder.imagenActividad); // ImageView donde se quiere cargar la imagen
 
         // Aquí deberías cargar la imagen usando la librería que prefieras, como Glide o Picasso
         // Por ejemplo, si usas Glide:
