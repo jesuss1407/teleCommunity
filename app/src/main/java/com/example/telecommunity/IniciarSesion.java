@@ -62,12 +62,9 @@ public class IniciarSesion extends AppCompatActivity {
 
         //redireccionar a mi perfil
         TextView perfil = findViewById(R.id.loginText);
-        perfil.setOnClickListener(new View.OnClickListener() {
-
-            public void onClick(View view) {
-                Intent intent = new Intent(IniciarSesion.this,BaseActivity.class);
-                startActivity(intent);
-            }
+        perfil.setOnClickListener(view -> {
+            Intent intent = new Intent(IniciarSesion.this,BaseActivity.class);
+            startActivity(intent);
         });
 
 
@@ -122,8 +119,9 @@ public class IniciarSesion extends AppCompatActivity {
 
                                                     // ...
 
-                                                    int estado = document.getLong("estado").intValue();
-                                                    if(estado == 1){
+                                                    //int estado = document.getLong("estado").intValue();
+                                                    String estadoStr = (String) data.get("estado");
+                                                    if(estadoStr.equals("activo")){
                                                         if("Delegado general".equals(rol)){
                                                             startActivity(new Intent(IniciarSesion.this, BaseGeneralActivity.class));
                                                         } else if ("Delegado de actividad".equals(rol)) {

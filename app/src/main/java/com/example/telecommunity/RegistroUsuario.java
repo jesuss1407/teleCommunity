@@ -65,7 +65,7 @@ public class RegistroUsuario extends AppCompatActivity {
             String contrasena2 = binding.contrasena2.getText().toString();
             String condicion = binding.condicion.getSelectedItem().toString();
             String rol = "Usuario";
-            String estado = "1";
+            String estado = "pendiente";
             String foto = "link";
             if (nombre.isEmpty() || apellido.isEmpty() ||codigoStr.isEmpty() ||correo.isEmpty() ||contrasena.isEmpty() ||contrasena2.isEmpty() ||condicion.isEmpty() ||condicion.equals("¿Estudiante o egresado?")){
                 Toast.makeText(RegistroUsuario.this, "Llene todos los campos ", Toast.LENGTH_SHORT).show();
@@ -84,7 +84,7 @@ public class RegistroUsuario extends AppCompatActivity {
                             usuario.setContrasena(contrasena);
                             usuario.setCondicion(condicion);
                             usuario.setRol(rol);
-                            usuario.setEstado(Integer.parseInt(estado));
+                            usuario.setEstado(estado);
                             usuario.setFoto(foto);
 
                             db.collection("usuarios")

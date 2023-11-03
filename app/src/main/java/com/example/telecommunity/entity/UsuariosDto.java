@@ -10,7 +10,7 @@ public class UsuariosDto {
     private String condicion;
     private String rol;
     private String foto;
-    private int estado; //activo, inactivo
+    private String estado; //activo, inactivo
 
     public int getCodigo() {
         return codigo;
@@ -76,11 +76,12 @@ public class UsuariosDto {
         this.foto = foto;
     }
 
-    public int getEstado() {
+
+    public String getEstado() {
         return estado;
     }
 
-    public void setEstado(int estado) {
+    public void setEstado(String estado) {
         this.estado = estado;
     }
 }
