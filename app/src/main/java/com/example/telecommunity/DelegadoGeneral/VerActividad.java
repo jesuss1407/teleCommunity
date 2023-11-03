@@ -130,14 +130,14 @@ public class VerActividad extends AppCompatActivity {
 
 //                              Actualiza el campo "estado" a "Finalizado".
         actividadRef.update("estado", "Finalizado")
-                .addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        // El estado se actualizó con éxito en Firestore.
-                        Intent intent = new Intent(VerActividad.this, ActividadesCurso.class);
-                        //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP); // Para asegurar que AdmActividades sea la única actividad en la pila
-                        startActivity(intent);
-                    }
+                .addOnSuccessListener(aVoid -> {
+                    // El estado se actualizó con éxito en Firestore.
+                    Toast.makeText(VerActividad.this, "Actividad finalizada con éxito", Toast.LENGTH_SHORT).show();
+
+                    Intent intent = new Intent(VerActividad.this, BaseGeneralActivity.class);
+                    //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP); // Para asegurar que AdmActividades sea la única actividad en la pila
+                    startActivity(intent);
+                    finish();
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
