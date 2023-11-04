@@ -94,8 +94,6 @@ public class IniciarSesion extends AppCompatActivity {
                                     if (task.isSuccessful()) {
                                         // Inicio de sesión exitoso
                                         FirebaseUser user = mAuth.getCurrentUser();
-                                        Toast.makeText(IniciarSesion.this, "Inicio de sesión exitoso.", Toast.LENGTH_SHORT).show();
-
                                         //redirigir a la vista segun rol
                                         String email = user.getEmail();
                                         Query query = db.collection("usuarios").whereEqualTo("correo", email);
@@ -126,10 +124,12 @@ public class IniciarSesion extends AppCompatActivity {
                                                             startActivity(new Intent(IniciarSesion.this, BaseGeneralActivity.class));
                                                         } else if ("Delegado de actividad".equals(rol)) {
                                                             startActivity(new Intent(IniciarSesion.this, BaseActivity.class));
-                                                            Toast.makeText(IniciarSesion.this, "Hola delegado de actividad.", Toast.LENGTH_SHORT).show();
+                                                            Toast.makeText(IniciarSesion.this, "Inicio de sesión exitoso.", Toast.LENGTH_SHORT).show();
+
                                                         } else {
                                                             startActivity(new Intent(IniciarSesion.this, BaseActivity.class));
-                                                            Toast.makeText(IniciarSesion.this, "Hola usuario.", Toast.LENGTH_SHORT).show();
+                                                            Toast.makeText(IniciarSesion.this, "Inicio de sesión exitoso.", Toast.LENGTH_SHORT).show();
+
                                                         }
                                                     } else {
                                                         Toast.makeText(IniciarSesion.this, "La cuenta no se encuentra habilitada, comuníquese con el administrador.", Toast.LENGTH_SHORT).show();
