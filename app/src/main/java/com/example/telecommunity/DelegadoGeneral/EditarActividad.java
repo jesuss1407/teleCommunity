@@ -46,9 +46,9 @@ public class EditarActividad extends AppCompatActivity {
     private FirebaseFirestore db;
     private StorageReference storageRef;
     private String delegadoNombre;
-    private String myIdAct;
+    private String estado;
 
-    EditText etActividad, etContenido, etCodigoDelegado;
+    EditText etActividad, etContenido, etCodigoDelegado, etEstado;
 
     Button btnGuardarPublicacion;
     ImageView ivSelectedImage;
@@ -108,7 +108,7 @@ public class EditarActividad extends AppCompatActivity {
                             if (codigo != null) {
                                 etCodigoDelegado.setText(String.valueOf(codigo));
                             }
-
+                            estado = document.getString("estado");
                             String linkFoto = document.getString("fotoLink");
 
                             Picasso.get().load(linkFoto).into(ivSelectedImage);
@@ -127,7 +127,6 @@ public class EditarActividad extends AppCompatActivity {
             String nombre = etActividad.getText().toString().trim();
             String contenido = etContenido.getText().toString().trim();
             String codigoDelegadoStr = etCodigoDelegado.getText().toString().trim();
-            String estado = "En curso";
             FirebaseFirestore db1 = FirebaseFirestore.getInstance();
             DocumentReference docRef1 = db1.collection("usuarios").document(codigoDelegadoStr);
 

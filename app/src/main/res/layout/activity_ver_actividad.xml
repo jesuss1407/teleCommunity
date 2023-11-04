@@ -143,7 +143,7 @@
             android:layout_height="60dp"
             android:layout_weight="1"
             android:id="@+id/cerrarButton"
-            android:text="Cerrar actividad"
+            android:text=""
             android:textColor="@color/white"
             android:textSize="18sp"
             android:layout_marginStart="5dp"

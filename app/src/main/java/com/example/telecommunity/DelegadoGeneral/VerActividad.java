@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.squareup.picasso.Picasso;
 
@@ -33,6 +34,7 @@ public class VerActividad extends AppCompatActivity {
     TextView detailApoyos, detailTitle, detailEventos,detailDescripcion,detailDelegado;
     ImageView detailImagen;
     private String idActividad;
+    private String state;
     private FirebaseFirestore db;
     private Context context;
     @Override
@@ -74,30 +76,62 @@ public class VerActividad extends AppCompatActivity {
         });
 
 
+        Button cambiarEstadoButton = findViewById(R.id.cerrarButton);
+        //se valida el estado actual de la actividad
+        FirebaseFirestore dbAct = FirebaseFirestore.getInstance();
+        dbAct.collection("actividades").document(idActividad).get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        // Obtiene el valor del campo "tipo"
+                        state = documentSnapshot.getString("estado");
+
+                        if ("En curso".equals(state)) {
+                            cambiarEstadoButton.setText("Cerrar actividad");
+
+                        } else if ("Finalizado".equals(state)) {
+                            // Crea un diálogo de alerta para confirmar la acción.
+                            cambiarEstadoButton.setText("Reabrir actividad");
+
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    // Maneja los errores si la lectura del documento falla
+                });
 
 
         //cerrar actividad
-        Button cambiarEstadoButton = findViewById(R.id.cerrarButton);
         cambiarEstadoButton.setOnClickListener(v -> {
-            // Crea un diálogo de alerta para confirmar la acción.
-            new AlertDialog.Builder(VerActividad.this)
-                    .setTitle("Confirmar acción")
-                    .setMessage("¿Estás seguro de que deseas cambiar el estado de esta actividad a 'Finalizado'?")
-                    .setPositiveButton("Sí", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
+            //se valida el estado actual de la actividad
+            if ("En curso".equals(state)) {
+                // Crea un diálogo de alerta para confirmar la acción.
+                new AlertDialog.Builder(VerActividad.this)
+                        .setTitle("Confirmar acción")
+                        .setMessage("¿Estás seguro de que deseas cambiar el estado de esta actividad a 'Finalizado'?")
+                        .setPositiveButton("Sí", (dialog, which) -> {
                             // Usuario ha confirmado la acción.
-                            cerrarActividad(idActividad); // Función para cambiar el estado.
-                        }
-                    })
-                    .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
+                            cerrarActividad(); // Función para cambiar el estado.
+                        })
+                        .setNegativeButton("Cancelar", (dialog, which) -> {
                             // Usuario ha cancelado la acción.
                             dialog.dismiss(); // Cierra el diálogo.
-                        }
-                    })
-                    .show();
+                        })
+                        .show();
+            } else if ("Finalizado".equals(state)) {
+                // Crea un diálogo de alerta para confirmar la acción.
+                new AlertDialog.Builder(VerActividad.this)
+                        .setTitle("Confirmar acción")
+                        .setMessage("¿Estás seguro de que deseas cambiar el estado de esta actividad a 'En curso'?")
+                        .setPositiveButton("Sí", (dialog, which) -> {
+                            // Usuario ha confirmado la acción.
+                            reabrirActividad(); // Función para cambiar el estado.
+                        })
+                        .setNegativeButton("Cancelar", (dialog, which) -> {
+                            // Usuario ha cancelado la acción.
+                            dialog.dismiss(); // Cierra el diálogo.
+                        })
+                        .show();
+            }
         });
 
 
@@ -123,7 +157,7 @@ public class VerActividad extends AppCompatActivity {
     }
 
 
-    private void cerrarActividad(String idAct) {
+    private void cerrarActividad() {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference actividadRef = db.collection("actividades").document(idActividad);
@@ -139,12 +173,34 @@ public class VerActividad extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        // Ocurrió un error al actualizar el estado en Firestore.
-                        // Puedes mostrar un mensaje de error o realizar acciones de manejo de errores.
-                    }
+                .addOnFailureListener(e -> {
+                    // Ocurrió un error al actualizar el estado en Firestore.
+                    // Puedes mostrar un mensaje de error o realizar acciones de manejo de errores.
+                });
+
+
+
+    }
+
+    private void reabrirActividad() {
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference actividadRef = db.collection("actividades").document(idActividad);
+
+//                              Actualiza el campo "estado" a "Finalizado".
+        actividadRef.update("estado", "En curso")
+                .addOnSuccessListener(aVoid -> {
+                    // El estado se actualizó con éxito en Firestore.
+                    Toast.makeText(VerActividad.this, "Actividad reabierta con éxito", Toast.LENGTH_SHORT).show();
+
+                    Intent intent = new Intent(VerActividad.this, BaseGeneralActivity.class);
+                    //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP); // Para asegurar que AdmActividades sea la única actividad en la pila
+                    startActivity(intent);
+                    finish();
+                })
+                .addOnFailureListener(e -> {
+                    // Ocurrió un error al actualizar el estado en Firestore.
+                    // Puedes mostrar un mensaje de error o realizar acciones de manejo de errores.
                 });
 
 
