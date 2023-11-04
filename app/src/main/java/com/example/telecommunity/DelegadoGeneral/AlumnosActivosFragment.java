@@ -86,6 +86,9 @@ public class AlumnosActivosFragment extends Fragment {
         }
 
 
+        if (getActivity() instanceof BaseGeneralActivity) {
+            ((BaseGeneralActivity) getActivity()).setTitleTextView("Alumnos activos");
+        }
 
 
         return view;

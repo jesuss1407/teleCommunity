@@ -57,6 +57,17 @@ public class GeneralUsuariosAdapter extends RecyclerView.Adapter<GeneralUsuarios
 
         holder.recCard.setOnClickListener(view -> {
             Intent intent = new Intent(context, VerUsuario.class);
+
+            Number userCode = usuariosList.get(holder.getAdapterPosition()).getCodigo();
+            String userCodeStr = userCode.toString();
+            if (userCode != null) {
+                intent.putExtra("UserCode",userCodeStr);
+            } else {
+                // Manejo de un valor nulo o inválido
+                intent.putExtra("UserCode", 0L); // Puedes cambiar 0L por otro valor predeterminado
+            }
+
+
             intent.putExtra("Image", usuariosList.get(holder.getAdapterPosition()).getFoto());
             intent.putExtra("Nombre", nombreCompleto);
             intent.putExtra("Correo", usuariosList.get(holder.getAdapterPosition()).getCorreo());
