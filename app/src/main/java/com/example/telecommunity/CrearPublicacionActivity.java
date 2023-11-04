@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.telecommunity.entity.ActividadDto;
 import com.google.android.gms.tasks.OnCompleteListener;
 
 import androidx.annotation.NonNull;
@@ -21,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
@@ -68,6 +71,7 @@ public class CrearPublicacionActivity extends AppCompatActivity {
     private static final int SELECT_IMAGE_REQUEST_CODE = 1001;
     private FirebaseFirestore db;
     private StorageReference storageRef;
+    private Spinner spinnerActividades;
 
     EditText etActividad, etContenido;
     Spinner spinnerUbicacion;
@@ -90,6 +94,15 @@ public class CrearPublicacionActivity extends AppCompatActivity {
         btnGuardarPublicacion = findViewById(R.id.btnGuardarPublicacion);
         ivSelectedImage = findViewById(R.id.ivSelectedImage);
         btnSelectImage = findViewById(R.id.btnSelectImage);
+
+
+
+
+
+
+
+
+
 
         // Configurar botón para seleccionar imagen
         btnSelectImage.setOnClickListener(v -> {
@@ -175,6 +188,17 @@ public class CrearPublicacionActivity extends AppCompatActivity {
             }
         });
 
+
+        spinnerActividades = findViewById(R.id.spinnerActividades);
+        ArrayAdapter<ActividadDto> adapter2 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, new ArrayList<>());
+        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerActividades.setAdapter(adapter2);
+
+
+
+        // Call method to load delegated activities into the spinner
+        cargarActividadesDelegadas();
+
     }
 
     private void guardarPublicacion(String nombre, String contenido, double latitud, double longitud, String userName, String userApellido, String userFotoPerfil, String urlImagen, String nombreUbicacion) {
@@ -237,4 +261,71 @@ public class CrearPublicacionActivity extends AppCompatActivity {
             return nombre;
         }
     }
+
+
+    private void cargarActividadesDelegadas() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            Log.d("cargarActividades", "Cargando delegaciones para el usuario: " + user.getUid());
+            db.collection("usuarios").document(user.getUid()).collection("delegaciones")
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            List<DocumentSnapshot> delegationDocs = task.getResult().getDocuments();
+                            if (delegationDocs.isEmpty()) {
+                                Log.d("cargarActividades", "No se encontraron delegaciones para este usuario.");
+                            } else {
+                                List<Task<?>> allTasks = new ArrayList<>();
+                                for (DocumentSnapshot delegationDoc : delegationDocs) {
+                                    String actividadId = delegationDoc.getString("idactividad");
+                                    if (actividadId == null || actividadId.trim().isEmpty()) {
+                                        Log.d("cargarActividades", "Documento de delegación sin 'idactividad': " + delegationDoc.getId());
+                                        continue; // Saltar este documento de delegación
+                                    }
+                                    Log.d("cargarActividades", "Procesando 'idactividad': " + actividadId);
+                                    allTasks.add(db.collection("actividades").document(actividadId).get());
+                                }
+
+                                Tasks.whenAllSuccess(allTasks)
+                                        .addOnSuccessListener(results -> {
+                                            List<ActividadDto> actividadesDelegadas = new ArrayList<>();
+                                            for (Object result : results) {
+                                                DocumentSnapshot actividadDoc = (DocumentSnapshot) result;
+                                                if (actividadDoc.exists()) {
+                                                    ActividadDto actividad = actividadDoc.toObject(ActividadDto.class);
+                                                    if (actividad != null) {
+                                                        actividadesDelegadas.add(actividad);
+                                                    } else {
+                                                        Log.d("cargarActividades", "Actividad es nula para el documento con id: " + actividadDoc.getId());
+                                                    }
+                                                } else {
+                                                    Log.d("cargarActividades", "No existe actividad para el documento con id: " + actividadDoc.getId());
+                                                }
+                                            }
+                                            if (!actividadesDelegadas.isEmpty()) {
+                                                actualizarSpinnerConActividades(actividadesDelegadas);
+                                            } else {
+                                                Log.d("cargarActividades", "No hay actividades delegadas para mostrar en el spinner.");
+                                            }
+                                        })
+                                        .addOnFailureListener(e -> Log.d("cargarActividades", "Error al cargar actividades delegadas: " + e.getMessage()));
+                            }
+                        } else {
+                            Log.d("cargarActividades", "Error al consultar delegaciones: " + task.getException());
+                        }
+                    });
+        } else {
+            Log.d("cargarActividades", "El usuario es nulo, no se pueden cargar delegaciones.");
+        }
+    }
+
+
+    // Método para actualizar el Spinner con las actividades cargadas
+    private void actualizarSpinnerConActividades(List<ActividadDto> actividades) {
+        ArrayAdapter<ActividadDto> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, actividades);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerActividades.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+    }
+
 }

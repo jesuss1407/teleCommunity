@@ -20,6 +20,7 @@ import com.example.telecommunity.adapter.PublicacionAdapter;
 import com.example.telecommunity.entity.Publicaciondto;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -68,7 +69,7 @@ public class HomeFragment extends Fragment {
 
 
         // Muestra u oculta el botón de crear evento según el tipo de usuario
-        Button btnCrearEvento = view.findViewById(R.id.btnCrearPublicacion);
+        FloatingActionButton btnCrearEvento = view.findViewById(R.id.btnCrearPublicacion);
         if ("Delegado de actividad".equals(tipoUsuario)) {
             btnCrearEvento.setVisibility(View.VISIBLE);
         } else {
