@@ -75,11 +75,6 @@ public class UsuariosActivos extends AppCompatActivity {
             }
         }
 
-        // Pasar la lista filtrada al adaptador
-        recyclerView = findViewById(R.id.listarActividades);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new GeneralUsuariosAdapter(UsuariosActivos.this, filteredList);
-        recyclerView.setAdapter(adapter);
 
 
 

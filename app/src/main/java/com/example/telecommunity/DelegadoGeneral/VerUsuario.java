@@ -15,10 +15,11 @@ import com.example.telecommunity.IniciarSesion;
 import com.example.telecommunity.PantallaPrincipal;
 import com.example.telecommunity.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.squareup.picasso.Picasso;
 
 public class VerUsuario extends AppCompatActivity {
 
-    TextView detailDesc, detailTitle, detailCodigo;
+    TextView detailCondicion, detailNombre, detailCorreo;
     ImageView detailImage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,16 +41,19 @@ public class VerUsuario extends AppCompatActivity {
         });
 
         //mandar info del usuario seleccionado
-        detailDesc = findViewById(R.id.condicion);
-        detailTitle = findViewById(R.id.nombreUsuario);
-        //detailImage = findViewById(R.id.foto);
-        detailCodigo = findViewById(R.id.correo);
+        detailCondicion = findViewById(R.id.condicion);
+        detailNombre = findViewById(R.id.nombreUsuario);
+        detailImage = findViewById(R.id.foto);
+        detailCorreo = findViewById(R.id.correo);
 
         Bundle bundle = getIntent().getExtras();
         if (bundle != null){
-            detailDesc.setText(bundle.getString("Desc"));
-            detailCodigo.setText(bundle.getString("Image"));
-            detailTitle.setText(bundle.getString("Title"));
+            detailCondicion.setText(bundle.getString("Condicion"));
+            detailCorreo.setText(bundle.getString("Correo"));
+            detailNombre.setText(bundle.getString("Nombre"));
+
+            String imageUrl = bundle.getString("Image");
+            Picasso.get().load(imageUrl).into(detailImage);
         }
 
 
