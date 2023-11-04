@@ -75,6 +75,11 @@ public class VerUsuario extends AppCompatActivity {
                             // Crea un diálogo de alerta para confirmar la acción.
                             banear.setText("Desbanear usuario");
 
+                        }else if ("pendiente".equals(state)) {
+                            // Crea un diálogo de alerta para confirmar la acción.
+                            banear.setText("Aceptar solicitud");
+                            banear.setBackgroundColor(getResources().getColor(R.color.purple));
+
                         }
                     }
                 })
@@ -107,6 +112,21 @@ public class VerUsuario extends AppCompatActivity {
                         .setPositiveButton("Sí", (dialog, which) -> {
                             // Usuario ha confirmado la acción.
                             desbanearUsuario(); // Función para cambiar el estado.
+                        })
+                        .setNegativeButton("Cancelar", (dialog, which) -> {
+                            // Usuario ha cancelado la acción.
+                            dialog.dismiss(); // Cierra el diálogo.
+                        })
+                        .show();
+            }
+            else if ("pendiente".equals(state)) {
+                // Crea un diálogo de alerta para confirmar la acción.
+                new AlertDialog.Builder(VerUsuario.this)
+                        .setTitle("Confirmar acción")
+                        .setMessage("¿Estás seguro de que deseas ACTIVAR a este usuario?")
+                        .setPositiveButton("Sí", (dialog, which) -> {
+                            // Usuario ha confirmado la acción.
+                            activarUsuario(); // Función para cambiar el estado.
                         })
                         .setNegativeButton("Cancelar", (dialog, which) -> {
                             // Usuario ha cancelado la acción.
@@ -166,9 +186,36 @@ public class VerUsuario extends AppCompatActivity {
 
 
 
+
     }
 
 
+
+    private void activarUsuario() {
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference actividadRef = db.collection("usuarios").document(userCode);
+
+//                              Actualiza el campo "estado" a "Finalizado".
+        actividadRef.update("estado", "activo")
+                .addOnSuccessListener(aVoid -> {
+                    // El estado se actualizó con éxito en Firestore.
+                    Toast.makeText(VerUsuario.this, "Usuario activado con éxito", Toast.LENGTH_SHORT).show();
+
+                    Intent intent = new Intent(VerUsuario.this, BaseGeneralActivity.class);
+                    //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP); // Para asegurar que AdmActividades sea la única actividad en la pila
+                    startActivity(intent);
+                    finish();
+                })
+                .addOnFailureListener(e -> {
+                    // Ocurrió un error al actualizar el estado en Firestore.
+                    // Puedes mostrar un mensaje de error o realizar acciones de manejo de errores.
+                });
+
+
+
+
+    }
 
 
 }

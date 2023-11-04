@@ -66,7 +66,7 @@ public class RegistroUsuario extends AppCompatActivity {
             String condicion = binding.condicion.getSelectedItem().toString();
             String rol = "Usuario";
             String estado = "pendiente";
-            String foto = "link";
+            String foto = "https://firebasestorage.googleapis.com/v0/b/telecommunity-cbff5.appspot.com/o/images%2Fgato.jpeg?alt=media&token=ef548812-616a-4f3d-9f86-255219368fde&_gl=1*uus0cy*_ga*ODY3MTU0ODEzLjE2OTc2ODYwODY.*_ga_CW55HF8NVT*MTY5OTEwODAzNS4xOS4xLjE2OTkxMDk1MjkuNDcuMC4w";
             if (nombre.isEmpty() || apellido.isEmpty() ||codigoStr.isEmpty() ||correo.isEmpty() ||contrasena.isEmpty() ||contrasena2.isEmpty() ||condicion.isEmpty() ||condicion.equals("¿Estudiante o egresado?")){
                 Toast.makeText(RegistroUsuario.this, "Llene todos los campos ", Toast.LENGTH_SHORT).show();
             } else {
