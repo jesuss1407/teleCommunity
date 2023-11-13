@@ -13,6 +13,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import javax.mail.*;
+import javax.mail.internet.*;
+import java.util.Properties;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
 import com.example.telecommunity.IniciarSesion;
 import com.example.telecommunity.PantallaPrincipal;
 import com.example.telecommunity.R;
@@ -26,7 +31,9 @@ public class VerUsuario extends AppCompatActivity {
     TextView detailCondicion, detailNombre, detailCorreo;
     ImageView detailImage;
     private String userCode;
-    private String state;
+    private String state, userMail, userName;
+    private ExecutorService emailExecutor = Executors.newSingleThreadExecutor();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +74,8 @@ public class VerUsuario extends AppCompatActivity {
                     if (documentSnapshot.exists()) {
                         // Obtiene el valor del campo "tipo"
                         state = documentSnapshot.getString("estado");
+                        userMail = documentSnapshot.getString("correo");
+                        userName= documentSnapshot.getString("nombre") + " "+ documentSnapshot.getString("apellido") ;
 
                         if ("activo".equals(state)) {
                             banear.setText("Banear usuario");
@@ -127,6 +136,13 @@ public class VerUsuario extends AppCompatActivity {
                         .setPositiveButton("Sí", (dialog, which) -> {
                             // Usuario ha confirmado la acción.
                             activarUsuario(); // Función para cambiar el estado.
+
+                            try {
+                                enviarEmailAprobacion(userMail, userName);
+                            } catch (MessagingException e) {
+                                throw new RuntimeException(e);
+                            }
+
                         })
                         .setNegativeButton("Cancelar", (dialog, which) -> {
                             // Usuario ha cancelado la acción.
@@ -218,4 +234,54 @@ public class VerUsuario extends AppCompatActivity {
     }
 
 
+    public void enviarEmailAprobacion(String destinatario, String nombre) throws MessagingException {
+
+        emailExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // Aquí va tu código existente para enviar el email
+                    // Configuración de las propiedades SMTP
+                    Properties prop = new Properties();
+                    prop.put("mail.smtp.host", "smtp.gmail.com");
+                    prop.put("mail.smtp.port", "587");
+                    prop.put("mail.smtp.auth", "true");
+                    prop.put("mail.smtp.starttls.enable", "true"); //TLS
+
+                    // Autenticación
+                    final String username = "apptelecommunity@gmail.com"; // Cambiar por tu email
+                    final String password = "ayka dtem fonq ydeu"; // Cambiar por tu contraseña
+
+                    Session session = Session.getInstance(prop, new Authenticator() {
+                        protected PasswordAuthentication getPasswordAuthentication() {
+                            return new PasswordAuthentication(username, password);
+                        }
+                    });
+
+                    // Creación y envío del mensaje
+                    Message message = new MimeMessage(session);
+                    message.setFrom(new InternetAddress("apptelecommunity@gmail.com"));
+                    message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
+                    message.setSubject("Aprobación de Registro");
+
+                    // Contenido HTML con estilos en línea
+                    String htmlContent = "<div style='background-color:#f8f8f8; padding:20px; text-align:center;'>"
+                            + "<h1 style='color:#333;'>¡Solicitud Aprobada!</h1>"
+                            + "<p style='color:#555;'>Estimado usuario <em>" + nombre + "</em>, </p>"
+                            + "<p style='color:#555;'>Su solicitud de registro ha sido <strong>aprobada</strong>.</p>"
+                            + "<p style='color:#555;'>¡Bienvenido a la comunidad!</p>"
+                            + "</div>";
+
+                    message.setContent(htmlContent, "text/html; charset=utf-8");
+
+                    Transport.send(message);
+                    System.out.println("Email enviado con éxito");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+
+    }
 }
