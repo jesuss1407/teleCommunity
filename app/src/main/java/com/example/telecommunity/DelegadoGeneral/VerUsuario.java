@@ -107,6 +107,11 @@ public class VerUsuario extends AppCompatActivity {
                         .setPositiveButton("Sí", (dialog, which) -> {
                             // Usuario ha confirmado la acción.
                             banearUsuario(); // Función para cambiar el estado.
+                            try {
+                                enviarEmailBaneado(userMail, userName);
+                            } catch (MessagingException e) {
+                                throw new RuntimeException(e);
+                            }
                         })
                         .setNegativeButton("Cancelar", (dialog, which) -> {
                             // Usuario ha cancelado la acción.
@@ -121,6 +126,12 @@ public class VerUsuario extends AppCompatActivity {
                         .setPositiveButton("Sí", (dialog, which) -> {
                             // Usuario ha confirmado la acción.
                             desbanearUsuario(); // Función para cambiar el estado.
+
+                            try {
+                                enviarEmailDesbaneado(userMail, userName);
+                            } catch (MessagingException e) {
+                                throw new RuntimeException(e);
+                            }
                         })
                         .setNegativeButton("Cancelar", (dialog, which) -> {
                             // Usuario ha cancelado la acción.
@@ -270,6 +281,109 @@ public class VerUsuario extends AppCompatActivity {
                             + "<p style='color:#555;'>Estimado usuario <em>" + nombre + "</em>, </p>"
                             + "<p style='color:#555;'>Su solicitud de registro ha sido <strong>aprobada</strong>.</p>"
                             + "<p style='color:#555;'>¡Bienvenido a la comunidad!</p>"
+                            + "</div>";
+
+                    message.setContent(htmlContent, "text/html; charset=utf-8");
+
+                    Transport.send(message);
+                    System.out.println("Email enviado con éxito");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+
+    }
+
+
+    public void enviarEmailBaneado(String destinatario, String nombre) throws MessagingException {
+
+        emailExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // Aquí va tu código existente para enviar el email
+                    // Configuración de las propiedades SMTP
+                    Properties prop = new Properties();
+                    prop.put("mail.smtp.host", "smtp.gmail.com");
+                    prop.put("mail.smtp.port", "587");
+                    prop.put("mail.smtp.auth", "true");
+                    prop.put("mail.smtp.starttls.enable", "true"); //TLS
+
+                    // Autenticación
+                    final String username = "apptelecommunity@gmail.com"; // Cambiar por tu email
+                    final String password = "ayka dtem fonq ydeu"; // Cambiar por tu contraseña
+
+                    Session session = Session.getInstance(prop, new Authenticator() {
+                        protected PasswordAuthentication getPasswordAuthentication() {
+                            return new PasswordAuthentication(username, password);
+                        }
+                    });
+
+                    // Creación y envío del mensaje
+                    Message message = new MimeMessage(session);
+                    message.setFrom(new InternetAddress("apptelecommunity@gmail.com"));
+                    message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
+                    message.setSubject("Cuenta suspendida");
+
+                    // Contenido HTML con estilos en línea
+                    String htmlContent = "<div style='background-color:#f8f8f8; padding:20px; text-align:center;'>"
+                            + "<h1 style='color:#333;'>¡Su cuenta ha sido suspendida!</h1>"
+                            + "<p style='color:#555;'>Estimado usuario <em>" + nombre + "</em>, </p>"
+                            + "<p style='color:#555;'>Su cuenta de teleCommunity ha sido <strong>suspendida</strong>.</p>"
+                            + "<p style='color:#555;'>Si esta en desacuerdo, por favor responda este correo</p>"
+                            + "</div>";
+
+                    message.setContent(htmlContent, "text/html; charset=utf-8");
+
+                    Transport.send(message);
+                    System.out.println("Email enviado con éxito");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+
+    }
+
+    public void enviarEmailDesbaneado(String destinatario, String nombre) throws MessagingException {
+
+        emailExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // Aquí va tu código existente para enviar el email
+                    // Configuración de las propiedades SMTP
+                    Properties prop = new Properties();
+                    prop.put("mail.smtp.host", "smtp.gmail.com");
+                    prop.put("mail.smtp.port", "587");
+                    prop.put("mail.smtp.auth", "true");
+                    prop.put("mail.smtp.starttls.enable", "true"); //TLS
+
+                    // Autenticación
+                    final String username = "apptelecommunity@gmail.com"; // Cambiar por tu email
+                    final String password = "ayka dtem fonq ydeu"; // Cambiar por tu contraseña
+
+                    Session session = Session.getInstance(prop, new Authenticator() {
+                        protected PasswordAuthentication getPasswordAuthentication() {
+                            return new PasswordAuthentication(username, password);
+                        }
+                    });
+
+                    // Creación y envío del mensaje
+                    Message message = new MimeMessage(session);
+                    message.setFrom(new InternetAddress("apptelecommunity@gmail.com"));
+                    message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
+                    message.setSubject("Cuenta reactivada");
+
+                    // Contenido HTML con estilos en línea
+                    String htmlContent = "<div style='background-color:#f8f8f8; padding:20px; text-align:center;'>"
+                            + "<h1 style='color:#333;'>¡Solicitud Aprobada!</h1>"
+                            + "<p style='color:#555;'>Estimado usuario <em>" + nombre + "</em>, </p>"
+                            + "<p style='color:#555;'>Su solicitud de desbaneo ha sido <strong>aprobada</strong>.</p>"
+                            + "<p style='color:#555;'>¡Bienvenido de regreso a la comunidad!</p>"
                             + "</div>";
 
                     message.setContent(htmlContent, "text/html; charset=utf-8");
