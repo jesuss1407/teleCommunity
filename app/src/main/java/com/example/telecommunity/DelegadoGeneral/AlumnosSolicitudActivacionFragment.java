@@ -12,6 +12,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
 import com.example.telecommunity.R;
 import com.example.telecommunity.adapter.GeneralActividadesadapter;
 import com.example.telecommunity.adapter.GeneralUsuariosAdapter;
@@ -51,7 +53,7 @@ public class AlumnosSolicitudActivacionFragment extends Fragment {
 
         db = FirebaseFirestore.getInstance();
         storageRef = FirebaseStorage.getInstance().getReference();
-
+        TextView emptyView = view.findViewById(R.id.empty_view);
 
 
         // Obtén el usuario logueado
@@ -77,6 +79,16 @@ public class AlumnosSolicitudActivacionFragment extends Fragment {
                                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
                                 adapter = new GeneralUsuariosAdapter(getContext(), usuariosList);
                                 recyclerView.setAdapter(adapter);
+
+                                if (usuariosList.isEmpty()) {
+                                    emptyView.setVisibility(View.VISIBLE);
+                                    recyclerView.setVisibility(View.GONE);
+                                } else {
+                                    emptyView.setVisibility(View.GONE);
+                                    recyclerView.setVisibility(View.VISIBLE);
+                                    GeneralUsuariosAdapter adapter = new GeneralUsuariosAdapter(getContext(), usuariosList);
+                                    recyclerView.setAdapter(adapter);
+                                }
 
                             } else {
                                 //Log.w(TAG, "Error getting documents.", task.getException());

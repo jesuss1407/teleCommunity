@@ -13,10 +13,13 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.example.telecommunity.DelegadoGeneral.AdmActividades;
 import com.example.telecommunity.DelegadoGeneral.BaseGeneralActivity;
+import com.example.telecommunity.adapter.GeneralUsuariosAdapter;
 import com.example.telecommunity.databinding.ActivityIniciarSesionBinding;
+import com.example.telecommunity.entity.UsuariosDto;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -27,144 +30,112 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 //
 
-
 public class IniciarSesion extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
-    private EditText emailEditText, passwordEditText;
-    private Button loginButton;
-    ActivityIniciarSesionBinding binding;
-
+    private ActivityIniciarSesionBinding binding;
+    private FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_iniciar_sesion);
-
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-        // Define la referencia al documento que deseas leer
-        DocumentReference docRef = db.collection("usuarios").document("id_del_documento");
-
-
-        //redireccionar a registro
-        TextView registrarme = findViewById(R.id.signupText);
-        registrarme.setOnClickListener(view -> {
-            Intent intent = new Intent(IniciarSesion.this, RegistroUsuario.class);
-            startActivity(intent);
-        });
-
-        //redireccionar a mi perfil
-        TextView perfil = findViewById(R.id.loginText);
-        perfil.setOnClickListener(view -> {
-            Intent intent = new Intent(IniciarSesion.this,BaseActivity.class);
-            startActivity(intent);
-        });
-
-
-
-
-
-
-        //iniciar sesion
+        binding = ActivityIniciarSesionBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         mAuth = FirebaseAuth.getInstance();
-        emailEditText = findViewById(R.id.correo);
-        passwordEditText = findViewById(R.id.contrasena);
-        loginButton = findViewById(R.id.loginButton);
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String email = emailEditText.getText().toString();
-                String password = passwordEditText.getText().toString();
+        db = FirebaseFirestore.getInstance();
 
-                if (!email.isEmpty() && !password.isEmpty()) {
-                    // ...
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            redirectUserBasedOnRole(user.getEmail());
+        } else {
+            setupLoginButton();
+            setupSignUpText();
+        }
+    }
 
-                    mAuth.signInWithEmailAndPassword(email, password)
-                            .addOnCompleteListener(IniciarSesion.this, new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if (task.isSuccessful()) {
-                                        // Inicio de sesión exitoso
-                                        FirebaseUser user = mAuth.getCurrentUser();
-                                        //redirigir a la vista segun rol
-                                        String email = user.getEmail();
-                                        Query query = db.collection("usuarios").whereEqualTo("correo", email);
-                                        query.get().addOnCompleteListener(task2 -> {
-                                            if (task2.isSuccessful()) {
-                                                QuerySnapshot querySnapshot = task2.getResult();
-                                                if (!querySnapshot.isEmpty()) {
-                                                    // El documento existe, puedes obtener los datos
-                                                    DocumentSnapshot document = querySnapshot.getDocuments().get(0);
-
-                                                    // Accede a los datos del documento
-                                                    Map<String, Object> data = document.getData();
-                                                    // Ahora puedes acceder a los campos de datos del documento
-                                                    String rol = (String) data.get("rol");
-
-                                                    // Guarda el tipo de usuario en las preferencias compartidas
-                                                    SharedPreferences sharedPreferences = getSharedPreferences("prefs", MODE_PRIVATE);
-                                                    SharedPreferences.Editor editor = sharedPreferences.edit();
-                                                    editor.putString("tipoUsuario", rol);
-                                                    editor.apply();
-
-                                                    // ...
-
-                                                    //int estado = document.getLong("estado").intValue();
-                                                    String estadoStr = (String) data.get("estado");
-                                                    if(estadoStr.equals("activo")){
-                                                        if("Delegado general".equals(rol)){
-                                                            startActivity(new Intent(IniciarSesion.this, BaseGeneralActivity.class));
-                                                        } else if ("Delegado de actividad".equals(rol)) {
-                                                            startActivity(new Intent(IniciarSesion.this, BaseActivity.class));
-                                                            Toast.makeText(IniciarSesion.this, "Inicio de sesión exitoso.", Toast.LENGTH_SHORT).show();
-
-                                                        } else {
-                                                            startActivity(new Intent(IniciarSesion.this, BaseActivity.class));
-                                                            Toast.makeText(IniciarSesion.this, "Inicio de sesión exitoso.", Toast.LENGTH_SHORT).show();
-
-                                                        }
-                                                    } else {
-                                                        Toast.makeText(IniciarSesion.this, "La cuenta no se encuentra habilitada, comuníquese con el administrador.", Toast.LENGTH_SHORT).show();
-                                                    }
-                                                } else {
-                                                    // El documento no existe
-                                                    // Puedes manejar este caso
-                                                }
-                                            } else {
-                                                // Hubo un error al obtener el documento
-                                                FirebaseFirestoreException exception = (FirebaseFirestoreException) task.getException();
-                                                if (exception != null) {
-                                                    // Maneja el error
-                                                }
-                                            }
-                                        });
-                                    } else {
-                                        Toast.makeText(IniciarSesion.this, "Error en el inicio de sesión.", Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            });
-
-// ...
-
-                } else {
-                    Toast.makeText(IniciarSesion.this, "Por favor, complete todos los campos.", Toast.LENGTH_SHORT).show();
-                }
+    private void setupLoginButton() {
+        binding.loginButton.setOnClickListener(v -> {
+            String email = binding.correo.getText().toString();
+            String password = binding.contrasena.getText().toString();
+            if (!email.isEmpty() && !password.isEmpty()) {
+                performLogin(email, password);
+            } else {
+                Toast.makeText(IniciarSesion.this, "Por favor, complete todos los campos.", Toast.LENGTH_SHORT).show();
             }
         });
+    }
 
+    private void performLogin(String email, String password) {
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, task -> {
+                    if (task.isSuccessful()) {
+                        redirectUserBasedOnRole(email);
+                    } else {
+                        Toast.makeText(IniciarSesion.this, "Error en el inicio de sesión.", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
 
+    private void redirectUserBasedOnRole(String email) {
+        Query query = db.collection("usuarios").whereEqualTo("correo", email);
+        query.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                QuerySnapshot querySnapshot = task.getResult();
+                if (!querySnapshot.isEmpty()) {
+                    // El documento existe, puedes obtener los datos
+                    DocumentSnapshot document = querySnapshot.getDocuments().get(0);
+                    Map<String, Object> data = document.getData();
+                    String rol = (String) data.get("rol");
+                    String estadoStr = (String) data.get("estado");
 
+                    SharedPreferences sharedPreferences = getSharedPreferences("prefs", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("tipoUsuario", rol);
+                    editor.apply();
+
+                    if("activo".equals(estadoStr)){
+                        switch (rol) {
+                            case "Delegado general":
+                                startActivity(new Intent(IniciarSesion.this, BaseGeneralActivity.class));
+                                break;
+                            case "Delegado de actividad":
+                                // Presumiendo que BaseActivity es para "Delegado de actividad"
+                                startActivity(new Intent(IniciarSesion.this, BaseActivity.class));
+                                break;
+                            default:
+                                // Para otros roles o si no se especifica
+                                startActivity(new Intent(IniciarSesion.this, BaseActivity.class));
+                                break;
+                        }
+                        Toast.makeText(IniciarSesion.this, "Inicio de sesión exitoso.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(IniciarSesion.this, "La cuenta no se encuentra habilitada, comuníquese con el administrador.", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    // El documento no existe
+                    Toast.makeText(IniciarSesion.this, "Usuario no encontrado en la base de datos.", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                // Error al obtener el documento
+                Toast.makeText(IniciarSesion.this, "Error al obtener datos del usuario.", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 
-
-
+    private void setupSignUpText() {
+        binding.signupText.setOnClickListener(v -> {
+            startActivity(new Intent(IniciarSesion.this, RegistroUsuario.class));
+        });
+    }
 }
