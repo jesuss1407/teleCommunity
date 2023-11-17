@@ -36,17 +36,17 @@
                 android:src="@drawable/lineasup" />
 
         </LinearLayout>
+        <!-- Inclusión del layout de foto de perfil -->
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_marginTop="20dp"
-            android:gravity="center">
+            android:gravity="center"
+            android:layout_centerInParent="true">
 
             <RelativeLayout
+                android:layout_centerInParent="true"
                 android:layout_width="match_parent"
-                android:layout_height="250dp"
-                android:layout_centerInParent="true">
+                android:layout_height="250dp">
 
                 <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
@@ -62,229 +62,180 @@
                         android:layout_marginTop="23dp"
                         android:orientation="vertical">
 
-
                         <View
                             android:layout_width="match_parent"
-                            android:layout_height="1dp"
+                            android:layout_height="0dp"
+                            android:layout_weight="1"
                             android:background="#79D6D1D1" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
-
-                            android:layout_height="match_parent"
                             android:gravity="center"
+                            android:layout_height="match_parent"
                             android:orientation="horizontal">
 
-                            <TextView
-                                android:layout_width="match_parent"
+                            <Button
+                                android:id="@+id/buttonFoto"
+                                android:layout_width="200dp"
                                 android:layout_height="wrap_content"
                                 android:layout_marginTop="40dp"
-                                android:gravity="center"
-                                android:text="Stuardo Lucho"
-                                android:textColor="@color/black"
-                                android:textSize="28sp"
-                                android:textStyle="bold" />
-
-
+                                android:backgroundTint="@drawable/button_background_black"
+                                android:text="Cambiar Foto"
+                                app:cornerRadius="8dp" />
                         </LinearLayout>
-
-
                     </LinearLayout>
-
-
                 </androidx.cardview.widget.CardView>
-
-
             </RelativeLayout>
+
             <com.google.android.material.imageview.ShapeableImageView
-                android:src="@drawable/gato"
+                android:id="@+id/Foto"
+
                 android:scaleType="fitCenter"
                 app:shapeAppearanceOverlay="@style/Circular"
                 android:elevation="15dp"
                 android:padding="5dp"
                 android:background="@color/white"
                 android:layout_centerHorizontal="true"
-
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="20dp"
                 android:layout_width="160dp"
                 android:layout_height="160dp"/>
         </RelativeLayout>
+
         <ScrollView
+            android:paddingStart="10dp"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
 
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <LinearLayout
-                    android:orientation="vertical"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Campo para Nombres -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nombres"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp"
+                    android:paddingTop="8dp"/>
+
+                <EditText
+
+                    android:background="@drawable/custom_edittext"
+                    android:textColor="@color/black"
+                    android:textColorHighlight="@color/cardview_dark_background"
+                    android:id="@+id/editTextNombres"
                     android:layout_width="match_parent"
-                    android:background="@color/white"
-                    android:layout_height="wrap_content">
-                    <View
-                        android:background="#79D6D1D1"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"/>
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:padding="3dp"
-                        android:layout_width="match_parent"
-                        android:layout_marginLeft="8dp"
-                        android:layout_height="wrap_content">
-                        <ImageView
-                            android:padding="2dp"
-                            android:src="@drawable/ic_home"
-                            android:layout_marginStart="5dp"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"/>
-                        <TextView
-                            android:text="Condición"
-                            android:layout_marginStart="10dp"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:layout_gravity="center"
-                            android:textColor="#605E5E"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                    android:layout_height="50dp"
+                    android:hint="Ingresa tu nombre"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"/>
 
 
-                    </LinearLayout>
-                    <EditText
-                        android:hint="Estudiante"
-                        android:textStyle="bold"
-                        android:textColor="@color/black"
-                        android:textSize="20sp"
-                        android:layout_marginStart="25dp"
-                        android:layout_marginBottom="15dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                <!-- Campo para Apellidos -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Apellidos"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp"
+                    android:paddingTop="8dp"/>
 
-
-
-                </LinearLayout>
-                <LinearLayout
-                    android:orientation="vertical"
+                <EditText
+                    android:background="@drawable/custom_edittext"
+                    android:textColor="@color/black"
+                    android:textColorHighlight="@color/cardview_dark_background"
+                    android:id="@+id/editTextApellidos"
                     android:layout_width="match_parent"
-                    android:background="@color/white"
-                    android:layout_height="wrap_content">
-                    <View
-                        android:background="#79D6D1D1"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"/>
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:padding="3dp"
-                        android:layout_width="match_parent"
-                        android:layout_marginLeft="8dp"
-                        android:layout_height="wrap_content">
-                        <ImageView
-                            android:padding="2dp"
-                            android:src="@drawable/ic_phone"
-                            android:layout_marginStart="5dp"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"/>
-                        <TextView
-                            android:text="Teléfono"
-                            android:layout_marginStart="10dp"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:layout_gravity="center"
-                            android:textColor="#605E5E"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                    android:layout_height="50dp"
+                    android:hint="Ingresa tu apellido"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"/>
 
-
-                    </LinearLayout>
-                    <EditText
-                        android:hint="+51 961234569"
-                        android:textStyle="bold"
-                        android:textColor="@color/black"
-                        android:textSize="20sp"
-                        android:layout_marginStart="25dp"
-                        android:layout_marginBottom="15dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
-
-
-
-                </LinearLayout>
-                <LinearLayout
-                    android:orientation="vertical"
+                <!-- Campo para Correo Electrónico -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Correo Electrónico"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp"
+                    android:paddingTop="8dp"/>
+                <EditText
+                    android:background="@drawable/custom_edittext"
+                    android:textColor="@color/black"
+                    android:textColorHighlight="@color/cardview_dark_background"
+                    android:id="@+id/editTextCorreo"
                     android:layout_width="match_parent"
-                    android:background="@color/white"
-                    android:layout_height="wrap_content">
-                    <View
-                        android:background="#79D6D1D1"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"/>
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:padding="3dp"
-                        android:layout_marginLeft="8dp"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-                        <ImageView
-                            android:padding="2dp"
-                            android:src="@drawable/ic_email"
-                            android:layout_marginStart="5dp"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"/>
-                        <TextView
-                            android:text="Correo"
-                            android:layout_marginStart="10dp"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:layout_gravity="center"
-                            android:textColor="#605E5E"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                    android:layout_height="50dp"
+                    android:hint="Ingresa tu correo"
+                    android:inputType="textEmailAddress"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"/>
 
+                <!-- Campo para Condición -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Condición"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp"
+                    android:paddingTop="8dp"/>
 
-                    </LinearLayout>
-                    <EditText
-                        android:hint="lucho.stuardo@pucp.edu.pe"
-                        android:textStyle="bold"
-                        android:textColor="@color/black"
-                        android:textSize="20sp"
-                        android:layout_marginStart="25dp"
-                        android:layout_marginBottom="15dp"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                <Spinner
+                    android:id="@+id/spinnerCondicion"
+                    android:layout_width="match_parent"
+                    android:background="@drawable/custom_edittext"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="8dp"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"/>
 
+                <!-- Campo para Teléfono -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Teléfono"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp"
+                    android:paddingTop="8dp"/>
+                <EditText
+                    android:background="@drawable/custom_edittext"
+                    android:textColor="@color/black"
+                    android:textColorHighlight="@color/cardview_dark_background"
+                    android:id="@+id/editTextTelefono"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:hint="Ingresa tu teléfono"
+                    android:inputType="phone"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"/>
 
+                <Button
+                    android:id="@+id/btnSave"
+                    android:layout_width="200dp"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="40dp"
+                    android:backgroundTint="@drawable/button_background_black"
+                    android:layout_gravity="center"
+                    android:text="Aplicar Cambios"
+                    app:cornerRadius="8dp" />
 
-                </LinearLayout>
 
             </LinearLayout>
         </ScrollView>
 
-
-
-        <LinearLayout
-            android:layout_marginTop="30dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center">
-
-
-
-        </LinearLayout>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:id="@+id/loginButton"
-            android:text="Guardar cambios"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:layout_marginTop="5dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:backgroundTint="@color/purple_700"
-            app:cornerRadius = "20dp"/>
 
 
     </LinearLayout>

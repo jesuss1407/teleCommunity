@@ -62,6 +62,7 @@ public class VerUsuario extends AppCompatActivity {
         Button iniciar = findViewById(R.id.editarButton);
         iniciar.setOnClickListener(view -> {
             Intent intent = new Intent(VerUsuario.this, EditarUsuario.class);
+            intent.putExtra("IdUser", userCode);
             startActivity(intent);
         });
 

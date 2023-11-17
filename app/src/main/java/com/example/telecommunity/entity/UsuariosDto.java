@@ -11,6 +11,7 @@ public class UsuariosDto {
     private String rol;
     private String foto;
     private String estado; //activo, inactivo
+    private String telefono;
 
     public int getCodigo() {
         return codigo;
@@ -83,5 +84,13 @@ public class UsuariosDto {
 
     public void setEstado(String estado) {
         this.estado = estado;
+    }
+
+    public String getTelefono() {
+        return telefono;
+    }
+
+    public void setTelefono(String telefono) {
+        this.telefono = telefono;
     }
 }
