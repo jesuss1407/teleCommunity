@@ -37,6 +37,41 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+
+
+
+//forgot
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import android.app.Activity;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
+import androidx.annotation.NonNull;
+import android.content.Intent;
+import android.text.TextUtils;
+import android.util.Patterns;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+//import com.developer.gbuttons.GoogleSignInButton;
+//import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+//import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+
 //
 
 public class IniciarSesion extends AppCompatActivity {
@@ -44,6 +79,9 @@ public class IniciarSesion extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private ActivityIniciarSesionBinding binding;
     private FirebaseFirestore db;
+    TextView forgotPassword;
+    //forgot pass
+    private FirebaseAuth auth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +89,7 @@ public class IniciarSesion extends AppCompatActivity {
         binding = ActivityIniciarSesionBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        forgotPassword = findViewById(R.id.forgot_password);
         mAuth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
@@ -61,6 +100,55 @@ public class IniciarSesion extends AppCompatActivity {
             setupLoginButton();
             setupSignUpText();
         }
+
+
+
+        forgotPassword.setOnClickListener(v -> {
+            showForgotPasswordDialog();
+        });
+        //forgot password
+        /*forgotPassword.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(IniciarSesion.this);
+                View dialogView = getLayoutInflater().inflate(R.layout.dialog_forgot, null);
+                EditText emailBox = dialogView.findViewById(R.id.emailBox);
+                builder.setView(dialogView);
+                AlertDialog dialog = builder.create();
+                dialogView.findViewById(R.id.btnReset).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String userEmail = emailBox.getText().toString();
+                        if (TextUtils.isEmpty(userEmail) && !Patterns.EMAIL_ADDRESS.matcher(userEmail).matches()){
+                            Toast.makeText(IniciarSesion.this, "Enter your registered email id", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        auth.sendPasswordResetEmail(userEmail).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()){
+                                    Toast.makeText(IniciarSesion.this, "Check your email", Toast.LENGTH_SHORT).show();
+                                    dialog.dismiss();
+                                } else {
+                                    Toast.makeText(IniciarSesion.this, "Unable to send, failed", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    }
+                });
+                dialogView.findViewById(R.id.btnCancel).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        dialog.dismiss();
+                    }
+                });
+                if (dialog.getWindow() != null){
+                    dialog.getWindow().setBackgroundDrawable(new ColorDrawable(0));
+                }
+                dialog.show();
+            }
+        });*/
+
     }
 
     private void setupLoginButton() {
@@ -137,5 +225,39 @@ public class IniciarSesion extends AppCompatActivity {
         binding.signupText.setOnClickListener(v -> {
             startActivity(new Intent(IniciarSesion.this, RegistroUsuario.class));
         });
+    }
+
+    // Agregar el siguiente método en tu actividad IniciarSesion
+    private void showForgotPasswordDialog() {
+        View view = getLayoutInflater().inflate(R.layout.dialog_forgot_password, null);
+        EditText emailEditText = view.findViewById(R.id.editTextEmail);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setView(view)
+                .setTitle("Recuperar contraseña")
+                .setPositiveButton("Enviar", (dialog, which) -> {
+                    String email = emailEditText.getText().toString().trim();
+                    if (!TextUtils.isEmpty(email) && Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                        sendPasswordResetEmail(email);
+                    } else {
+                        Toast.makeText(IniciarSesion.this, "Ingrese un correo electrónico válido", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("Cancelar", null);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void sendPasswordResetEmail(String email) {
+        auth = FirebaseAuth.getInstance();
+        auth.sendPasswordResetEmail(email)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(IniciarSesion.this, "Se ha enviado un correo electrónico para restablecer la contraseña.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(IniciarSesion.this, "Error al enviar el correo electrónico. Verifique la dirección de correo electrónico.", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
 }
