@@ -45,7 +45,9 @@ public class CrearActividad extends AppCompatActivity {
     private static final int SELECT_IMAGE_REQUEST_CODE = 1001;
     private FirebaseFirestore db;
     private StorageReference storageRef;
-    private String delegadoNombre;
+    private String delegadoNombre, userCodeStr;
+    private int userCode;
+
 
     EditText etActividad, etContenido, etCodigoDelegado;
 
@@ -89,6 +91,8 @@ public class CrearActividad extends AppCompatActivity {
 
             if (nombre.isEmpty() || contenido.isEmpty() ||codigoDelegadoStr.isEmpty() ){
                 Toast.makeText(CrearActividad.this, "Llene todos los campos ", Toast.LENGTH_SHORT).show();
+            } else if(codigoDelegadoStr.equals("20196324")){
+                Toast.makeText(CrearActividad.this, "El código ingresado es el del delegado general", Toast.LENGTH_SHORT).show();
             } else if(!(!TextUtils.isEmpty(codigoDelegadoStr) && TextUtils.isDigitsOnly(codigoDelegadoStr))){
                 Toast.makeText(CrearActividad.this, "Ingrese solo numeros en el Código", Toast.LENGTH_SHORT).show();
             } else if(docRef1.getId().isEmpty()){
@@ -164,7 +168,7 @@ public class CrearActividad extends AppCompatActivity {
                                                                 .setPositiveButton("Sí", (dialog, which) -> {
                                                                     // Usuario ha confirmado la acción.
                                                                     // Crea y guarda la publicación sin URL de imagen
-                                                                    crearActividad(codigoDelegado, delegadoNombre, nombre, contenido, "https://firebasestorage.googleapis.com/v0/b/telecommunity-cbff5.appspot.com/o/images%2Factividad_generica.jpg?alt=media&token=d4ce19a7-e44a-4d2a-8b98-4e90072aeb56",estado);
+                                                                    crearActividad(codigoDelegado, delegadoNombre, nombre, contenido, "https://firebasestorage.googleapis.com/v0/b/telecommunity-cbff5.appspot.com/o/images%2Ffutsal_damas.jpg?alt=media&token=1d5fec95-a240-4d8c-ac5b-626b3d433820",estado);
                                                                 })
                                                                 .setNegativeButton("Cancelar", (dialog, which) -> {
                                                                     // Usuario ha cancelado la acción.
@@ -207,6 +211,11 @@ public class CrearActividad extends AppCompatActivity {
                 estado
         );
 
+        userCodeStr=Integer.toString(delegadoCodigo);
+        cambiarRolDelegado();
+
+
+
         db.collection("actividades")
                 .document(id)
                 .set(actividad)
@@ -234,5 +243,25 @@ public class CrearActividad extends AppCompatActivity {
     }
 
 
+    public void cambiarRolDelegado() {
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference actividadRef = db.collection("usuarios").document(userCodeStr);
+
+//                              Actualiza el campo "estado" a "Finalizado".
+        actividadRef.update("rol", "Delegado de actividad")
+                .addOnSuccessListener(aVoid -> {
+                    // El estado se actualizó con éxito en Firestore.
+                    //Toast.makeText(CrearActividad.this, "Delegnado asignado con éxito", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    // Ocurrió un error al actualizar el estado en Firestore.
+                    // Puedes mostrar un mensaje de error o realizar acciones de manejo de errores.
+                });
+
+
+
+
+    }
 
 }

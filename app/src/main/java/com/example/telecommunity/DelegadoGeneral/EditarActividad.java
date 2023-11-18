@@ -45,8 +45,9 @@ public class EditarActividad extends AppCompatActivity {
     private static final int SELECT_IMAGE_REQUEST_CODE = 1001;
     private FirebaseFirestore db;
     private StorageReference storageRef;
-    private String delegadoNombre;
-    private String estado;
+    private String delegadoNombre, userCodeStr;
+    private int userCode;
+    private String estado,fotoactual;
 
     EditText etActividad, etContenido, etCodigoDelegado, etEstado;
 
@@ -156,7 +157,7 @@ public class EditarActividad extends AppCompatActivity {
                             String nombredele = documentSnapshot.getString("nombre");
                             String apellido = documentSnapshot.getString("apellido");
                             delegadoNombre = nombredele + " "+apellido;
-                            String fotoactual = documentSnapshot.getString("fotoLink");
+                            fotoactual = documentSnapshot.getString("fotoLink");
 
 
                             // Busca la actividad en la colección de actividades
@@ -205,7 +206,7 @@ public class EditarActividad extends AppCompatActivity {
                                                             .setPositiveButton("Sí", (dialog, which) -> {
                                                                 // Usuario ha confirmado la acción.
                                                                 // Crea y guarda la publicación sin URL de imagen
-                                                                editarActividad(idActividad, codigoDelegado, delegadoNombre, nombre, contenido, fotoactual,estado);
+                                                                editarActividadSinFoto(idActividad, codigoDelegado, delegadoNombre, nombre, contenido, fotoactual,estado);
                                                             })
                                                             .setNegativeButton("Cancelar", (dialog, which) -> {
                                                                 // Usuario ha cancelado la acción.
@@ -250,6 +251,45 @@ public class EditarActividad extends AppCompatActivity {
         updates.put("delegadoCode", nuevoDelegadoCodigo);
         updates.put("delegadoName", nuevoDelegadoNombre);
 
+
+        userCodeStr=Integer.toString(nuevoDelegadoCodigo);
+        cambiarRolDelegado();
+
+        // Actualiza el documento con los nuevos valores
+        docRef.update(updates)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        // Actividad editada con éxito
+                        Toast.makeText(EditarActividad.this, "Actividad editada con éxito", Toast.LENGTH_SHORT).show();
+
+
+                        startActivity(new Intent(EditarActividad.this, BaseGeneralActivity.class));
+                        finish(); // Opcionalmente puedes finalizar la actividad actual si no quieres que el usuario regrese a ella.
+
+                    } else {
+                        // Ocurrió un error al editar la actividad
+                        Toast.makeText(EditarActividad.this, "Error al editar la actividad", Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
+
+    private void editarActividadSinFoto(String actividadId,int nuevoDelegadoCodigo, String nuevoDelegadoNombre, String nuevoNombre, String nuevoContenido, String nuevoFotoLink, String nuevoEstado) {
+        // Obtén una referencia al documento que deseas editar
+        DocumentReference docRef = db.collection("actividades").document(actividadId);
+
+        // Crea un mapa con los campos que deseas actualizar
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("nombre", nuevoNombre);
+        updates.put("descripcion", nuevoContenido);
+        updates.put("estado", nuevoEstado);
+        updates.put("delegadoCode", nuevoDelegadoCodigo);
+        updates.put("delegadoName", nuevoDelegadoNombre);
+
+
+        userCodeStr=Integer.toString(nuevoDelegadoCodigo);
+        cambiarRolDelegado();
+
         // Actualiza el documento con los nuevos valores
         docRef.update(updates)
                 .addOnCompleteListener(task -> {
@@ -277,4 +317,25 @@ public class EditarActividad extends AppCompatActivity {
         }
     }
 
+
+    public void cambiarRolDelegado() {
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference actividadRef = db.collection("usuarios").document(userCodeStr);
+
+//                              Actualiza el campo "estado" a "Finalizado".
+        actividadRef.update("rol", "Delegado de actividad")
+                .addOnSuccessListener(aVoid -> {
+                    // El estado se actualizó con éxito en Firestore.
+                    //Toast.makeText(CrearActividad.this, "Delegnado asignado con éxito", Toast.LENGTH_SHORT).show();
+                })
+                .addOnFailureListener(e -> {
+                    // Ocurrió un error al actualizar el estado en Firestore.
+                    // Puedes mostrar un mensaje de error o realizar acciones de manejo de errores.
+                });
+
+
+
+
+    }
 }

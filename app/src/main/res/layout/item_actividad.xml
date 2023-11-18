@@ -38,6 +38,7 @@
 
             <TextView
                 android:id="@+id/tvnombreactividad"
+                android:maxLines="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
@@ -53,11 +54,13 @@
                 android:id="@+id/tvdelegado0"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@+id/tvnombreactividad"
                 android:layout_alignBottom="@+id/imagenactividad"
                 android:layout_marginStart="8dp"
+                android:layout_marginTop="12dp"
                 android:layout_marginBottom="27dp"
                 android:layout_toEndOf="@+id/imagenactividad"
-                android:text="Nombre Delegado Actividad"
+                android:text="Delegado Actividad:"
                 android:textColor="#000000"
                 android:textSize="14sp" />
 
