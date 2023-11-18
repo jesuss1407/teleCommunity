@@ -14,6 +14,7 @@ public class Publicaciondto implements Serializable {
     private String fotoUsuario;
     private String id;
     private String nombreUbicacion;
+    private String idActividad;
 
     public String getId() {
         return id;
@@ -34,11 +35,9 @@ public class Publicaciondto implements Serializable {
     }
 
     // Constructor con argumentos
-    public Publicaciondto(String id, String nombre, long horaCreacion, String contenido, String urlImagen, double latitud, double longitud, String userName,String nombreUbicacion) {
-        // ... (inicialización de campos)
-    }
 
-    public Publicaciondto(String id, String nombre, long horaCreacion, String contenido, String urlImagen, double latitud, double longitud, String userName, String userApellido, String userFotoPerfil,String nombreUbicacion) {
+
+    public Publicaciondto(String id, String nombre, long horaCreacion, String contenido, String urlImagen, double latitud, double longitud, String userName, String userApellido, String userFotoPerfil,String nombreUbicacion, String idActividad) {
         this.id = id;
         this.nombre = nombre;
         this.horaCreacion = horaCreacion;
@@ -50,6 +49,7 @@ public class Publicaciondto implements Serializable {
         this.apellidoUsuario = userApellido;
         this.fotoUsuario = userFotoPerfil;
         this.nombreUbicacion = nombreUbicacion;
+        this.idActividad = idActividad;
     }
 
 
@@ -125,22 +125,16 @@ public class Publicaciondto implements Serializable {
         this.fotoUsuario = fotoUsuario;
     }
 
-    // Método toString para depuración
-    @Override
-    public String toString() {
-        return "Publicaciondto{" +
-                "id='" + id + '\'' +
-                ", nombreUsuario='" + nombreUsuario + '\'' +
-                ", apellidoUsuario='" + apellidoUsuario + '\'' +
-                ", horaCreacion=" + horaCreacion +
-                ", latitud=" + latitud +
-                ", longitud=" + longitud +
-                ", nombre='" + nombre + '\'' +
-                ", contenido='" + contenido + '\'' +
-                ", fotoUsuario='" + fotoUsuario + '\'' +
-                ", urlImagen='" + urlImagen + '\'' +
-                '}';
+    public String getIdActividad() {
+        return idActividad;
     }
+
+    public void setIdActividad(String idActividad) {
+        this.idActividad = idActividad;
+    }
+
+    // Método toString para depuración
+
     /*
     public Publicaciondto(int photoResId, String usuario, String actividad, String date, String timestamp, int comentarios, String location, String contenido, int fotoId, double latitud, double longitud) {
         this.photoResId = photoResId;

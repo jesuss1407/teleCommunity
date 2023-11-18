@@ -136,7 +136,18 @@ public class CrearPublicacionActivity extends AppCompatActivity {
                 Ubicacion ubicacionSeleccionada = (Ubicacion) spinnerUbicacion.getSelectedItem();
                 double latitud = ubicacionSeleccionada.latitud;
                 double longitud = ubicacionSeleccionada.longitud;
-                String nombreUbicacion = ubicacionSeleccionada.nombre;  // Obtén el nombre de la ubicación
+                String nombreUbicacion = ubicacionSeleccionada.nombre;
+
+                // Obtén la actividad seleccionada
+                ActividadDto actividadSeleccionada = (ActividadDto) spinnerActividades.getSelectedItem();
+                String idActividad = (actividadSeleccionada != null) ? actividadSeleccionada.getId() : null; // Asegúrate de que tu clase ActividadDto tiene un método getId()
+
+                // Comprueba si se seleccionó una actividad
+                if (idActividad == null) {
+                    Toast.makeText(CrearPublicacionActivity.this, "No se seleccionó una actividad", Toast.LENGTH_SHORT).show();
+                    return; // No continúes si no se seleccionó una actividad
+                }
+
 
                 // Obtén el usuario logueado
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -165,7 +176,7 @@ public class CrearPublicacionActivity extends AppCompatActivity {
                                                         .addOnSuccessListener(taskSnapshot -> fileRef.getDownloadUrl()
                                                                 .addOnSuccessListener(uri -> {
                                                                     // Crea y guarda la publicación con la URL de la imagen
-                                                                    guardarPublicacion(nombre, contenido, latitud, longitud, userName, userApellido, userFotoPerfil, uri.toString(), nombreUbicacion);
+                                                                    guardarPublicacion(nombre, contenido, latitud, longitud, userName, userApellido, userFotoPerfil, uri.toString(), nombreUbicacion,idActividad);
                                                                 }))
                                                         .addOnFailureListener(e -> {
                                                             // Ocurrió un error al subir la imagen
@@ -174,7 +185,7 @@ public class CrearPublicacionActivity extends AppCompatActivity {
                                                         });
                                             } else {
                                                 // Crea y guarda la publicación sin URL de imagen
-                                                guardarPublicacion(nombre, contenido, latitud, longitud, userName, userApellido, userFotoPerfil, "", nombreUbicacion);
+                                                guardarPublicacion(nombre, contenido, latitud, longitud, userName, userApellido, userFotoPerfil, "", nombreUbicacion,idActividad);
                                             }
                                         }
                                     } else {
@@ -201,7 +212,7 @@ public class CrearPublicacionActivity extends AppCompatActivity {
 
     }
 
-    private void guardarPublicacion(String nombre, String contenido, double latitud, double longitud, String userName, String userApellido, String userFotoPerfil, String urlImagen, String nombreUbicacion) {
+    private void guardarPublicacion(String nombre, String contenido, double latitud, double longitud, String userName, String userApellido, String userFotoPerfil, String urlImagen, String nombreUbicacion, String idActividad) {
         String id = UUID.randomUUID().toString();
         Publicaciondto publicacion = new Publicaciondto(
                 id,
@@ -214,7 +225,8 @@ public class CrearPublicacionActivity extends AppCompatActivity {
                 userName,
                 userApellido,
                 userFotoPerfil,
-                nombreUbicacion
+                nombreUbicacion,
+                idActividad
         );
 
         db.collection("publicaciones")
@@ -266,57 +278,65 @@ public class CrearPublicacionActivity extends AppCompatActivity {
     private void cargarActividadesDelegadas() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
-            Log.d("cargarActividades", "Cargando delegaciones para el usuario: " + user.getUid());
-            db.collection("usuarios").document(user.getUid()).collection("delegaciones")
+            // Suponiendo que tienes un método que obtiene el código de usuario como int.
+            // Por ejemplo, esto podría estar almacenado en SharedPreferences o pasar como un extra en el Intent.
+            int codigoUsuario = obtenerCodigoUsuario(); // Este método aún necesita ser implementado.
+
+            Log.d("cargarActividades", "Cargando delegaciones para el usuario con código: " + codigoUsuario);
+            db.collection("usuarios")
+                    .whereEqualTo("codigo", codigoUsuario)
                     .get()
                     .addOnCompleteListener(task -> {
-                        if (task.isSuccessful() && task.getResult() != null) {
-                            List<DocumentSnapshot> delegationDocs = task.getResult().getDocuments();
-                            if (delegationDocs.isEmpty()) {
-                                Log.d("cargarActividades", "No se encontraron delegaciones para este usuario.");
-                            } else {
-                                List<Task<?>> allTasks = new ArrayList<>();
-                                for (DocumentSnapshot delegationDoc : delegationDocs) {
-                                    String actividadId = delegationDoc.getString("idactividad");
-                                    if (actividadId == null || actividadId.trim().isEmpty()) {
-                                        Log.d("cargarActividades", "Documento de delegación sin 'idactividad': " + delegationDoc.getId());
-                                        continue; // Saltar este documento de delegación
-                                    }
-                                    Log.d("cargarActividades", "Procesando 'idactividad': " + actividadId);
-                                    allTasks.add(db.collection("actividades").document(actividadId).get());
-                                }
-
-                                Tasks.whenAllSuccess(allTasks)
-                                        .addOnSuccessListener(results -> {
-                                            List<ActividadDto> actividadesDelegadas = new ArrayList<>();
-                                            for (Object result : results) {
-                                                DocumentSnapshot actividadDoc = (DocumentSnapshot) result;
-                                                if (actividadDoc.exists()) {
-                                                    ActividadDto actividad = actividadDoc.toObject(ActividadDto.class);
-                                                    if (actividad != null) {
-                                                        actividadesDelegadas.add(actividad);
-                                                    } else {
-                                                        Log.d("cargarActividades", "Actividad es nula para el documento con id: " + actividadDoc.getId());
+                        if (task.isSuccessful()) {
+                            for (DocumentSnapshot userDocument : task.getResult()) {
+                                // Asumiendo que cada usuario tiene una única entrada en 'usuarios',
+                                // entonces este bucle se ejecutará una sola vez.
+                                db.collection("usuarios")
+                                        .document(userDocument.getId())
+                                        .collection("delegaciones")
+                                        .get()
+                                        .addOnCompleteListener(delegationTask -> {
+                                            if (delegationTask.isSuccessful()) {
+                                                List<ActividadDto> actividadesDelegadas = new ArrayList<>();
+                                                for (DocumentSnapshot delegationDocument : delegationTask.getResult()) {
+                                                    // Aquí asumimos que la delegación contiene un campo 'idActividad' que es un string.
+                                                    String idActividad = delegationDocument.getString("idActividad");
+                                                    if (idActividad != null && !idActividad.isEmpty()) {
+                                                        db.collection("actividades")
+                                                                .document(idActividad)
+                                                                .get()
+                                                                .addOnSuccessListener(actividadDocument -> {
+                                                                    if (actividadDocument.exists()) {
+                                                                        ActividadDto actividad = actividadDocument.toObject(ActividadDto.class);
+                                                                        if (actividad != null) {
+                                                                            actividadesDelegadas.add(actividad);
+                                                                        }
+                                                                    }
+                                                                    // Después de procesar todas las delegaciones, actualizamos el spinner.
+                                                                    actualizarSpinnerConActividades(actividadesDelegadas);
+                                                                });
                                                     }
-                                                } else {
-                                                    Log.d("cargarActividades", "No existe actividad para el documento con id: " + actividadDoc.getId());
                                                 }
-                                            }
-                                            if (!actividadesDelegadas.isEmpty()) {
-                                                actualizarSpinnerConActividades(actividadesDelegadas);
                                             } else {
-                                                Log.d("cargarActividades", "No hay actividades delegadas para mostrar en el spinner.");
+                                                Log.d("cargarActividades", "Error al obtener las delegaciones: " + delegationTask.getException());
                                             }
-                                        })
-                                        .addOnFailureListener(e -> Log.d("cargarActividades", "Error al cargar actividades delegadas: " + e.getMessage()));
+                                        });
                             }
                         } else {
-                            Log.d("cargarActividades", "Error al consultar delegaciones: " + task.getException());
+                            Log.d("cargarActividades", "Error al obtener el documento del usuario: " + task.getException());
                         }
                     });
         } else {
             Log.d("cargarActividades", "El usuario es nulo, no se pueden cargar delegaciones.");
         }
+    }
+
+    // Un método hipotético para obtener el código del usuario actual.
+    private int obtenerCodigoUsuario() {
+        // Aquí iría la lógica para obtener el código del usuario actual.
+        // Por ejemplo, podría ser de SharedPreferences o de un Intent extra.
+        // Debes asegurarte de que este método devuelva el código correcto del usuario actual.
+        return 20190923; // Reemplazar con la lógica adecuada para obtener el código del usuario.
     }
 
 
