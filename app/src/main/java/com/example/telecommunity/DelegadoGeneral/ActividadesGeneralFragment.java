@@ -28,7 +28,7 @@ public class ActividadesGeneralFragment extends Fragment {
 
         ListView listView = view.findViewById(R.id.opcionesActividades);
 
-        String[] actividadesOptions = {"Actividades en Curso", "Actividades Finalizadas", "Actividades Eliminadas"};
+        String[] actividadesOptions = {"Actividades en Curso", "Actividades Finalizadas"};
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.list_item_actividad, R.id.tvActividadName, actividadesOptions);
         listView.setAdapter(adapter);

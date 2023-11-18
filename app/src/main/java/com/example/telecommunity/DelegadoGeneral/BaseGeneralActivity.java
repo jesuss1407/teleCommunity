@@ -8,12 +8,14 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.example.telecommunity.ProfileFragment;
 import com.example.telecommunity.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 public class BaseGeneralActivity extends AppCompatActivity {
 
     private TextView titleTextView;
+    private int fragmentIndex;
     BottomNavigationView navView;
     private Fragment currentFragment;
 
@@ -24,6 +26,20 @@ public class BaseGeneralActivity extends AppCompatActivity {
 
         titleTextView = findViewById(R.id.titleTextView);
         navView = findViewById(R.id.bottomNavigationView);
+
+
+
+        // Verificar si hay información adicional en la Intent
+        if (getIntent().hasExtra("fragmentToLoad")) {
+            fragmentIndex = getIntent().getIntExtra("fragmentToLoad", 0);
+
+            // Mostrar el fragmento correspondiente
+            /*Fragment fragment = new AlumnosActivosFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, fragment)
+                    .commit();*/
+        }
+
 
         navView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
@@ -44,7 +60,7 @@ public class BaseGeneralActivity extends AppCompatActivity {
                     selectedFragment = new EstadisticaGeneralFragment();
                     titleTextView.setText("Estadísticas");
                 } else if (id == R.id.navigation_mi_perfil) {
-                    selectedFragment = new PerfilGeneralFragment();
+                    selectedFragment = new ProfileFragment();
                     titleTextView.setText("Perfil");
                 }
 
@@ -79,5 +95,23 @@ public class BaseGeneralActivity extends AppCompatActivity {
         } else {
             super.onBackPressed();
         }
+    }
+
+
+    private void showFragment(int fragmentIndex) {
+        Fragment fragment = null;
+
+        // Determinar qué fragmento mostrar según el índice proporcionado
+        switch (fragmentIndex) {
+            case 1:
+                fragment = new AlumnosActivosFragment();
+                break;
+
+        }
+
+        // Reemplazar el contenedor del fragmento con el fragmento correspondiente
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .commit();
     }
 }

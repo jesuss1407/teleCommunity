@@ -58,6 +58,15 @@ public class EditarUsuario extends AppCompatActivity {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
     @Override
+    public void onBackPressed() {
+        // Lógica para activar la navegación a ActivityB con información adicional
+        int fragmentIndexToLoad = 9; // Puedes cambiar este valor según tus necesidades
+
+        Intent intent = new Intent(this, BaseGeneralActivity.class);
+        intent.putExtra("fragmentToLoad", fragmentIndexToLoad);
+        startActivity(intent);
+    }
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editar_usuario);
@@ -66,7 +75,7 @@ public class EditarUsuario extends AppCompatActivity {
         editTextNombres = findViewById(R.id.editTextNombres);
         editTextApellidos = findViewById(R.id.editTextApellidos);
         editTextCorreo = findViewById(R.id.editTextCorreo);
-        editTextTelefono = findViewById(R.id.editTextTelefono);
+        //editTextTelefono = findViewById(R.id.editTextTelefono);
         btnSave = findViewById(R.id.btnSave);
         spinnerCondicion = findViewById(R.id.spinnerCondicion);
         Foto = findViewById(R.id.Foto);

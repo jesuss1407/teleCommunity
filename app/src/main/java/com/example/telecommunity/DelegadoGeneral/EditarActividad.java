@@ -156,6 +156,7 @@ public class EditarActividad extends AppCompatActivity {
                             String nombredele = documentSnapshot.getString("nombre");
                             String apellido = documentSnapshot.getString("apellido");
                             delegadoNombre = nombredele + " "+apellido;
+                            String fotoactual = documentSnapshot.getString("fotoLink");
 
 
                             // Busca la actividad en la colección de actividades
@@ -204,7 +205,7 @@ public class EditarActividad extends AppCompatActivity {
                                                             .setPositiveButton("Sí", (dialog, which) -> {
                                                                 // Usuario ha confirmado la acción.
                                                                 // Crea y guarda la publicación sin URL de imagen
-                                                                editarActividad(idActividad, codigoDelegado, delegadoNombre, nombre, contenido, "https://firebasestorage.googleapis.com/v0/b/telecommunity-cbff5.appspot.com/o/images%2Factividad_generica.jpg?alt=media&token=d4ce19a7-e44a-4d2a-8b98-4e90072aeb56",estado);
+                                                                editarActividad(idActividad, codigoDelegado, delegadoNombre, nombre, contenido, fotoactual,estado);
                                                             })
                                                             .setNegativeButton("Cancelar", (dialog, which) -> {
                                                                 // Usuario ha cancelado la acción.

@@ -200,27 +200,7 @@
                     android:paddingTop="8dp"
                     android:paddingBottom="8dp"/>
 
-                <!-- Campo para Teléfono -->
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Teléfono"
-                    android:textStyle="bold"
-                    android:layout_marginBottom="8dp"
-                    android:paddingTop="8dp"/>
-                <EditText
-                    android:background="@drawable/custom_edittext"
-                    android:textColor="@color/black"
-                    android:textColorHighlight="@color/cardview_dark_background"
-                    android:id="@+id/editTextTelefono"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:hint="Ingresa tu teléfono"
-                    android:inputType="phone"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="8dp"/>
+
 
                 <Button
                     android:id="@+id/btnSave"
