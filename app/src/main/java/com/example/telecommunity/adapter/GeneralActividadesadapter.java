@@ -29,17 +29,25 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import android.widget.Filter;
+import android.widget.Filterable;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class GeneralActividadesadapter extends RecyclerView.Adapter<GeneralActividadesadapter.ViewHolder> {
 
-    private List<ActividadDto> actividadList;
+    private ArrayList<ActividadDto> actividadList;
+    private ArrayList<ActividadDto> actividadListFull; // Lista de respaldo para el filtro
+
     private Context context;
 
-    public GeneralActividadesadapter(Context context, List<ActividadDto> actividadList) {
+    public GeneralActividadesadapter(Context context, ArrayList<ActividadDto> actividadList) {
         this.actividadList = actividadList;
+        actividadListFull = new ArrayList<>(); // Inicializar la lista completa
 
+        actividadListFull.addAll(actividadList);
         this.context = context;
     }
 
@@ -87,6 +95,22 @@ public class GeneralActividadesadapter extends RecyclerView.Adapter<GeneralActiv
 
     }
 
+    public void filtrado(final String txtBuscar) {
+        int longitud = txtBuscar.length();
+        actividadList.clear();  // Limpiar la lista actual
+
+        if (longitud == 0) {
+            actividadList.addAll(actividadListFull);  // Si la cadena de búsqueda está vacía, mostrar la lista completa
+        } else {
+            for (ActividadDto c : actividadListFull) {
+                if (c.getNombre().toLowerCase().contains(txtBuscar.toLowerCase())) {
+                    actividadList.add(c);
+                }
+            }
+        }
+        notifyDataSetChanged();
+    }
+
 
     @Override
     public int getItemCount() {
@@ -114,5 +138,9 @@ public class GeneralActividadesadapter extends RecyclerView.Adapter<GeneralActiv
             recCard = itemView.findViewById(R.id.recCard);
         }
     }
+
+
+
+    // Implementación de Filterable
 
 }

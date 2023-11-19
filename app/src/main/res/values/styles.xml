@@ -24,4 +24,16 @@
     </style>
 
 
+
+    <style name="SearchViewStyle" parent="Widget.AppCompat.SearchView">
+        <!-- Cambia el color del texto -->
+        <item name="android:textColor">@color/black</item>
+        <!-- Cambia el color del cursor -->
+        <item name="colorControlNormal">@color/purple</item>
+        <!-- Cambia el color del ícono de búsqueda -->
+        <item name="iconTint">@color/black</item>
+        <!-- Cambia el color del fondo de la barra de búsqueda -->
+        <item name="queryBackground">@color/purple_500</item>
+    </style>
+
 </resources>

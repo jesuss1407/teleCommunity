@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import android.view.inputmethod.InputMethodManager;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -31,7 +32,12 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActividadesCursoFragment extends Fragment {
+
+import android.widget.SearchView;  // Importa la clase SearchView
+
+
+
+public class ActividadesCursoFragment extends Fragment implements SearchView.OnQueryTextListener {
 
     private static final int SELECT_IMAGE_REQUEST_CODE = 1001;
     private FirebaseFirestore db;
@@ -41,6 +47,7 @@ public class ActividadesCursoFragment extends Fragment {
     private List<ActividadDto> actividadList;
     private List<ActividadDto> activityList;
     final Context context = getContext();
+    private SearchView searchView;
 
     Uri selectedImageUri;
 
@@ -51,6 +58,11 @@ public class ActividadesCursoFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_actividades_curso, container, false);
+
+        searchView = view.findViewById(R.id.buscarActividades);
+        searchView.setOnQueryTextListener(this);
+
+
 
         db = FirebaseFirestore.getInstance();
         storageRef = FirebaseStorage.getInstance().getReference();
@@ -67,7 +79,7 @@ public class ActividadesCursoFragment extends Fragment {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
-                                List<ActividadDto> actividadList = new ArrayList<>();
+                                ArrayList<ActividadDto> actividadList = new ArrayList<>();
                                 for (QueryDocumentSnapshot document : task.getResult()) {
                                     ActividadDto activity = document.toObject(ActividadDto.class);
                                     actividadList.add(activity);
@@ -90,7 +102,17 @@ public class ActividadesCursoFragment extends Fragment {
             ((BaseGeneralActivity) getActivity()).setTitleTextView("Actividades en Curso");
         }
 
-
         return view;
     }
+    @Override
+    public boolean onQueryTextSubmit(String s) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String s) {
+        adapter.filtrado(s);
+        return false;
+    }
+
 }

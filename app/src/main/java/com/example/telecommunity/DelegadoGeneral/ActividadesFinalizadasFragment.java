@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -31,7 +32,7 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ActividadesFinalizadasFragment extends Fragment {
+public class ActividadesFinalizadasFragment extends Fragment implements SearchView.OnQueryTextListener{
 
     private static final int SELECT_IMAGE_REQUEST_CODE = 1001;
     private FirebaseFirestore db;
@@ -44,6 +45,7 @@ public class ActividadesFinalizadasFragment extends Fragment {
 
     Uri selectedImageUri;
 
+    private SearchView searchView;
     private static final String TAG = "YourActivity";
 
     @Nullable
@@ -55,6 +57,10 @@ public class ActividadesFinalizadasFragment extends Fragment {
         db = FirebaseFirestore.getInstance();
         storageRef = FirebaseStorage.getInstance().getReference();
 
+        searchView = view.findViewById(R.id.buscarActividades);
+        searchView.setOnQueryTextListener(this);
+
+
         // Obtén el usuario logueado
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
@@ -65,7 +71,7 @@ public class ActividadesFinalizadasFragment extends Fragment {
                     .get()
                     .addOnCompleteListener(task -> {
                         if (task.isSuccessful()) {
-                            List<ActividadDto> actividadList = new ArrayList<>();
+                            ArrayList<ActividadDto> actividadList = new ArrayList<>();
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 ActividadDto activity = document.toObject(ActividadDto.class);
                                 actividadList.add(activity);
@@ -89,5 +95,16 @@ public class ActividadesFinalizadasFragment extends Fragment {
 
 
         return view;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String s) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String s) {
+        adapter.filtrado(s);
+        return false;
     }
 }

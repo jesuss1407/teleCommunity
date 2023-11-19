@@ -43,8 +43,8 @@ public class ActividadesCurso extends AppCompatActivity {
     private StorageReference storageRef;
     private RecyclerView recyclerView;
     private GeneralActividadesadapter adapter;
-    private List<ActividadDto> actividadList;
-    private List<ActividadDto> activityList;
+    private ArrayList<ActividadDto> actividadList;
+    private ArrayList<ActividadDto> activityList;
     final Context context = this;
 
     Uri selectedImageUri;
@@ -70,7 +70,7 @@ public class ActividadesCurso extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
-                                List<ActividadDto> actividadList = new ArrayList<>();
+                                ArrayList<ActividadDto> actividadList = new ArrayList<>();
                                 for (QueryDocumentSnapshot document : task.getResult()) {
                                     ActividadDto activity = document.toObject(ActividadDto.class);
                                     actividadList.add(activity);
