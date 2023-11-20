@@ -25,14 +25,41 @@
             android:padding="24dp"
             android:background="@drawable/custom_edittext">
 
-            <TextView
+            <LinearLayout
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="0dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Crear cuenta"
-                android:textSize="36sp"
-                android:textAlignment="center"
-                android:textStyle="bold"
-                android:textColor="@color/purple"/>
+                android:orientation="horizontal"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/imageInfo"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="4dp"
+                    android:onClick="mostrarPopupInfo"
+                    android:padding="8dp"
+                    android:src="@drawable/baseline_info_24" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Crear cuenta"
+                    android:textSize="36sp"
+                    android:textAlignment="center"
+                    android:textStyle="bold"
+                    android:textColor="@color/purple" />
+                <ImageView
+                    android:id="@+id/imageView34"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_marginStart="8dp"
+                    android:padding="8dp" />
+
+            </LinearLayout>
+
 
             <EditText
                 android:layout_width="match_parent"

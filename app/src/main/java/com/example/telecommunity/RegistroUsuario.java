@@ -5,8 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
-
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -38,6 +40,15 @@ public class RegistroUsuario extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         db = FirebaseFirestore.getInstance();
+
+
+        ImageView imgInfo = findViewById(R.id.imageInfo);
+        imgInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mostrarPopupInfo(view);
+            }
+        });
 
 
         //
@@ -91,7 +102,7 @@ public class RegistroUsuario extends AppCompatActivity {
                                     .document(codigoStr)
                                     .set(usuario)
                                     .addOnSuccessListener(unused -> {
-                                        Toast.makeText(this, "Usuario registrado correctamente", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(this, "Registro completado", Toast.LENGTH_SHORT).show();
                                         Intent intent = new Intent(RegistroUsuario.this, IniciarSesion.class);
                                         startActivity(intent);
                                     })
@@ -113,5 +124,23 @@ public class RegistroUsuario extends AppCompatActivity {
         });
 
 
+    }
+
+    public void mostrarPopupInfo(View view) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Información adicional");
+        builder.setMessage("Una vez completado el registro, deberá esperar el correo con la aprobación del Delegado General para poder iniciar sesión.");
+
+        // Agregar un botón "Aceptar"
+        builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // Cerrar el diálogo si se hace clic en "Aceptar"
+                dialog.dismiss();
+            }
+        });
+
+        // Crear y mostrar el diálogo
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 }
