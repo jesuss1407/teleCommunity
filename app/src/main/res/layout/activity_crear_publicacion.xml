@@ -50,7 +50,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Selecciona una actividad"
-        android:spinnerMode="dropdown" />
+        android:spinnerMode="dropdown"
+        android:minHeight="48dp"
+        android:background="@drawable/custom_edittext"
+        android:textColor="@color/black"
+        android:textColorHighlight="@color/cardview_dark_background"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"/>
 
 
     <TextView

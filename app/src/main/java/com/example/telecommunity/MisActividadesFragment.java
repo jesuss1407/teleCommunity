@@ -1,5 +1,7 @@
 package com.example.telecommunity;
 
+import static android.content.ContentValues.TAG;
+
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 
 import com.example.telecommunity.adapter.MisActividadesAdapter;
 import com.example.telecommunity.entity.ActividadDto;
@@ -112,7 +115,10 @@ public class MisActividadesFragment extends Fragment {
 
 
     private void cargarActividadesDelUsuario(String userId) {
-        db.collection("usuarios").document(userId).collection("actividades")
+        int myCode = Integer.parseInt(userId);
+        db.collection("actividades")
+                .whereEqualTo("estado", "En curso")
+                .whereEqualTo("delegadoCode", myCode)
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -121,18 +127,21 @@ public class MisActividadesFragment extends Fragment {
                             List<String> actividadIds = new ArrayList<>();
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 // Aquí suponemos que el documento dentro de la subcolección 'actividades' tiene un campo 'idactividad'
-                                String actividadId = document.getString("idactividad");
+                                String actividadId = document.getString("id");
                                 if (actividadId != null) {
                                     actividadIds.add(actividadId);
                                 }
                             }
                             // Ahora que tenemos los IDs, obtenemos los detalles de cada actividad
                             cargarDetallesDeActividades(actividadIds);
+
                         } else {
-                            Log.d("MisActividadesFragment", "Error obteniendo actividades del usuario: ", task.getException());
+                            Log.w(TAG, "Error getting documents.", task.getException());
                         }
                     }
                 });
+
+
     }
 
 

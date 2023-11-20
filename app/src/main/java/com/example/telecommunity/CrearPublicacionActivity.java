@@ -1,5 +1,7 @@
 package com.example.telecommunity;
 
+import static android.content.ContentValues.TAG;
+
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -13,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.telecommunity.adapter.GeneralActividadesadapter;
 import com.example.telecommunity.entity.ActividadDto;
 import com.google.android.gms.tasks.OnCompleteListener;
 
@@ -29,6 +32,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -37,6 +41,7 @@ import com.example.telecommunity.entity.Publicaciondto;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -79,6 +84,8 @@ public class CrearPublicacionActivity extends AppCompatActivity {
     ImageView ivSelectedImage;
     Button btnSelectImage;
 
+    private String myCodeStr;
+    private int myCode;
     Uri selectedImageUri;
 
     @Override
@@ -139,8 +146,10 @@ public class CrearPublicacionActivity extends AppCompatActivity {
                 String nombreUbicacion = ubicacionSeleccionada.nombre;
 
                 // Obtén la actividad seleccionada
-                ActividadDto actividadSeleccionada = (ActividadDto) spinnerActividades.getSelectedItem();
-                String idActividad = (actividadSeleccionada != null) ? actividadSeleccionada.getId() : null; // Asegúrate de que tu clase ActividadDto tiene un método getId()
+                //ActividadDto actividadSeleccionada = (ActividadDto) spinnerActividades.getSelectedItem();
+                String actividadSeleccionada = (String) spinnerActividades.getSelectedItem();
+
+                String idActividad = (actividadSeleccionada != null) ? actividadSeleccionada : null; // Asegúrate de que tu clase ActividadDto tiene un método getId()
 
                 // Comprueba si se seleccionó una actividad
                 if (idActividad == null) {
@@ -200,17 +209,66 @@ public class CrearPublicacionActivity extends AppCompatActivity {
         });
 
 
-        spinnerActividades = findViewById(R.id.spinnerActividades);
-        ArrayAdapter<ActividadDto> adapter2 = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, new ArrayList<>());
-        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerActividades.setAdapter(adapter2);
+        db = FirebaseFirestore.getInstance();
+        storageRef = FirebaseStorage.getInstance().getReference();
+
+        db.collection("usuarios")
+                .whereEqualTo("correo", FirebaseAuth.getInstance().getCurrentUser().getEmail())
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        for (DocumentSnapshot document : task.getResult()) {
+                            myCodeStr = document.getId();
+                            myCode = Integer.parseInt(myCodeStr);
+                            // Obtén el usuario logueado
+                            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                            if (user != null) {
+                                String userEmail = user.getEmail();
+                                // Consulta la colección
+                                db.collection("actividades")
+                                        .whereEqualTo("estado", "En curso")
+                                        .whereEqualTo("delegadoCode", myCode)
+                                        .get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                if (task.isSuccessful()) {
+                                                    ArrayList<String> nombresActividades = new ArrayList<>();
+                                                    ArrayList<ActividadDto> actividadList = new ArrayList<>();
+
+                                                    for (QueryDocumentSnapshot document : task.getResult()) {
+                                                        ActividadDto activity = document.toObject(ActividadDto.class);
+                                                        actividadList.add(activity);
+
+                                                        // Asumiendo que hay un campo "nombre" en tu clase ActividadDto
+                                                        String nombre = activity.getNombre(); // Reemplaza esto con el método adecuado para obtener el nombre
+                                                        nombresActividades.add(nombre);
+                                                    }
+
+                                                    // Ahora tienes la lista de nombresActividades, que puedes usar para configurar el Spinner
+                                                    spinnerActividades = findViewById(R.id.spinnerActividades); // Reemplaza con el ID de tu Spinner
+                                                    ArrayAdapter<String> adapter = new ArrayAdapter<>(CrearPublicacionActivity.this, android.R.layout.simple_spinner_item, nombresActividades);
+                                                    adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                                    spinnerActividades.setAdapter(adapter);
+
+                                                } else {
+                                                    Log.w(TAG, "Error getting documents.", task.getException());
+                                                }
+                                            }
+                                        });
+
+                            }
 
 
+                        }
+                    } else {
+                        Log.d(TAG, "No coincide");
+                    }
+                });
 
-        // Call method to load delegated activities into the spinner
-        cargarActividadesDelegadas();
 
     }
+
 
     private void guardarPublicacion(String nombre, String contenido, double latitud, double longitud, String userName, String userApellido, String userFotoPerfil, String urlImagen, String nombreUbicacion, String idActividad) {
         String id = UUID.randomUUID().toString();
@@ -275,77 +333,6 @@ public class CrearPublicacionActivity extends AppCompatActivity {
     }
 
 
-    private void cargarActividadesDelegadas() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            // Suponiendo que tienes un método que obtiene el código de usuario como int.
-            // Por ejemplo, esto podría estar almacenado en SharedPreferences o pasar como un extra en el Intent.
-            int codigoUsuario = obtenerCodigoUsuario(); // Este método aún necesita ser implementado.
 
-            Log.d("cargarActividades", "Cargando delegaciones para el usuario con código: " + codigoUsuario);
-            db.collection("usuarios")
-                    .whereEqualTo("codigo", codigoUsuario)
-                    .get()
-                    .addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            for (DocumentSnapshot userDocument : task.getResult()) {
-                                // Asumiendo que cada usuario tiene una única entrada en 'usuarios',
-                                // entonces este bucle se ejecutará una sola vez.
-                                db.collection("usuarios")
-                                        .document(userDocument.getId())
-                                        .collection("delegaciones")
-                                        .get()
-                                        .addOnCompleteListener(delegationTask -> {
-                                            if (delegationTask.isSuccessful()) {
-                                                List<ActividadDto> actividadesDelegadas = new ArrayList<>();
-                                                for (DocumentSnapshot delegationDocument : delegationTask.getResult()) {
-                                                    // Aquí asumimos que la delegación contiene un campo 'idActividad' que es un string.
-                                                    String idActividad = delegationDocument.getString("idActividad");
-                                                    if (idActividad != null && !idActividad.isEmpty()) {
-                                                        db.collection("actividades")
-                                                                .document(idActividad)
-                                                                .get()
-                                                                .addOnSuccessListener(actividadDocument -> {
-                                                                    if (actividadDocument.exists()) {
-                                                                        ActividadDto actividad = actividadDocument.toObject(ActividadDto.class);
-                                                                        if (actividad != null) {
-                                                                            actividadesDelegadas.add(actividad);
-                                                                        }
-                                                                    }
-                                                                    // Después de procesar todas las delegaciones, actualizamos el spinner.
-                                                                    actualizarSpinnerConActividades(actividadesDelegadas);
-                                                                });
-                                                    }
-                                                }
-                                            } else {
-                                                Log.d("cargarActividades", "Error al obtener las delegaciones: " + delegationTask.getException());
-                                            }
-                                        });
-                            }
-                        } else {
-                            Log.d("cargarActividades", "Error al obtener el documento del usuario: " + task.getException());
-                        }
-                    });
-        } else {
-            Log.d("cargarActividades", "El usuario es nulo, no se pueden cargar delegaciones.");
-        }
-    }
-
-    // Un método hipotético para obtener el código del usuario actual.
-    private int obtenerCodigoUsuario() {
-        // Aquí iría la lógica para obtener el código del usuario actual.
-        // Por ejemplo, podría ser de SharedPreferences o de un Intent extra.
-        // Debes asegurarte de que este método devuelva el código correcto del usuario actual.
-        return 20190923; // Reemplazar con la lógica adecuada para obtener el código del usuario.
-    }
-
-
-    // Método para actualizar el Spinner con las actividades cargadas
-    private void actualizarSpinnerConActividades(List<ActividadDto> actividades) {
-        ArrayAdapter<ActividadDto> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, actividades);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerActividades.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-    }
 
 }
