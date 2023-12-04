@@ -3,6 +3,7 @@ package com.example.telecommunity.adapter;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -20,9 +21,17 @@ import com.bumptech.glide.Glide;
 import com.example.telecommunity.DetallePublicacionActivity;
 import com.example.telecommunity.R;
 import com.example.telecommunity.entity.Publicaciondto;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
 import java.util.List;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 import java.util.TimeZone;
 
 
@@ -76,29 +85,61 @@ public class PublicacionAdapter extends RecyclerView.Adapter<PublicacionAdapter.
     }
 
     private void showJoinEventDialog(int position) {
-        // Fetch the name of the event
-        String eventName = publicaciones.get(position).getNombre(); // Assuming 'getNombre()' method returns the name of the event.
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        String eventName = publicaciones.get(position).getNombre();
+        String eventId = publicaciones.get(position).getId(); // Asume que getId() obtiene el ID del evento
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        // Include the event name in the dialog message
-        builder.setMessage("Unirse al evento " + eventName)
-                .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // User accepted to join the event
-                        // Perform any action here, such as updating the database
-                        // Example: publicaciones.get(position).setJoined(true);
-                        // Notify the adapter if the data set changed
-                        notifyDataSetChanged();
-                    }
-                })
-                .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        // User cancelled the dialog
-                        dialog.dismiss();
-                    }
-                });
-        AlertDialog dialog = builder.create();
-        dialog.show();
+        if (user != null && user.getEmail() != null) {
+            String userEmail = user.getEmail();
+
+            // Busca el documento del usuario basado en el correo electrónico
+            db.collection("usuarios").whereEqualTo("correo", userEmail).get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            // Obtiene el "codigo" del usuario
+                            DocumentSnapshot userDocument = queryDocumentSnapshots.getDocuments().get(0);
+                            Long codigo = userDocument.getLong("codigo"); // Obtiene el "codigo" como Long
+
+                            if (codigo != null) {
+                                // Con el "codigo" obtenido, procedemos a unir al usuario al evento
+                                String userCodigoAsString = codigo.toString(); // Convierte el código a String si es necesario
+
+                                CollectionReference eventRef = db.collection("usuarios")
+                                        .document(userCodigoAsString)
+                                        .collection("eventos");
+
+                                Map<String, Object> eventToJoin = new HashMap<>();
+                                eventToJoin.put("idEvento", eventId);
+
+                                eventRef.document(eventId).set(eventToJoin)
+                                        .addOnSuccessListener(aVoid -> Log.d("PublicacionAdapter", "User successfully joined the event!"))
+                                        .addOnFailureListener(e -> Log.w("PublicacionAdapter", "Error joining event", e));
+
+                                // Notifica a cualquier listener que el conjunto de datos ha cambiado
+                                notifyDataSetChanged();
+                            } else {
+                                Log.d("PublicacionAdapter", "El código del usuario es nulo");
+                            }
+                        } else {
+                            // No se encontró el documento del usuario
+                            Log.d("PublicacionAdapter", "No user document with the email found");
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        // Error al buscar el usuario
+                        Log.w("PublicacionAdapter", "Error fetching user document", e);
+                    });
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            builder.setMessage("Unirse al evento " + eventName)
+                    .setPositiveButton("Aceptar", (dialog, id) -> {
+                        // El código para unir al usuario al evento se maneja en el éxito de la consulta anterior
+                    })
+                    .setNegativeButton("Cancelar", (dialog, id) -> dialog.dismiss());
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
     }
 
 
