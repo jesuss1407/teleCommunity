@@ -64,6 +64,7 @@ public class PublicacionAdapter extends RecyclerView.Adapter<PublicacionAdapter.
             intent.putExtra("publicacionId", publicacion.getId());
             intent.putExtra("latitud", publicacion.getLatitud());
             intent.putExtra("longitud", publicacion.getLongitud());
+
             Log.d(TAG, "Publicacion ID: " + publicacion.getId());
             context.startActivity(intent);
         });
@@ -74,72 +75,84 @@ public class PublicacionAdapter extends RecyclerView.Adapter<PublicacionAdapter.
             intent.putExtra("latitud", publicacion.getLatitud());
             intent.putExtra("longitud", publicacion.getLongitud());
             Log.d(TAG, "Publicacion ID: " + publicacion.getId());
+
             context.startActivity(intent);
         });
 
-        holder.btnUnirse.setOnClickListener(v -> {
-            showJoinEventDialog(holder.getAdapterPosition());
-        });
-
-
-    }
-
-    private void showJoinEventDialog(int position) {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        String eventName = publicaciones.get(position).getNombre();
-        String eventId = publicaciones.get(position).getId(); // Asume que getId() obtiene el ID del evento
 
         if (user != null && user.getEmail() != null) {
             String userEmail = user.getEmail();
 
-            // Busca el documento del usuario basado en el correo electrónico
+            // Consulta para obtener el código del usuario
             db.collection("usuarios").whereEqualTo("correo", userEmail).get()
                     .addOnSuccessListener(queryDocumentSnapshots -> {
                         if (!queryDocumentSnapshots.isEmpty()) {
-                            // Obtiene el "codigo" del usuario
                             DocumentSnapshot userDocument = queryDocumentSnapshots.getDocuments().get(0);
-                            Long codigo = userDocument.getLong("codigo"); // Obtiene el "codigo" como Long
+                            Long codigo = userDocument.getLong("codigo");
 
                             if (codigo != null) {
-                                // Con el "codigo" obtenido, procedemos a unir al usuario al evento
-                                String userCodigoAsString = codigo.toString(); // Convierte el código a String si es necesario
+                                String userCodigoAsString = codigo.toString();
 
-                                CollectionReference eventRef = db.collection("usuarios")
+                                // Verificar si el usuario ya está unido al evento
+                                db.collection("usuarios")
                                         .document(userCodigoAsString)
-                                        .collection("eventos");
+                                        .collection("eventos")
+                                        .document(publicacion.getId())
+                                        .get()
+                                        .addOnCompleteListener(task -> {
+                                            if (task.isSuccessful() && task.getResult().exists()) {
+                                                // El usuario ya se unió al evento
+                                                holder.btnUnirse.setText("Unido");
+                                                holder.btnUnirse.setEnabled(false);
+                                            } else {
+                                                // El usuario no se ha unido al evento
+                                                holder.btnUnirse.setText("Unirse");
+                                                holder.btnUnirse.setEnabled(true);
 
-                                Map<String, Object> eventToJoin = new HashMap<>();
-                                eventToJoin.put("idEvento", eventId);
-
-                                eventRef.document(eventId).set(eventToJoin)
-                                        .addOnSuccessListener(aVoid -> Log.d("PublicacionAdapter", "User successfully joined the event!"))
-                                        .addOnFailureListener(e -> Log.w("PublicacionAdapter", "Error joining event", e));
-
-                                // Notifica a cualquier listener que el conjunto de datos ha cambiado
-                                notifyDataSetChanged();
-                            } else {
-                                Log.d("PublicacionAdapter", "El código del usuario es nulo");
+                                                // Establecer el OnClickListener para unirse al evento
+                                                holder.btnUnirse.setOnClickListener(v -> {
+                                                    showJoinEventDialog(position, userCodigoAsString);
+                                                });
+                                            }
+                                        });
                             }
-                        } else {
-                            // No se encontró el documento del usuario
-                            Log.d("PublicacionAdapter", "No user document with the email found");
                         }
                     })
-                    .addOnFailureListener(e -> {
-                        // Error al buscar el usuario
-                        Log.w("PublicacionAdapter", "Error fetching user document", e);
-                    });
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setMessage("Unirse al evento " + eventName)
-                    .setPositiveButton("Aceptar", (dialog, id) -> {
-                        // El código para unir al usuario al evento se maneja en el éxito de la consulta anterior
-                    })
-                    .setNegativeButton("Cancelar", (dialog, id) -> dialog.dismiss());
-            AlertDialog dialog = builder.create();
-            dialog.show();
+                    .addOnFailureListener(e -> Log.w(TAG, "Error obteniendo el documento del usuario", e));
         }
+    }
+
+    private void showJoinEventDialog(int position, String userCodigo) {
+        String eventName = publicaciones.get(position).getNombre();
+        String eventId = publicaciones.get(position).getId(); // Asume que getId() obtiene el ID del evento
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage("Unirse al evento " + eventName)
+                .setPositiveButton("Aceptar", (dialog, id) -> {
+                    // Obtener referencia a la subcolección 'eventos' del usuario
+                    CollectionReference eventRef = FirebaseFirestore.getInstance()
+                            .collection("usuarios")
+                            .document(userCodigo)
+                            .collection("eventos");
+
+                    // Crear un nuevo documento con el ID del evento
+                    Map<String, Object> eventToJoin = new HashMap<>();
+                    eventToJoin.put("idEvento", eventId);
+
+                    // Agregar a la subcolección del usuario
+                    eventRef.document(eventId).set(eventToJoin)
+                            .addOnSuccessListener(aVoid -> {
+                                Log.d(TAG, "User successfully joined the event!");
+                                notifyDataSetChanged(); // Actualizar la interfaz si es necesario
+                            })
+                            .addOnFailureListener(e -> Log.w(TAG, "Error joining event", e));
+                })
+                .setNegativeButton("Cancelar", (dialog, id) -> dialog.dismiss());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
 
