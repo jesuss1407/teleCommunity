@@ -1,6 +1,7 @@
 package com.example.telecommunity.adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
@@ -13,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.telecommunity.DetallePublicacionActivity;
@@ -67,15 +69,36 @@ public class PublicacionAdapter extends RecyclerView.Adapter<PublicacionAdapter.
         });
 
         holder.btnUnirse.setOnClickListener(v -> {
-            Intent intent = new Intent(context, DetallePublicacionActivity.class);
-            intent.putExtra("publicacionId", publicacion.getId());
-            intent.putExtra("latitud", publicacion.getLatitud());
-            intent.putExtra("longitud", publicacion.getLongitud());
-            Log.d(TAG, "Publicacion ID: " + publicacion.getId());
-            context.startActivity(intent);
+            showJoinEventDialog(holder.getAdapterPosition());
         });
 
 
+    }
+
+    private void showJoinEventDialog(int position) {
+        // Fetch the name of the event
+        String eventName = publicaciones.get(position).getNombre(); // Assuming 'getNombre()' method returns the name of the event.
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        // Include the event name in the dialog message
+        builder.setMessage("Unirse al evento " + eventName)
+                .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User accepted to join the event
+                        // Perform any action here, such as updating the database
+                        // Example: publicaciones.get(position).setJoined(true);
+                        // Notify the adapter if the data set changed
+                        notifyDataSetChanged();
+                    }
+                })
+                .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User cancelled the dialog
+                        dialog.dismiss();
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
 
