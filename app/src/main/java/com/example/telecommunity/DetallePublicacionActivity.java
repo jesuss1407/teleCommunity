@@ -75,7 +75,7 @@ public class DetallePublicacionActivity extends AppCompatActivity {
 
         tvUbicacionNombre = findViewById(R.id.tvUbicacionNombre);
         // Obtén el ID de la publicación desde el Intent
-        String publicacionId = getIntent().getStringExtra("publicacionId");
+        publicacionId = getIntent().getStringExtra("publicacionId");
         Log.d(TAG, "Recibido Publicacion ID: " + publicacionId);
 
         if (publicacionId == null) {
@@ -262,37 +262,39 @@ public class DetallePublicacionActivity extends AppCompatActivity {
     private void verificarUnionEvento() {
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        if (publicacionId != null) {
 
-        if (user != null && user.getEmail() != null) {
-            String userEmail = user.getEmail();
+            if (user != null && user.getEmail() != null) {
+                String userEmail = user.getEmail();
 
-            db.collection("usuarios").whereEqualTo("correo", userEmail).get()
-                    .addOnSuccessListener(queryDocumentSnapshots -> {
-                        if (!queryDocumentSnapshots.isEmpty()) {
-                            DocumentSnapshot userDocument = queryDocumentSnapshots.getDocuments().get(0);
-                            Long codigo = userDocument.getLong("codigo");
+                db.collection("usuarios").whereEqualTo("correo", userEmail).get()
+                        .addOnSuccessListener(queryDocumentSnapshots -> {
+                            if (!queryDocumentSnapshots.isEmpty()) {
+                                DocumentSnapshot userDocument = queryDocumentSnapshots.getDocuments().get(0);
+                                Long codigo = userDocument.getLong("codigo");
 
-                            if (codigo != null) {
-                                String userCodigoAsString = codigo.toString();
+                                if (codigo != null) {
+                                    String userCodigoAsString = codigo.toString();
 
-                                db.collection("usuarios")
-                                        .document(userCodigoAsString)
-                                        .collection("eventos")
-                                        .document(publicacionId)
-                                        .get()
-                                        .addOnCompleteListener(task -> {
-                                            if (task.isSuccessful() && task.getResult().exists()) {
-                                                btnUnirse.setText("Unido");
-                                                btnUnirse.setEnabled(false);
-                                            } else {
-                                                btnUnirse.setText("Unirse");
-                                                btnUnirse.setEnabled(true);
-                                                btnUnirse.setOnClickListener(v -> showJoinEventDialog(userCodigoAsString));
-                                            }
-                                        });
+                                    db.collection("usuarios")
+                                            .document(userCodigoAsString)
+                                            .collection("eventos")
+                                            .document(publicacionId)
+                                            .get()
+                                            .addOnCompleteListener(task -> {
+                                                if (task.isSuccessful() && task.getResult().exists()) {
+                                                    btnUnirse.setText("Unido");
+                                                    btnUnirse.setEnabled(false);
+                                                } else {
+                                                    btnUnirse.setText("Unirse");
+                                                    btnUnirse.setEnabled(true);
+                                                    btnUnirse.setOnClickListener(v -> showJoinEventDialog(userCodigoAsString));
+                                                }
+                                            });
+                                }
                             }
-                        }
-                    });
+                        });
+            }
         }
     }
 
@@ -356,7 +358,6 @@ public class DetallePublicacionActivity extends AppCompatActivity {
                                     comentario.put("hora", System.currentTimeMillis());
 
                                     // Obtén el ID de la publicación desde el Intent
-                                    publicacionId = getIntent().getStringExtra("publicacionId");
 
                                     comentariosRef.document(publicacionId)
                                             .collection("comentarios")
@@ -395,7 +396,6 @@ public class DetallePublicacionActivity extends AppCompatActivity {
         CollectionReference comentariosRef = db.collection("comentarios");
 
         // Obtén el ID de la publicación desde el Intent
-        String publicacionId = getIntent().getStringExtra("publicacionId");
 
         // Comprueba que el ID de la publicación no sea nulo
         if (publicacionId == null) {
