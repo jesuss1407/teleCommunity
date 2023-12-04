@@ -4,34 +4,51 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".MainActivity">
 
     <!-- Encabezado de la actividad -->
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="@color/white"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="20dp">
+
+        <!-- Subrayado verde debajo del título -->
 
         <TextView
             android:id="@+id/titleTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
             android:text="Título"
             android:textColor="@color/black"
             android:textSize="18sp"
             android:textStyle="bold" />
 
         <ImageView
-            android:layout_width="112dp"
+            android:id="@+id/iconSync"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="2dp"
+            android:layout_toEndOf="@+id/titleTextView"
+            app:srcCompat="@drawable/syncblack" />
+
+        <ImageView
+            android:id="@+id/ivGreenLine"
+            android:layout_width="match_parent"
             android:layout_height="6dp"
-            android:layout_marginTop="10dp"
-            android:src="@drawable/lineasup" />
+            android:src="@drawable/lineasup"
+            android:layout_below="@id/titleTextView"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp" />
 
-
-    </LinearLayout>
+    </RelativeLayout>
 
     <!-- Contenedor para los fragments -->
     <FrameLayout
