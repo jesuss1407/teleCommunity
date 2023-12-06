@@ -1,5 +1,6 @@
 package com.example.telecommunity;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -62,6 +63,9 @@ public class DetallePublicacionActivity extends AppCompatActivity {
     private EditText editTextComentario;
     private Button buttonEnviarComentario;
     TextView tvUbicacionNombre;
+    private Button btnUnirse;
+    private String publicacionId;
+
 
 
     @Override
@@ -71,7 +75,7 @@ public class DetallePublicacionActivity extends AppCompatActivity {
 
         tvUbicacionNombre = findViewById(R.id.tvUbicacionNombre);
         // Obtén el ID de la publicación desde el Intent
-        String publicacionId = getIntent().getStringExtra("publicacionId");
+        publicacionId = getIntent().getStringExtra("publicacionId");
         Log.d(TAG, "Recibido Publicacion ID: " + publicacionId);
 
         if (publicacionId == null) {
@@ -248,7 +252,80 @@ public class DetallePublicacionActivity extends AppCompatActivity {
                         }
                     }
                 });
+
+        btnUnirse = findViewById(R.id.button_unirse);
+
+        verificarUnionEvento();
+
     }
+
+    private void verificarUnionEvento() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        if (publicacionId != null) {
+
+            if (user != null && user.getEmail() != null) {
+                String userEmail = user.getEmail();
+
+                db.collection("usuarios").whereEqualTo("correo", userEmail).get()
+                        .addOnSuccessListener(queryDocumentSnapshots -> {
+                            if (!queryDocumentSnapshots.isEmpty()) {
+                                DocumentSnapshot userDocument = queryDocumentSnapshots.getDocuments().get(0);
+                                Long codigo = userDocument.getLong("codigo");
+
+                                if (codigo != null) {
+                                    String userCodigoAsString = codigo.toString();
+
+                                    db.collection("usuarios")
+                                            .document(userCodigoAsString)
+                                            .collection("eventos")
+                                            .document(publicacionId)
+                                            .get()
+                                            .addOnCompleteListener(task -> {
+                                                if (task.isSuccessful() && task.getResult().exists()) {
+                                                    btnUnirse.setText("Unido");
+                                                    btnUnirse.setEnabled(false);
+                                                } else {
+                                                    btnUnirse.setText("Unirse");
+                                                    btnUnirse.setEnabled(true);
+                                                    btnUnirse.setOnClickListener(v -> showJoinEventDialog(userCodigoAsString));
+                                                }
+                                            });
+                                }
+                            }
+                        });
+            }
+        }
+    }
+
+
+    private void showJoinEventDialog(String userCodigo) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(DetallePublicacionActivity.this);
+        builder.setMessage("¿Desea unirse a este evento?")
+                .setPositiveButton("Aceptar", (dialog, id) -> unirseAlEvento(userCodigo))
+                .setNegativeButton("Cancelar", (dialog, id) -> dialog.dismiss());
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+    private void unirseAlEvento(String userCodigo) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Map<String, Object> eventToJoin = new HashMap<>();
+        eventToJoin.put("idEvento", publicacionId);
+
+        db.collection("usuarios")
+                .document(userCodigo)
+                .collection("eventos")
+                .document(publicacionId)
+                .set(eventToJoin)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "User successfully joined the event!");
+                    btnUnirse.setText("Unido");
+                    btnUnirse.setEnabled(false);
+                })
+                .addOnFailureListener(e -> Log.w(TAG, "Error joining event", e));
+    }
+
 
     private void enviarComentario(String comentarioTexto) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -281,7 +358,6 @@ public class DetallePublicacionActivity extends AppCompatActivity {
                                     comentario.put("hora", System.currentTimeMillis());
 
                                     // Obtén el ID de la publicación desde el Intent
-                                    String publicacionId = getIntent().getStringExtra("publicacionId");
 
                                     comentariosRef.document(publicacionId)
                                             .collection("comentarios")
@@ -320,7 +396,6 @@ public class DetallePublicacionActivity extends AppCompatActivity {
         CollectionReference comentariosRef = db.collection("comentarios");
 
         // Obtén el ID de la publicación desde el Intent
-        String publicacionId = getIntent().getStringExtra("publicacionId");
 
         // Comprueba que el ID de la publicación no sea nulo
         if (publicacionId == null) {

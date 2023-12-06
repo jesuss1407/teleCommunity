@@ -1,7 +1,9 @@
 package com.example.telecommunity.adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,14 +15,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.telecommunity.DetallePublicacionActivity;
 import com.example.telecommunity.R;
 import com.example.telecommunity.entity.Publicaciondto;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
 import java.util.List;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 import java.util.TimeZone;
 
 
@@ -53,6 +64,7 @@ public class PublicacionAdapter extends RecyclerView.Adapter<PublicacionAdapter.
             intent.putExtra("publicacionId", publicacion.getId());
             intent.putExtra("latitud", publicacion.getLatitud());
             intent.putExtra("longitud", publicacion.getLongitud());
+
             Log.d(TAG, "Publicacion ID: " + publicacion.getId());
             context.startActivity(intent);
         });
@@ -63,19 +75,84 @@ public class PublicacionAdapter extends RecyclerView.Adapter<PublicacionAdapter.
             intent.putExtra("latitud", publicacion.getLatitud());
             intent.putExtra("longitud", publicacion.getLongitud());
             Log.d(TAG, "Publicacion ID: " + publicacion.getId());
+
             context.startActivity(intent);
         });
 
-        holder.btnUnirse.setOnClickListener(v -> {
-            Intent intent = new Intent(context, DetallePublicacionActivity.class);
-            intent.putExtra("publicacionId", publicacion.getId());
-            intent.putExtra("latitud", publicacion.getLatitud());
-            intent.putExtra("longitud", publicacion.getLongitud());
-            Log.d(TAG, "Publicacion ID: " + publicacion.getId());
-            context.startActivity(intent);
-        });
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+        if (user != null && user.getEmail() != null) {
+            String userEmail = user.getEmail();
 
+            // Consulta para obtener el código del usuario
+            db.collection("usuarios").whereEqualTo("correo", userEmail).get()
+                    .addOnSuccessListener(queryDocumentSnapshots -> {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            DocumentSnapshot userDocument = queryDocumentSnapshots.getDocuments().get(0);
+                            Long codigo = userDocument.getLong("codigo");
+
+                            if (codigo != null) {
+                                String userCodigoAsString = codigo.toString();
+
+                                // Verificar si el usuario ya está unido al evento
+                                db.collection("usuarios")
+                                        .document(userCodigoAsString)
+                                        .collection("eventos")
+                                        .document(publicacion.getId())
+                                        .get()
+                                        .addOnCompleteListener(task -> {
+                                            if (task.isSuccessful() && task.getResult().exists()) {
+                                                // El usuario ya se unió al evento
+                                                holder.btnUnirse.setText("Unido");
+                                                holder.btnUnirse.setEnabled(false);
+                                            } else {
+                                                // El usuario no se ha unido al evento
+                                                holder.btnUnirse.setText("Unirse");
+                                                holder.btnUnirse.setEnabled(true);
+
+                                                // Establecer el OnClickListener para unirse al evento
+                                                holder.btnUnirse.setOnClickListener(v -> {
+                                                    showJoinEventDialog(position, userCodigoAsString);
+                                                });
+                                            }
+                                        });
+                            }
+                        }
+                    })
+                    .addOnFailureListener(e -> Log.w(TAG, "Error obteniendo el documento del usuario", e));
+        }
+    }
+
+    private void showJoinEventDialog(int position, String userCodigo) {
+        String eventName = publicaciones.get(position).getNombre();
+        String eventId = publicaciones.get(position).getId(); // Asume que getId() obtiene el ID del evento
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setMessage("Unirse al evento " + eventName)
+                .setPositiveButton("Aceptar", (dialog, id) -> {
+                    // Obtener referencia a la subcolección 'eventos' del usuario
+                    CollectionReference eventRef = FirebaseFirestore.getInstance()
+                            .collection("usuarios")
+                            .document(userCodigo)
+                            .collection("eventos");
+
+                    // Crear un nuevo documento con el ID del evento
+                    Map<String, Object> eventToJoin = new HashMap<>();
+                    eventToJoin.put("idEvento", eventId);
+
+                    // Agregar a la subcolección del usuario
+                    eventRef.document(eventId).set(eventToJoin)
+                            .addOnSuccessListener(aVoid -> {
+                                Log.d(TAG, "User successfully joined the event!");
+                                notifyDataSetChanged(); // Actualizar la interfaz si es necesario
+                            })
+                            .addOnFailureListener(e -> Log.w(TAG, "Error joining event", e));
+                })
+                .setNegativeButton("Cancelar", (dialog, id) -> dialog.dismiss());
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
 
