@@ -1,14 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".DelegadoGeneral.DonacionesGeneralFragment">
+    tools:context=".DelegadoGeneral.DonacionesGeneralFragment"
+    android:orientation="vertical">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <!-- Agrega el SearchView -->
+
+    <android.widget.SearchView
+        android:id="@+id/searchViewDonaciones"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:iconifiedByDefault="false"
+        android:queryHint="Buscar por código..."
+        android:layout_margin="8dp" />
+
+    <!-- ... (otros elementos del layout) -->
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <Button
+            android:id="@+id/selectDateButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Seleccionar rango de fechas" />
+
+        <TextView
+            android:id="@+id/dateRangeTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Rango de fechas seleccionado:"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            android:visibility="gone" />
+
+        <DatePicker
+            android:id="@+id/startDatePicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+        <DatePicker
+            android:id="@+id/endDatePicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+
+
+
+
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewDonaciones"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:orientation="vertical" />
 
-</FrameLayout>
+
+</LinearLayout>
