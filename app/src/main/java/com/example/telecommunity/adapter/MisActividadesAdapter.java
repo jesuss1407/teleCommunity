@@ -16,20 +16,31 @@ public class MisActividadesAdapter extends RecyclerView.Adapter<MisActividadesAd
 
     private List<ActividadDto> actividadList;
     private Context context;
+    private LayoutInflater mInflater;
 
-    // Constructor
-    public MisActividadesAdapter(Context context, List<ActividadDto> actividadList) {
-        this.context = context;
-        this.actividadList = actividadList;
-    }
 
     // Crear nuevos views (invocado por el layout manager)
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_actividad, parent, false);
-        return new ViewHolder(itemView);
+        View view = mInflater.inflate(R.layout.item_actividad, parent, false);
+        return new ViewHolder(view);
     }
+
+    public interface ItemClickListener {
+        void onItemClick(ActividadDto actividad);
+    }
+    private ItemClickListener mClickListener;
+
+
+    // Constructor
+    public MisActividadesAdapter(Context context, List<ActividadDto> actividadList, ItemClickListener itemClickListener) {
+        this.mInflater = LayoutInflater.from(context);
+        this.context = context;
+        this.actividadList = actividadList;
+        this.mClickListener = itemClickListener;
+    }
+
+
 
     // Reemplazar el contenido de un view (invocado por el layout manager)
     @Override
@@ -38,19 +49,9 @@ public class MisActividadesAdapter extends RecyclerView.Adapter<MisActividadesAd
         holder.tvNombreActividad.setText(actividad.getNombre());
         holder.tvDelegado.setText("Delegado: " + actividad.getDelegadoName());
         holder.tvDescripcion.setText(actividad.getDescripcion());
-
-        Glide.with(context)
-                .load(actividad.getFotoLink()) // URL de la imagen
-                .placeholder(R.drawable.regalito) // Una imagen de placeholder
-                .error(R.drawable.regalito) // Una imagen de error
-                .into(holder.imagenActividad); // ImageView donde se quiere cargar la imagen
-
-        // Aquí deberías cargar la imagen usando la librería que prefieras, como Glide o Picasso
-        // Por ejemplo, si usas Glide:
-        // Glide.with(context).load(actividad.getFotoLink()).into(holder.imagenActividad);
-
-        // Si no usas imágenes dinámicas, puedes omitir esta parte o poner una imagen por defecto.
+        Glide.with(context).load(actividad.getFotoLink()).into(holder.imagenActividad);
     }
+
 
     // Devuelve el tamaño de tu dataset (invocado por el layout manager)
     @Override
@@ -61,17 +62,25 @@ public class MisActividadesAdapter extends RecyclerView.Adapter<MisActividadesAd
     // Proporcionar una referencia a las vistas para cada ítem de datos
     // Los ítems de datos complejos pueden necesitar más de una vista por ítem, y
     // proporcionas acceso a todas las vistas para un ítem de datos en un holder
-    public class ViewHolder extends RecyclerView.ViewHolder {
-        public ImageView imagenActividad, ivChevronRight;
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+        public ImageView imagenActividad;
         public TextView tvNombreActividad, tvDelegado, tvDescripcion;
 
         public ViewHolder(View view) {
             super(view);
             imagenActividad = view.findViewById(R.id.imagenactividad);
-            ivChevronRight = view.findViewById(R.id.ivChevronRight);
             tvNombreActividad = view.findViewById(R.id.tvnombreactividad);
             tvDelegado = view.findViewById(R.id.tvdelegado);
-            tvDescripcion = view.findViewById(R.id.tvdelegado0); // Asegúrate de que este ID corresponde al de la descripción
+            tvDescripcion = view.findViewById(R.id.tvdelegado0);
+            view.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View view) {
+            if (mClickListener != null) mClickListener.onItemClick(actividadList.get(getAdapterPosition()));
+        }
+    }
+    public void setClickListener(ItemClickListener itemClickListener) {
+        this.mClickListener = itemClickListener;
     }
 }

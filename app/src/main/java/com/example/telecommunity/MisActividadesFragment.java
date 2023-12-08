@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class MisActividadesFragment extends Fragment {
+public class MisActividadesFragment extends Fragment implements MisActividadesAdapter.ItemClickListener{
 
 
     private RecyclerView recyclerView;
@@ -47,27 +47,29 @@ public class MisActividadesFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        // Inicializar la lista de actividades
         actividadList = new ArrayList<>();
-
-        // Agregar actividades de ejemplo
-        // actividadList.add(new ActividadDto("1", 101, "Delegado Uno", "Actividad Uno", "Descripción de la actividad uno", "link_de_imagen", "activo"));
-        // actividadList.add(new ActividadDto("2", 102, "Delegado Dos", "Actividad Dos", "Descripción de la actividad dos", "link_de_imagen", "activo"));
-
-
-        // Inicializar el adaptador con la lista de actividades
-        actividadAdapter = new MisActividadesAdapter(getActivity(), actividadList);
-
-        // Configurar el RecyclerView con el adaptador
-        recyclerView.setAdapter(actividadAdapter);
+        actividadAdapter = new MisActividadesAdapter(getContext(), actividadList, this); // Inicializa correctamente la variable global
+        recyclerView.setAdapter(actividadAdapter); // Asigna una vez el adaptador
 
         db = FirebaseFirestore.getInstance();
-
-        // Cargar datos desde Firebase
         cargarIdDelUsuario();
 
-
         return view;
+    }
+
+    @Override
+    public void onItemClick(ActividadDto actividad) {
+        // Aquí manejas el clic en un item y lanzas el nuevo fragmento
+        MisEventosDeActividadFragment fragment = new MisEventosDeActividadFragment();
+        Bundle bundle = new Bundle();
+        bundle.putString("idActividad", actividad.getId());
+        fragment.setArguments(bundle);
+
+        // Iniciar el fragmento
+        getActivity().getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null) // Para permitir regresar al fragmento anterior
+                .commit();
     }
 
 
@@ -76,15 +78,14 @@ public class MisActividadesFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-                    actividadList.clear(); // Limpia la lista antes de añadir los nuevos datos
+                    actividadList.clear();
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         ActividadDto actividad = document.toObject(ActividadDto.class);
                         actividadList.add(actividad);
                     }
-                    // Notificar al adaptador que los datos han cambiado
-                    actividadAdapter.notifyDataSetChanged();
+                    actividadAdapter.notifyDataSetChanged(); // Ahora puedes llamar a este método sin problemas
                 } else {
-                    Log.d("MisActividadesFragment", "Error obteniendo documentos: ", task.getException());
+                    Log.d(TAG, "Error obteniendo documentos: ", task.getException());
                 }
             }
         });
