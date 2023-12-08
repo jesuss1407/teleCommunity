@@ -3,17 +3,27 @@ package com.example.telecommunity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+
+import com.cometchat.chat.core.CometChat;
+import com.cometchat.chat.exceptions.CometChatException;
+import com.cometchat.chat.models.User;
 import com.example.telecommunity.R;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import android.view.View;
 public class BaseActivity extends AppCompatActivity {
     private TextView titleTextView;
@@ -21,6 +31,7 @@ public class BaseActivity extends AppCompatActivity {
     private boolean enMisActividades = false;
     private String userRole;
     private ImageView iconSync;
+    private FirebaseFirestore db;
 
 
 
@@ -32,7 +43,7 @@ public class BaseActivity extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("prefs", MODE_PRIVATE);
         userRole = sharedPreferences.getString("tipoUsuario", "usuario");
 
-
+        db = FirebaseFirestore.getInstance();
         iconSync = findViewById(R.id.iconSync);
         titleTextView = findViewById(R.id.titleTextView);
         navView = findViewById(R.id.bottomNavigationView);
@@ -115,7 +126,51 @@ public class BaseActivity extends AppCompatActivity {
             titleTextView.setText("Inicio");
         }
 
+        cometChatLogin();
+
     }
+
+
+    private void cometChatLogin() {
+        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (firebaseUser != null) {
+            String email = firebaseUser.getEmail();
+            if (email != null) {
+                db.collection("usuarios").whereEqualTo("correo", email).get()
+                        .addOnSuccessListener(queryDocumentSnapshots -> {
+                            if (!queryDocumentSnapshots.isEmpty()) {
+                                DocumentSnapshot userDocument = queryDocumentSnapshots.getDocuments().get(0);
+                                Number codigo = userDocument.getLong("codigo"); // Obtiene el código como un Number
+                                if (codigo != null) {
+                                    String UID = String.valueOf(codigo.longValue()); // Convierte el código a String
+                                    String authKey = "4db23a1794fbd8f631c7852fb5ac2c17c58b9bb1"; // Reemplaza con tu Auth Key de CometChat.
+
+                                    CometChat.login(UID, authKey, new CometChat.CallbackListener<User>() {
+                                        @Override
+                                        public void onSuccess(User user) {
+                                            Log.d("CometChat", "Login en CometChat exitoso: " + user.toString());
+                                        }
+
+                                        @Override
+                                        public void onError(CometChatException e) {
+                                            Log.d("CometChat", "Login en CometChat falló: " + e.getMessage());
+                                        }
+                                    });
+                                } else {
+                                    Log.d("CometChat", "No se pudo obtener el código del usuario de Firestore");
+                                }
+                            } else {
+                                Log.d("CometChat", "No se encontraron documentos de usuario con ese correo");
+                            }
+                        })
+                        .addOnFailureListener(e -> Log.d("CometChat", "Error al obtener el documento del usuario", e));
+            }
+        } else {
+            Log.d("CometChat", "El usuario de Firebase no está autenticado.");
+        }
+    }
+
+
     public void crearPublicacion(View view) {
         Intent intent = new Intent(this, CrearPublicacionActivity.class);
         startActivity(intent);

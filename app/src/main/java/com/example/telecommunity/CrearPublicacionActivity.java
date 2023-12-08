@@ -15,6 +15,10 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.cometchat.chat.constants.CometChatConstants;
+import com.cometchat.chat.core.CometChat;
+import com.cometchat.chat.exceptions.CometChatException;
+import com.cometchat.chat.models.Group;
 import com.example.telecommunity.adapter.GeneralActividadesadapter;
 import com.example.telecommunity.entity.ActividadDto;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -296,6 +300,9 @@ public class CrearPublicacionActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Publicación guardada con éxito
                             Toast.makeText(CrearPublicacionActivity.this, "Publicación guardada con éxito", Toast.LENGTH_SHORT).show();
+
+                            crearGrupoChat(id, nombre);
+
                             finish();
                         } else {
                             // Ocurrió un error al guardar la publicación
@@ -303,6 +310,26 @@ public class CrearPublicacionActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+
+    private void crearGrupoChat(String groupId, String groupName) {
+        // Crear un nuevo objeto Group
+        Group group = new Group(groupId, groupName, CometChatConstants.GROUP_TYPE_PUBLIC, "");
+
+        CometChat.createGroup(group, new CometChat.CallbackListener<Group>() {
+            @Override
+            public void onSuccess(Group group) {
+                Log.d("CometChat", "Grupo creado con éxito: " + group.toString());
+                // Grupo creado exitosamente en CometChat
+            }
+
+            @Override
+            public void onError(CometChatException e) {
+                Log.d("CometChat", "Error al crear grupo: " + e.getMessage());
+                // Manejar error en la creación del grupo
+            }
+        });
     }
 
     @Override

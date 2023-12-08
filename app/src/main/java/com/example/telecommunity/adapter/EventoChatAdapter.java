@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,12 +17,14 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.cometchat.chat.constants.CometChatConstants;
 import com.cometchat.chat.core.CometChat;
 import com.cometchat.chat.exceptions.CometChatException;
 import com.cometchat.chat.models.Group;
+import com.example.telecommunity.CometChatFragment;
 import com.example.telecommunity.DetallePublicacionActivity;
 import com.example.telecommunity.R;
 import com.example.telecommunity.entity.Evento;
@@ -63,6 +66,12 @@ public class EventoChatAdapter extends RecyclerView.Adapter<EventoChatAdapter.Pu
         Publicaciondto publicacion = publicaciones.get(position);
         holder.bind(publicacion);
 
+
+
+        // Cambiar el texto del botón de Comentar a "CHAT"
+        holder.btnComentar.setText("Chat");
+
+
         // OnClickListener para abrir la actividad de detalle de publicación
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, DetallePublicacionActivity.class);
@@ -75,13 +84,22 @@ public class EventoChatAdapter extends RecyclerView.Adapter<EventoChatAdapter.Pu
         });
 
         holder.btnComentar.setOnClickListener(v -> {
-            Intent intent = new Intent(context, DetallePublicacionActivity.class);
-            intent.putExtra("publicacionId", publicacion.getId());
-            intent.putExtra("latitud", publicacion.getLatitud());
-            intent.putExtra("longitud", publicacion.getLongitud());
-            Log.d(TAG, "Publicacion ID: " + publicacion.getId());
+            // Crear una instancia de CometChatFragment
+            CometChatFragment cometChatFragment = new CometChatFragment();
 
-            context.startActivity(intent);
+            // Crear un Bundle para pasar datos al fragmento
+            Bundle bundle = new Bundle();
+            bundle.putString("GROUP_ID", publicacion.getId()); // Pasar el ID del evento como el ID del grupo
+            cometChatFragment.setArguments(bundle);
+
+            // Reemplazar el fragmento actual con CometChatFragment
+            if (context instanceof FragmentActivity) {
+                FragmentActivity activity = (FragmentActivity) context;
+                activity.getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, cometChatFragment)
+                        .addToBackStack(null) // Para permitir al usuario regresar al fragmento anterior
+                        .commit();
+            }
         });
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();

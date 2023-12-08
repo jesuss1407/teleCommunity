@@ -12,10 +12,14 @@ import android.content.DialogInterface;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.cometchat.chat.core.CometChat;
+import com.cometchat.chat.exceptions.CometChatException;
+import com.cometchat.chat.models.User;
 import com.example.telecommunity.databinding.ActivityRegistroUsuarioBinding;
 import com.example.telecommunity.entity.UsuariosDto;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -98,6 +102,11 @@ public class RegistroUsuario extends AppCompatActivity {
                             usuario.setEstado(estado);
                             usuario.setFoto(foto);
 
+                            FirebaseUser firebaseUser = auth.getCurrentUser();
+                            if (firebaseUser != null) {
+                                registerUserInCometChat(firebaseUser.getUid(), nombre);
+                            }
+
                             db.collection("usuarios")
                                     .document(codigoStr)
                                     .set(usuario)
@@ -142,5 +151,26 @@ public class RegistroUsuario extends AppCompatActivity {
         // Crear y mostrar el diálogo
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    private void registerUserInCometChat(String UID, String name) {
+        User user = new User();
+        user.setUid(UID);
+        user.setName(name);
+
+        String authKey = "4db23a1794fbd8f631c7852fb5ac2c17c58b9bb1"; // Reemplaza con tu Auth Key de CometChat
+        CometChat.createUser(user, authKey, new CometChat.CallbackListener<User>() {
+            @Override
+            public void onSuccess(User cometChatUser) {
+                Log.d("CometChat", "Usuario creado en CometChat: " + cometChatUser.toString());
+                // Continuar con el flujo después de un registro exitoso en CometChat
+            }
+
+            @Override
+            public void onError(CometChatException e) {
+                Log.e("CometChat", "Error al crear usuario en CometChat: " + e.getMessage());
+                // Manejar errores aquí
+            }
+        });
     }
 }

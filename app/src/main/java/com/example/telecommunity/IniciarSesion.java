@@ -152,11 +152,13 @@ public class IniciarSesion extends AppCompatActivity {
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
+                        // Inicio de sesión exitoso, proceder con la redirección basada en el rol del usuario
                         FirebaseUser firebaseUser = mAuth.getCurrentUser();
                         if (firebaseUser != null) {
-                            cometChatLogin(firebaseUser);
+                            redirectUserBasedOnRole(firebaseUser.getEmail());
                         }
                     } else {
+                        // Manejar error en el inicio de sesión
                         Toast.makeText(IniciarSesion.this, "Error en el inicio de sesión.", Toast.LENGTH_SHORT).show();
                     }
                 });
