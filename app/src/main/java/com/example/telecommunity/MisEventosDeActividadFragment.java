@@ -18,6 +18,8 @@ import android.view.ViewGroup;
 import com.example.telecommunity.adapter.PublicacionAdapter;
 import com.example.telecommunity.entity.Publicaciondto;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -41,6 +43,7 @@ public class MisEventosDeActividadFragment extends Fragment {
     private List<Publicaciondto> publicaciones;
     private FirebaseFirestore db;
     private static final String TAG = "MisEventosDeActividadFragment";
+    private String idActividad;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -54,6 +57,11 @@ public class MisEventosDeActividadFragment extends Fragment {
         recyclerView.setAdapter(publicacionAdapter);
 
         db = FirebaseFirestore.getInstance();
+
+        if (getArguments() != null) {
+            idActividad = getArguments().getString("idActividad");
+        }
+
         cargarDatos();
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -80,8 +88,11 @@ public class MisEventosDeActividadFragment extends Fragment {
     }
 
     private void cargarDatos() {
-        // Aquí añade el código para cargar los datos que quieres mostrar en tu RecyclerView
+        // Obtiene el nombre de la actividad del Bundle
+        String nombreActividad = getArguments().getString("nombreActividad", "");
+
         db.collection("publicaciones")
+                .whereEqualTo("idActividad", nombreActividad) // Asegúrate de que "idActividad" se escribe exactamente igual que en Firestore
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -99,6 +110,28 @@ public class MisEventosDeActividadFragment extends Fragment {
 
                         // Detener la animación de recarga
                         swipeRefreshLayout.setRefreshing(false);
+                    }
+                });
+    }
+
+    private void cargarDetallePublicacion(String idPublicacion) {
+        db.collection("publicaciones")
+                .document(idPublicacion)
+                .get()
+                .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                    @Override
+                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                        Publicaciondto publicacion = documentSnapshot.toObject(Publicaciondto.class);
+                        if (publicacion != null) {
+                            publicaciones.add(publicacion);
+                            publicacionAdapter.notifyDataSetChanged();
+                        }
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(TAG, "Error getting publication details.", e);
                     }
                 });
     }

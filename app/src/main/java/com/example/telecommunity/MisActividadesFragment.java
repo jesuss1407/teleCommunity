@@ -59,16 +59,14 @@ public class MisActividadesFragment extends Fragment implements MisActividadesAd
 
     @Override
     public void onItemClick(ActividadDto actividad) {
-        // Aquí manejas el clic en un item y lanzas el nuevo fragmento
         MisEventosDeActividadFragment fragment = new MisEventosDeActividadFragment();
         Bundle bundle = new Bundle();
-        bundle.putString("idActividad", actividad.getId());
+        bundle.putString("nombreActividad", actividad.getNombre()); // Usa getNombre() en lugar de getId()
         fragment.setArguments(bundle);
 
-        // Iniciar el fragmento
         getActivity().getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, fragment)
-                .addToBackStack(null) // Para permitir regresar al fragmento anterior
+                .addToBackStack(null)
                 .commit();
     }
 
