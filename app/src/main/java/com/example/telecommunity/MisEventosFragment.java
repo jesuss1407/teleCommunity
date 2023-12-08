@@ -16,6 +16,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.example.telecommunity.adapter.EventoChatAdapter;
 import com.example.telecommunity.adapter.PublicacionAdapter;
 import com.example.telecommunity.entity.Publicaciondto;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -39,7 +40,7 @@ public class MisEventosFragment extends Fragment {
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
-    private PublicacionAdapter publicacionAdapter;
+    private EventoChatAdapter publicacionAdapter;
     private List<Publicaciondto> publicaciones;
     private FirebaseFirestore db;
     private static final String TAG = "MisEventosFragment";
@@ -52,7 +53,7 @@ public class MisEventosFragment extends Fragment {
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         publicaciones = new ArrayList<>();
-        publicacionAdapter = new PublicacionAdapter(publicaciones, getContext());
+        publicacionAdapter = new EventoChatAdapter(publicaciones, getContext());
         recyclerView.setAdapter(publicacionAdapter);
 
         db = FirebaseFirestore.getInstance();

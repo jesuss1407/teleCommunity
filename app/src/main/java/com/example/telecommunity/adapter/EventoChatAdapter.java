@@ -24,6 +24,7 @@ import com.cometchat.chat.exceptions.CometChatException;
 import com.cometchat.chat.models.Group;
 import com.example.telecommunity.DetallePublicacionActivity;
 import com.example.telecommunity.R;
+import com.example.telecommunity.entity.Evento;
 import com.example.telecommunity.entity.Publicaciondto;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -39,13 +40,13 @@ import java.util.Map;
 import java.util.TimeZone;
 
 
-public class PublicacionAdapter extends RecyclerView.Adapter<PublicacionAdapter.PublicacionViewHolder> {
+public class EventoChatAdapter extends RecyclerView.Adapter<EventoChatAdapter.PublicacionViewHolder> {
     private static final String TAG = "PublicacionAdapter";
     private List<Publicaciondto> publicaciones;
     private Context context;
 
 
-    public PublicacionAdapter(List<Publicaciondto> publicaciones, Context context) {
+    public EventoChatAdapter(List<Publicaciondto> publicaciones, Context context) {
         this.publicaciones = publicaciones;
         this.context = context;
     }
