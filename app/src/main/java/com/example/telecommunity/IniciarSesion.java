@@ -15,6 +15,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.cometchat.chat.core.AppSettings;
+import com.cometchat.chat.core.CometChat;
+import com.cometchat.chat.exceptions.CometChatException;
+import com.cometchat.chat.models.User;
 import com.example.telecommunity.DelegadoGeneral.AdmActividades;
 import com.example.telecommunity.DelegadoGeneral.BaseGeneralActivity;
 import com.example.telecommunity.adapter.GeneralUsuariosAdapter;
@@ -107,6 +111,29 @@ public class IniciarSesion extends AppCompatActivity {
             showForgotPasswordDialog();
         });
 
+        // Inicializar CometChat si aún no está inicializado.
+        if (!CometChat.isInitialized()) {
+            String appID = "249396b6f6292be5";
+            String region = "us";
+            AppSettings appSettings = new AppSettings.AppSettingsBuilder()
+                    .subscribePresenceForAllUsers()
+                    .setRegion(region)
+                    .build();
+
+            CometChat.init(this, appID, appSettings, new CometChat.CallbackListener<String>() {
+                @Override
+                public void onSuccess(String successMessage) {
+                    Log.d("CometChat", "Inicialización exitosa: " + successMessage);
+                    // CometChat está listo para ser utilizado.
+                }
+
+                @Override
+                public void onError(CometChatException e) {
+                    Log.d("CometChat", "Error de inicialización: " + e.getMessage());
+                }
+            });
+        }
+
     }
 
     private void setupLoginButton() {
@@ -125,11 +152,34 @@ public class IniciarSesion extends AppCompatActivity {
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     if (task.isSuccessful()) {
-                        redirectUserBasedOnRole(email);
+                        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+                        if (firebaseUser != null) {
+                            cometChatLogin(firebaseUser);
+                        }
                     } else {
                         Toast.makeText(IniciarSesion.this, "Error en el inicio de sesión.", Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    private void cometChatLogin(FirebaseUser firebaseUser) {
+        String UID = firebaseUser.getUid(); // UID de Firebase como UID de CometChat.
+        String authKey = "4db23a1794fbd8f631c7852fb5ac2c17c58b9bb1"; // Reemplaza con tu Auth Key de CometChat.
+
+        CometChat.login(UID, authKey, new CometChat.CallbackListener<User>() {
+            @Override
+            public void onSuccess(User user) {
+                Log.d("CometChat", "Login en CometChat exitoso : " + user.toString());
+                // CometChat Login fue exitoso, procede a redirigir al usuario según su rol.
+                redirectUserBasedOnRole(firebaseUser.getEmail());
+            }
+
+            @Override
+            public void onError(CometChatException e) {
+                Log.d("CometChat", "Login en CometChat falló con excepción: " + e.getMessage());
+                // Manejar el error de inicio de sesión de CometChat aquí.
+            }
+        });
     }
 
     private void redirectUserBasedOnRole(String email) {
