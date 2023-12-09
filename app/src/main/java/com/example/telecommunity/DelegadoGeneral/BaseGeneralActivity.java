@@ -90,9 +90,24 @@ public class BaseGeneralActivity extends AppCompatActivity {
     }
 
     public void onBackPressed() {
-        if (currentFragment instanceof ActividadesGeneralFragment || currentFragment instanceof AlumnosGeneralFragment || currentFragment instanceof DonacionesGeneralFragment || currentFragment instanceof EstadisticaGeneralFragment || currentFragment instanceof PerfilGeneralFragment) {
-            finish();
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+
+        if (currentFragment instanceof ActividadesGeneralFragment ||
+                currentFragment instanceof AlumnosGeneralFragment ||
+                currentFragment instanceof EstadisticaGeneralFragment ||
+                currentFragment instanceof PerfilGeneralFragment) {
+            // Si el fragmento actual es uno de los fragmentos especificados,
+            // pone la aplicación en segundo plano (mínimiza la app)
+            moveTaskToBack(true);
+        } else if (currentFragment instanceof DonacionesGeneralFragment || currentFragment instanceof EventoDetalleFragment) {
+            // Si el fragmento actual es DonacionesGeneralFragment o EventoDetalleFragment,
+            // reemplaza con DonacionesGeneralFragment
+            DonacionesGeneralFragment donacionesGeneralFragment = new DonacionesGeneralFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, donacionesGeneralFragment)
+                    .commit();
         } else {
+            // Para otros fragmentos, maneja la acción de retroceso predeterminada
             super.onBackPressed();
         }
     }

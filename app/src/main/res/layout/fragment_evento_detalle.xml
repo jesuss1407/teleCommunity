@@ -1,16 +1,32 @@
 <!-- fragment_evento_detalle.xml -->
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+    <TextView
+        android:id="@+id/textViewNombreApellido"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:layout_margin="16dp"/>
+    <TextView
+        android:id="@+id/textViewCondicion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:layout_margin="16dp"/>
 
     <TextView
         android:id="@+id/textViewTituloEvento"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Título del Evento"
-        android:textSize="18sp"
+        android:visibility="gone"
+        android:textSize="15sp"
         android:textStyle="bold"
         android:layout_margin="16dp"/>
 
@@ -18,10 +34,73 @@
         android:id="@+id/textViewFechaEvento"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Fecha del Evento"
-        android:textSize="16sp"
+        android:textStyle="bold"
+        android:textSize="15sp"
         android:layout_margin="16dp"/>
 
-    <!-- Agrega más TextViews u otras vistas para mostrar otros detalles del evento -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/imageViewDonacion"
+                android:layout_width="370dp"
+                android:layout_height="370dp"
+                android:layout_gravity="center"
+                app:srcCompat="@drawable/blanco" />
+
+            <TextView
+                android:id="@+id/conftext"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:layout_margin="16dp"
+                android:text="Porfavor, confirma el monto de la donación o, si se trata de un error, puedes eliminarla."/>
+
+            <EditText
+                android:id="@+id/monto"
+                android:background="@drawable/custom_edittext"
+                android:textColor="@color/black"
+                android:layout_width="300dp"
+                android:layout_height="48dp"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:maxLength="7"
+                android:inputType="numberDecimal"
+                android:layout_gravity="center"
+                android:hint="Ingresa el monto aquí: Ej: 100"
+                android:longClickable="false"
+            />
+
+            <Button
+                android:id="@+id/confirmButton"
+                android:layout_gravity="center"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@drawable/button_background_green"
+                app:cornerRadius = "5dp"
+                android:text="Confirmar" />
+            <Button
+                android:id="@+id/deleteButton"
+                android:layout_gravity="center"
+                android:layout_width="300dp"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/red"
+                app:cornerRadius = "5dp"
+
+                android:text="Eliminar" />
+
+
+        </LinearLayout>
+    </ScrollView>
+
 
 </LinearLayout>

@@ -139,7 +139,6 @@ public class DonacionesGeneralFragment extends Fragment {
             }
         }
 
-        Log.d("Filtrado", "Número de donaciones filtradas: " + donacionesFiltradas.size());
 
         adapter.filterByDateRange(donacionesFiltradas);
     }
