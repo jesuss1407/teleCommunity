@@ -24,36 +24,22 @@ import java.util.ArrayList;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
-import java.util.ArrayList;
-import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import com.example.telecommunity.R;
-import com.github.mikephil.charting.charts.BarChart;
-import com.github.mikephil.charting.charts.PieChart;
-import com.github.mikephil.charting.components.Legend;
-import com.github.mikephil.charting.data.BarData;
-import com.github.mikephil.charting.data.PieData;
-import com.github.mikephil.charting.data.PieDataSet;
-import com.github.mikephil.charting.data.PieEntry;
-import com.github.mikephil.charting.utils.ColorTemplate;
-import com.github.mikephil.charting.formatter.ValueFormatter;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import com.github.mikephil.charting.charts.HorizontalBarChart;
+import java.util.stream.Collectors;
+import java.util.LinkedHashMap;
+
 public class EstadisticaGeneralFragment extends Fragment {
 
     private PieChart pieChart;
     private BarChart barChart;
+    private HorizontalBarChart topDonorsChart;
     private FirebaseFirestore db;
 
     private int conteoActivos = 0;
@@ -67,10 +53,12 @@ public class EstadisticaGeneralFragment extends Fragment {
 
         pieChart = view.findViewById(R.id.pieChart);
         barChart = view.findViewById(R.id.barChart);
+        topDonorsChart = view.findViewById(R.id.topDonorsChart); // Asegúrate de tener este ID en tu layout XML
         db = FirebaseFirestore.getInstance();
 
         obtenerDatosAlumnos();
         obtenerDatosDonaciones();
+        obtenerTopDonantes();
 
         return view;
     }
@@ -145,6 +133,57 @@ public class EstadisticaGeneralFragment extends Fragment {
             }
         });
     }
+    private void obtenerTopDonantes() {
+        db.collection("donacion").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Map<String, Integer> donacionesPorCodigo = new HashMap<>();
+
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    String codigo = document.getString("codigo");
+                    donacionesPorCodigo.put(codigo, donacionesPorCodigo.getOrDefault(codigo, 0) + 1);
+                }
+
+                // Ordena y toma los top 5 donantes
+                Map<String, Integer> topDonantes = donacionesPorCodigo.entrySet().stream()
+                        .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                        .limit(5)
+                        .collect(Collectors.toMap(
+                                Map.Entry::getKey,
+                                Map.Entry::getValue,
+                                (e1, e2) -> e1,
+                                LinkedHashMap::new));
+
+                ArrayList<BarEntry> entries = new ArrayList<>();
+                ArrayList<String> codes = new ArrayList<>();
+                int index = 0;
+                for (Map.Entry<String, Integer> entry : topDonantes.entrySet()) {
+                    entries.add(new BarEntry(index, entry.getValue()));
+                    codes.add(entry.getKey());
+                    index++;
+                }
+
+                BarDataSet dataSet = new BarDataSet(entries, "Top 5 Donantes");
+                dataSet.setColors(ColorTemplate.LIBERTY_COLORS);
+                BarData data = new BarData(dataSet);
+
+                topDonorsChart.setData(data);
+                XAxis xAxis = topDonorsChart.getXAxis();
+                xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+                xAxis.setValueFormatter(new IndexAxisValueFormatter(codes));
+                xAxis.setLabelRotationAngle(45);
+                xAxis.setDrawGridLines(false);
+
+                topDonorsChart.getDescription().setEnabled(false);
+                topDonorsChart.getAxisLeft().setDrawLabels(false);
+                topDonorsChart.getAxisRight().setDrawLabels(false);
+                topDonorsChart.getLegend().setEnabled(false);
+                topDonorsChart.animateY(1000);
+                topDonorsChart.invalidate();
+            } else {
+                // Manejo de errores
+            }
+        });
+    }
 
 
 
@@ -157,7 +196,7 @@ public class EstadisticaGeneralFragment extends Fragment {
         pieEntries.add(new PieEntry(porcentajeActivos, "Activos"));
         pieEntries.add(new PieEntry(porcentajeBaneados, "Baneados"));
 
-        PieDataSet pieDataSet = new PieDataSet(pieEntries, "Estado de los Alumnos");
+        PieDataSet pieDataSet = new PieDataSet(pieEntries, "");
 
         // Asigna colores personalizados
         ArrayList<Integer> colors = new ArrayList<>();
