@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="16dp"> <!-- Añade un padding general -->
 
     <ScrollView
         android:layout_width="match_parent"
@@ -14,19 +15,43 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="8dp"> <!-- Añade padding para el contenido interior -->
+
+            <!-- Título del gráfico de barras -->
+            <TextView
+                android:id="@+id/barChartTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Historial de Donaciones"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:layout_marginTop="16dp" />
 
             <!-- Gráfico de barras -->
             <com.github.mikephil.charting.charts.BarChart
                 android:id="@+id/barChart"
                 android:layout_width="match_parent"
-                android:layout_height="300dp" />
+                android:layout_height="300dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp" />
+
+            <!-- Título del gráfico PieChart -->
+            <TextView
+                android:id="@+id/pieChartTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Porcentaje de Alumnos Activos vs Baneados"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:layout_marginBottom="8dp" />
 
             <!-- Gráfico PieChart -->
             <com.github.mikephil.charting.charts.PieChart
                 android:id="@+id/pieChart"
                 android:layout_width="match_parent"
-                android:layout_height="300dp" />
+                android:layout_height="300dp"
+                android:layout_marginBottom="16dp" />
 
             <!-- Resto del contenido de tu actividad -->
 

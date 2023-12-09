@@ -1,14 +1,12 @@
 package com.example.telecommunity.DelegadoGeneral;
 
+import android.graphics.Color;
 import android.os.Bundle;
-
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import com.example.telecommunity.R;
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.charts.PieChart;
@@ -20,82 +18,168 @@ import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.PieData;
 import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter;
 import com.github.mikephil.charting.utils.ColorTemplate;
-
 import java.util.ArrayList;
-
-
+import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.FirebaseFirestore;
+import java.util.ArrayList;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import com.example.telecommunity.R;
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.charts.PieChart;
+import com.github.mikephil.charting.components.Legend;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
+import com.github.mikephil.charting.utils.ColorTemplate;
+import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 public class EstadisticaGeneralFragment extends Fragment {
+
+    private PieChart pieChart;
+    private BarChart barChart;
+    private FirebaseFirestore db;
+
+    private int conteoActivos = 0;
+    private int conteoBaneados = 0;
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_estadistica_general, container, false);
 
-        BarChart barChart = view.findViewById(R.id.barChart);
+        pieChart = view.findViewById(R.id.pieChart);
+        barChart = view.findViewById(R.id.barChart);
+        db = FirebaseFirestore.getInstance();
 
-        // Crea un conjunto de datos de barras y agrega datos de ejemplo
-        ArrayList<BarEntry> entries = new ArrayList<>();
-        entries.add(new BarEntry(1, 20f)); // Valor 20 en la posición 1
-        entries.add(new BarEntry(2, 35f)); // Valor 35 en la posición 2
-        entries.add(new BarEntry(3, 15f)); // Valor 15 en la posición 3
-        entries.add(new BarEntry(4, 50f)); // Valor 50 en la posición 4
-
-        BarDataSet dataSet = new BarDataSet(entries, "Datos de Ejemplo");
-
-        // Personaliza la apariencia del conjunto de datos (color, borde, etc.)
-        dataSet.setColor(getResources().getColor(R.color.colorAccent)); // Color de las barras
-
-        /// Configura el espacio entre las barras
-        dataSet.setDrawValues(false); // Para ocultar los valores en las barras
-
-        // Crea un objeto BarData y establece el conjunto de datos
-        BarData barData = new BarData(dataSet);
-
-        // Personaliza el eje X (etiquetas, posición de la barra, etc.)
-        XAxis xAxis = barChart.getXAxis();
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM); // Etiquetas en la parte inferior
-        xAxis.setGranularity(1f); // Espacio entre las etiquetas
-
-        // Personaliza el eje Y
-        YAxis leftAxis = barChart.getAxisLeft();
-        leftAxis.setGranularity(1f); // Espacio entre las divisiones en el eje Y
-
-        // Asigna los datos al gráfico
-        barChart.setData(barData);
-
-        // Actualiza el gráfico
-        barChart.invalidate();
-
-        // Encuentra el PieChart en tu XML
-        PieChart pieChart = view.findViewById(R.id.pieChart);
-
-        // Crea un conjunto de datos para el gráfico de pastel y agrega datos de ejemplo
-        ArrayList<PieEntry> pieEntries = new ArrayList<>();
-        pieEntries.add(new PieEntry(30f, "Etiqueta 1"));
-        pieEntries.add(new PieEntry(45f, "Etiqueta 2"));
-        pieEntries.add(new PieEntry(25f, "Etiqueta 3"));
-
-        PieDataSet pieDataSet = new PieDataSet(pieEntries, "Datos de Ejemplo");
-
-        // Personaliza la apariencia del conjunto de datos (colores, borde, etc.)
-        pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS); // Colores predeterminados
-
-        // Crea un objeto PieData y establece el conjunto de datos
-        PieData pieData = new PieData(pieDataSet);
-
-        // Asigna los datos al gráfico de pastel
-        pieChart.setData(pieData);
-
-        // Personaliza el centro del gráfico de pastel (opcional)
-        pieChart.setCenterText("Estadísticas");
-        pieChart.setCenterTextSize(18f);
-
-        // Actualiza el gráfico de pastel
-        pieChart.invalidate();
+        obtenerDatosAlumnos();
+        obtenerDatosDonaciones();
 
         return view;
     }
+
+
+    private void obtenerDatosAlumnos() {
+        db.collection("usuarios").whereEqualTo("estado", "activo").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                conteoActivos = task.getResult().size();
+                db.collection("usuarios").whereEqualTo("estado", "baneado").get().addOnCompleteListener(taskBaneados -> {
+                    if (taskBaneados.isSuccessful()) {
+                        conteoBaneados = taskBaneados.getResult().size();
+                        actualizarGrafico();
+                    }
+                });
+            }
+        });
+    }
+
+    private void obtenerDatosDonaciones() {
+        db.collection("donacion").get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                // Define el mapa para contar las donaciones por día
+                Map<String, Integer> conteoDonacionesPorDia = new HashMap<>();
+
+                // Formato de fecha para mostrar solo día y mes
+                SimpleDateFormat sdf = new SimpleDateFormat("dd MMM", Locale.getDefault());
+
+                // Calcula la fecha de 6 meses atrás
+                Calendar sixMonthsAgo = Calendar.getInstance();
+                sixMonthsAgo.add(Calendar.MONTH, -6);
+
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    Timestamp timestamp = document.getTimestamp("timestamp");
+                    if (timestamp != null) {
+                        Date fechaDonacion = timestamp.toDate();
+                        // Solo incluye la donación si es posterior a 6 meses atrás
+                        if (fechaDonacion.after(sixMonthsAgo.getTime())) {
+                            String fechaFormateada = sdf.format(fechaDonacion);
+                            conteoDonacionesPorDia.put(fechaFormateada, conteoDonacionesPorDia.getOrDefault(fechaFormateada, 0) + 1);
+                        }
+                    }
+                }
+
+                // Prepara los datos para el gráfico de barras
+                ArrayList<BarEntry> barEntries = new ArrayList<>();
+                ArrayList<String> barEntryLabels = new ArrayList<>();
+                int index = 0;
+                for (Map.Entry<String, Integer> entry : conteoDonacionesPorDia.entrySet()) {
+                    barEntries.add(new BarEntry(index, entry.getValue()));
+                    barEntryLabels.add(entry.getKey());
+                    index++;
+                }
+
+                BarDataSet barDataSet = new BarDataSet(barEntries, "");
+                BarData barData = new BarData(barDataSet);
+                barChart.setData(barData);
+
+                // Configura el eje X para usar las etiquetas de día y mes
+                XAxis xAxis = barChart.getXAxis();
+                xAxis.setValueFormatter(new IndexAxisValueFormatter(barEntryLabels));
+                xAxis.setGranularity(1f);
+                xAxis.setGranularityEnabled(true);
+                xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+                xAxis.setLabelRotationAngle(45); // Si las etiquetas se solapan, rota un poco
+
+                barChart.getDescription().setEnabled(false);
+                barChart.animateY(1000);
+                barChart.invalidate();
+            } else {
+                // Manejo de errores
+            }
+        });
+    }
+
+
+
+    private void actualizarGrafico() {
+        int totalAlumnos = conteoActivos + conteoBaneados;
+        float porcentajeActivos = totalAlumnos > 0 ? ((float) conteoActivos / totalAlumnos) * 100 : 0;
+        float porcentajeBaneados = totalAlumnos > 0 ? ((float) conteoBaneados / totalAlumnos) * 100 : 0;
+
+        ArrayList<PieEntry> pieEntries = new ArrayList<>();
+        pieEntries.add(new PieEntry(porcentajeActivos, "Activos"));
+        pieEntries.add(new PieEntry(porcentajeBaneados, "Baneados"));
+
+        PieDataSet pieDataSet = new PieDataSet(pieEntries, "Estado de los Alumnos");
+
+        // Asigna colores personalizados
+        ArrayList<Integer> colors = new ArrayList<>();
+        colors.add(Color.BLUE); // Azul para alumnos activos
+        colors.add(Color.RED);  // Rojo para alumnos baneados
+        pieDataSet.setColors(colors);
+
+        pieDataSet.setValueTextSize(12f);
+        pieDataSet.setValueFormatter(new PercentFormatter());
+
+        PieData pieData = new PieData(pieDataSet);
+        pieChart.setData(pieData);
+        pieChart.invalidate();
+    }
+
+
+    public class PercentFormatter extends ValueFormatter {
+        @Override
+        public String getFormattedValue(float value) {
+            return String.format("%.1f%%", value);
+        }
+    }
+
+
 }
