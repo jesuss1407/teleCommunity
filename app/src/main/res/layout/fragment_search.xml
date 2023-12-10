@@ -18,6 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Buscar"
+            android:visibility="gone"
             android:contentDescription="Campo de búsqueda por nombre"/>
     </com.google.android.material.appbar.AppBarLayout>
 

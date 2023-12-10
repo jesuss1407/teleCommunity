@@ -74,7 +74,7 @@ import com.google.firebase.storage.StorageReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
+import java.util.concurrent.ThreadLocalRandom;
 public class CrearPublicacionActivity extends AppCompatActivity {
 
     private static final int SELECT_IMAGE_REQUEST_CODE = 1001;
@@ -130,9 +130,15 @@ public class CrearPublicacionActivity extends AppCompatActivity {
         ubicaciones.add(new Ubicacion("CIA", -12.072046089823811, -77.08035723983103));
         ubicaciones.add(new Ubicacion("Pastitos de Arqui", -12.071438702349496, -77.08122130635161));
         ubicaciones.add(new Ubicacion("Comedor Central", -12.07059754831056, -77.08100220132977));
-
-        // Agrega más ubicaciones según necesites
-
+        ubicaciones.add(new Ubicacion("Parque las Palmeras", -12.070854, -77.081682));
+        ubicaciones.add(new Ubicacion("Parque de Letras y Ciencias Humanas", -12.069979, -77.081464));
+        ubicaciones.add(new Ubicacion("Pabellon Z", -12.069184, -77.081365));
+        ubicaciones.add(new Ubicacion("Auditorio EEGGLL", -12.067720, -77.080649));
+        ubicaciones.add(new Ubicacion("Estacionamiento Bicicletas EEGGLL", -12.067158, -77.080185));
+        ubicaciones.add(new Ubicacion("Coliseo Deportivo", -12.066928, -77.079971));
+        ubicaciones.add(new Ubicacion("Gimnasio PUCP", -12.066145, -77.079637));
+        ubicaciones.add(new Ubicacion("Canchas PUCP", -12.065916504840052, -77.08014295125687));
+        ubicaciones.add(new Ubicacion("Comedor Artes", -12.070297593018967, -77.0795600579934));
         ArrayAdapter<Ubicacion> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, ubicaciones);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerUbicacion.setAdapter(adapter);
@@ -276,14 +282,18 @@ public class CrearPublicacionActivity extends AppCompatActivity {
 
     private void guardarPublicacion(String nombre, String contenido, double latitud, double longitud, String userName, String userApellido, String userFotoPerfil, String urlImagen, String nombreUbicacion, String idActividad) {
         String id = UUID.randomUUID().toString();
+        // Crear una variación aleatoria dentro de un rango de +/- 0.00018 grados (aproximadamente 20 metros)
+        double latitudVariada = latitud + ThreadLocalRandom.current().nextDouble(-0.00018, 0.00018);
+        double longitudVariada = longitud + ThreadLocalRandom.current().nextDouble(-0.00018, 0.00018);
+
         Publicaciondto publicacion = new Publicaciondto(
                 id,
                 nombre,
                 System.currentTimeMillis(),
                 contenido,
                 urlImagen,
-                latitud,
-                longitud,
+                latitudVariada,
+                longitudVariada,
                 userName,
                 userApellido,
                 userFotoPerfil,
