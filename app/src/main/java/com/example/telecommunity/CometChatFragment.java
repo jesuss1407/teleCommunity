@@ -1,5 +1,8 @@
 package com.example.telecommunity;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.media.Image;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -10,8 +13,11 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 
 import com.cometchat.chat.constants.CometChatConstants;
 import com.cometchat.chat.core.CometChat;
@@ -29,9 +35,10 @@ public class CometChatFragment extends Fragment {
     private String groupID;
     private RecyclerView chatRecyclerView;
     private EditText messageEditText;
-    private Button sendButton;
+    private ImageButton sendButton;
     private ChatAdapter chatAdapter;
     private List<TextMessage> messages;
+
 
 
     @Override
@@ -52,10 +59,29 @@ public class CometChatFragment extends Fragment {
             loadGroupMessages(groupID);
         }
 
-        sendButton.setOnClickListener(v -> sendMessage());
+        sendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Iniciar una animación de rotación
+                final RotateAnimation rotateAnim = new RotateAnimation(0.0f, 360.0f,
+                        Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+                rotateAnim.setDuration(500); // Duración en milisegundos
+                rotateAnim.setRepeatCount(1); // Cuántas veces se repite la animación
+                sendButton.startAnimation(rotateAnim);
+
+                // Envía tu mensaje
+                sendMessage();
+
+                // La animación se detendrá automáticamente, pero si necesitas hacer algo
+                // después de que se envíe el mensaje, coloca ese código aquí.
+            }
+        });
+
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
+        String currentUserID = sharedPreferences.getString("currentUserID", "");
 
         messages = new ArrayList<>();
-        chatAdapter = new ChatAdapter(messages);
+        chatAdapter = new ChatAdapter(messages, currentUserID);
         chatRecyclerView.setAdapter(chatAdapter);
 
 

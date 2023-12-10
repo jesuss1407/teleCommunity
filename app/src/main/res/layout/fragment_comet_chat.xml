@@ -22,10 +22,13 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"/>
 
-        <Button
+        <ImageButton
             android:id="@+id/sendButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Enviar"/>
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:adjustViewBounds="true"
+            android:background="@drawable/rounded_button2"
+            android:scaleType="fitCenter"
+            android:src="@drawable/send_icon" />
     </LinearLayout>
 </LinearLayout>

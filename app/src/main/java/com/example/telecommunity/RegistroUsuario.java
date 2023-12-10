@@ -28,6 +28,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import androidx.annotation.NonNull;
 public class RegistroUsuario extends AppCompatActivity {
     FirebaseFirestore db;
@@ -104,7 +106,7 @@ public class RegistroUsuario extends AppCompatActivity {
 
                             FirebaseUser firebaseUser = auth.getCurrentUser();
                             if (firebaseUser != null) {
-                                registerUserInCometChat(firebaseUser.getUid(), nombre);
+                                obtenerCodigoYRegistrarEnCometChat(correo, nombre, apellido);
                             }
 
                             db.collection("usuarios")
@@ -153,17 +155,21 @@ public class RegistroUsuario extends AppCompatActivity {
         dialog.show();
     }
 
-    private void registerUserInCometChat(String UID, String name) {
+    private void registerUserInCometChat(String userCode, String nombre, String apellido) {
+        String nombreCompleto = nombre + " " + apellido; // Concatena el nombre y apellido
+
         User user = new User();
-        user.setUid(UID);
-        user.setName(name);
+        user.setUid(userCode);
+        user.setName(nombreCompleto);
 
         String authKey = "4db23a1794fbd8f631c7852fb5ac2c17c58b9bb1"; // Reemplaza con tu Auth Key de CometChat
         CometChat.createUser(user, authKey, new CometChat.CallbackListener<User>() {
             @Override
             public void onSuccess(User cometChatUser) {
                 Log.d("CometChat", "Usuario creado en CometChat: " + cometChatUser.toString());
-                // Continuar con el flujo después de un registro exitoso en CometChat
+                Log.d("CometChat", "Nombre: " + nombre);
+                Log.d("CometChat", "Apellido: " + apellido);
+                Log.d("CometChat", "Nombre completo: " + nombreCompleto);
             }
 
             @Override
@@ -172,5 +178,26 @@ public class RegistroUsuario extends AppCompatActivity {
                 // Manejar errores aquí
             }
         });
+    }
+
+    private void obtenerCodigoYRegistrarEnCometChat(String correo, String nombre, String apellido) {
+        db.collection("usuarios")
+                .whereEqualTo("correo", correo)
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                            DocumentSnapshot document = task.getResult().getDocuments().get(0);
+                            String userCode = String.valueOf(document.get("codigo"));
+
+                            // Llamar al método para registrar el usuario en CometChat con el código obtenido
+                            registerUserInCometChat(userCode, nombre, apellido);
+                        } else {
+                            Log.e("Firestore", "Error al obtener el documento: ", task.getException());
+                            // Manejar la situación en caso de que el usuario no se encuentre o haya un error
+                        }
+                    }
+                });
     }
 }
