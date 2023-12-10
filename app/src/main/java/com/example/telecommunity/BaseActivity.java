@@ -149,6 +149,12 @@ public class BaseActivity extends AppCompatActivity {
                                         @Override
                                         public void onSuccess(User user) {
                                             Log.d("CometChat", "Login en CometChat exitoso: " + user.toString());
+
+                                            // Guardar el UID para usarlo después en el adaptador
+                                            SharedPreferences sharedPreferences = getApplicationContext().getSharedPreferences("MySharedPref", MODE_PRIVATE);
+                                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                                            editor.putString("currentUserID", user.getUid());
+                                            editor.apply();
                                         }
 
                                         @Override

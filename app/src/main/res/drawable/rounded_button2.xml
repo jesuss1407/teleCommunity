@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <corners android:radius="20dp"/> <!-- Ajusta este valor para controlar la curvatura -->
+    <solid android:color="#02c29b"/> <!-- Color de fondo; establecer transparente si se desea -->
+</shape>
