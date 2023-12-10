@@ -128,37 +128,64 @@ public class PublicacionAdapter extends RecyclerView.Adapter<PublicacionAdapter.
         }
     }
 
+
     private void showJoinEventDialog(int position, String userCodigo) {
         String eventName = publicaciones.get(position).getNombre();
-        String eventId = publicaciones.get(position).getId(); // Asume que getId() obtiene el ID del evento
+        String eventId = publicaciones.get(position).getId();
+        final String[] selectedRole = new String[1]; // Array para almacenar la selección temporalmente
+
+        final CharSequence[] options = {"Barra", "Participante"};
 
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setMessage("Unirse al evento " + eventName)
-                .setPositiveButton("Aceptar", (dialog, id) -> {
-                    // Obtener referencia a la subcolección 'eventos' del usuario
-                    CollectionReference eventRef = FirebaseFirestore.getInstance()
-                            .collection("usuarios")
-                            .document(userCodigo)
-                            .collection("eventos");
+        builder.setTitle("Elige tu rol en el evento " + eventName);
 
-                    // Crear un nuevo documento con el ID del evento
-                    Map<String, Object> eventToJoin = new HashMap<>();
-                    eventToJoin.put("idEvento", eventId);
+        builder.setSingleChoiceItems(options, -1, (dialogInterface, i) -> {
+            selectedRole[0] = options[i].toString(); // Guarda la selección del usuario
+        });
 
-                    // Agregar a la subcolección del usuario
-                    eventRef.document(eventId).set(eventToJoin)
-                            .addOnSuccessListener(aVoid -> {
-                                Log.d(TAG, "User successfully joined the event!");
-                                notifyDataSetChanged(); // Actualizar la interfaz si es necesario
-                            })
-                            .addOnFailureListener(e -> Log.w(TAG, "Error joining event", e));
-                    joinOrCreateChatGroup(publicaciones.get(position).getId(), publicaciones.get(position).getNombre());
+        // Botón de confirmar
+        builder.setPositiveButton("Aceptar", (dialog, which) -> {
+            if (selectedRole[0] != null) {
+                // Guardar la información sólo si se ha hecho una selección
+                saveParticipantInfo(eventId, userCodigo, selectedRole[0], eventName);
+            } else {
+                Toast.makeText(context, "Debes seleccionar un rol para unirte al evento.", Toast.LENGTH_LONG).show();
+            }
+        });
 
-                })
-                .setNegativeButton("Cancelar", (dialog, id) -> dialog.dismiss());
+        // Botón de cancelar
+        builder.setNegativeButton("Cancelar", null);
 
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+
+    private void saveParticipantInfo(String eventId, String userCodigo, String role, String eventName) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Map<String, Object> eventToJoin = new HashMap<>();
+        eventToJoin.put("idEvento", eventId);
+        eventToJoin.put("rol", role);
+
+        db.collection("usuarios")
+                .document(userCodigo)
+                .collection("eventos")
+                .document(eventId)
+                .set(eventToJoin)
+                .addOnSuccessListener(aVoid -> {
+                    Log.d(TAG, "User successfully joined the event as " + role);
+                    notifyDataSetChanged(); // Actualizar la interfaz si es necesario
+                    // Mostrar un Toast aquí
+                    Toast.makeText(context, "Te has unido exitosamente al evento como " + role, Toast.LENGTH_LONG).show();
+                })
+                .addOnFailureListener(e -> {
+                    Log.w(TAG, "Error joining event", e);
+                    // También podrías querer mostrar un Toast si ocurre un error
+                    Toast.makeText(context, "Error al unirse al evento. Intenta de nuevo.", Toast.LENGTH_LONG).show();
+                });
+
+        // Si tienes lógica para unirte o crear un grupo de chat, asegúrate de llamarla aquí también si es necesario
+        joinOrCreateChatGroup(eventId, eventName);
     }
 
     private void joinOrCreateChatGroup(String eventId, String eventName) {
@@ -297,5 +324,9 @@ public class PublicacionAdapter extends RecyclerView.Adapter<PublicacionAdapter.
             // Mostrar el nombre de la ubicación
             postUbicacion.setText(publicacion.getNombreUbicacion());
         }
+
+
+
+
     }
 }

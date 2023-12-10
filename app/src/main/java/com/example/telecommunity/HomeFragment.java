@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -80,8 +81,8 @@ public class HomeFragment extends Fragment {
     }
 
     private void cargarDatos() {
-        // Aquí añade el código para cargar los datos que quieres mostrar en tu RecyclerView
         db.collection("publicaciones")
+                .orderBy("horaCreacion", Query.Direction.DESCENDING) // Add this line to sort by creation time in descending order
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
@@ -103,8 +104,10 @@ public class HomeFragment extends Fragment {
                 });
     }
 
+
     private void cargarPublicaciones() {
         db.collection("publicaciones")
+                .orderBy("horaCreacion", Query.Direction.DESCENDING) // Add this line to sort by creation time in descending order
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
