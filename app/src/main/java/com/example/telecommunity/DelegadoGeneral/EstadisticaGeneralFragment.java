@@ -79,7 +79,7 @@ public class EstadisticaGeneralFragment extends Fragment {
     }
 
     private void obtenerDatosDonaciones() {
-        db.collection("donacion").get().addOnCompleteListener(task -> {
+        db.collection("donacionconf").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 // Define el mapa para contar las donaciones por día
                 Map<String, Integer> conteoDonacionesPorDia = new HashMap<>();
@@ -92,7 +92,7 @@ public class EstadisticaGeneralFragment extends Fragment {
                 sixMonthsAgo.add(Calendar.MONTH, -6);
 
                 for (QueryDocumentSnapshot document : task.getResult()) {
-                    Timestamp timestamp = document.getTimestamp("timestamp");
+                    Timestamp timestamp = document.getTimestamp("fecha");
                     if (timestamp != null) {
                         Date fechaDonacion = timestamp.toDate();
                         // Solo incluye la donación si es posterior a 6 meses atrás
@@ -134,7 +134,7 @@ public class EstadisticaGeneralFragment extends Fragment {
         });
     }
     private void obtenerTopDonantes() {
-        db.collection("donacion").get().addOnCompleteListener(task -> {
+        db.collection("donacionconf").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Map<String, Integer> donacionesPorCodigo = new HashMap<>();
 
