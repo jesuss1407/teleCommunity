@@ -262,47 +262,49 @@
 
 
                 </LinearLayout>
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:id="@+id/editarButton2"
+                    android:text="Convertir en Delegado G."
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:backgroundTint="@color/purple"
+                    app:cornerRadius = "20dp"/>
 
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:id="@+id/editarButton"
+                    android:text="Editar información"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:backgroundTint="@color/purple_700"
+                    app:cornerRadius = "20dp"/>
+                <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp"
+                    android:id="@+id/banearButton"
+                    android:text="Banear usuario"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    android:layout_marginTop="5dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:backgroundTint="@color/red"
+                    app:cornerRadius = "20dp"/>
             </LinearLayout>
+
         </ScrollView>
 
 
 
-        <LinearLayout
-            android:layout_marginTop="30dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center">
-
-
-
-        </LinearLayout>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:id="@+id/editarButton"
-            android:text="Editar información"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:backgroundTint="@color/purple_700"
-            app:cornerRadius = "20dp"/>
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:id="@+id/banearButton"
-            android:text="Banear usuario"
-            android:textColor="@color/white"
-            android:textSize="18sp"
-            android:layout_marginTop="5dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:backgroundTint="@color/red"
-            app:cornerRadius = "20dp"/>
 
 
     </LinearLayout>
