@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.example.telecommunity.R;
@@ -34,20 +36,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class AlumnosSolicitudActivacionFragment extends Fragment {
+public class AlumnosSolicitudActivacionFragment extends Fragment implements SearchView.OnQueryTextListener{
 
     private RecyclerView recyclerView;
     private GeneralUsuariosAdapter adapter;
     private FirebaseFirestore db;
     private StorageReference storageRef;
+    private SearchView searchView;
     final Context context = getContext();
     public AlumnosSolicitudActivacionFragment() {
         // Constructor público vacío requerido
     }
-
+    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         // Inflar el layout para este fragmento
         View view = inflater.inflate(R.layout.fragment_alumnos_solicitud_activacion, container, false);
 
@@ -55,7 +58,8 @@ public class AlumnosSolicitudActivacionFragment extends Fragment {
         storageRef = FirebaseStorage.getInstance().getReference();
         TextView emptyView = view.findViewById(R.id.empty_view);
 
-
+        searchView = view.findViewById(R.id.buscarActividades);
+        searchView.setOnQueryTextListener(this);
         // Obtén el usuario logueado
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
@@ -68,7 +72,7 @@ public class AlumnosSolicitudActivacionFragment extends Fragment {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
-                                List<UsuariosDto> usuariosList = new ArrayList<>();
+                                ArrayList<UsuariosDto> usuariosList = new ArrayList<>();
                                 for (QueryDocumentSnapshot document : task.getResult()) {
                                     UsuariosDto activity = document.toObject(UsuariosDto.class);
                                     usuariosList.add(activity);
@@ -104,5 +108,17 @@ public class AlumnosSolicitudActivacionFragment extends Fragment {
 
 
         return view;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String s) {
+        return false;
+    }
+
+
+    @Override
+    public boolean onQueryTextChange(String s) {
+        adapter.filtrado(s);
+        return false;
     }
 }

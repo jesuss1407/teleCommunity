@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -17,6 +18,7 @@ import android.widget.Toast;
 
 import com.example.telecommunity.R;
 import com.example.telecommunity.entity.ActividadDto;
+import com.example.telecommunity.entity.Publicaciondto;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -25,16 +27,19 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
 import java.util.UUID;
 
 public class VerActividad extends AppCompatActivity {
 
-    TextView detailApoyos, detailTitle, detailEventos,detailDescripcion,detailDelegado;
+    TextView detailApoyos, detailTitle, detailEventos,detailDescripcion,detailDelegado, numEventos;
     ImageView detailImagen;
-    private String idActividad;
+    private String idActividad, nombreActividad;
     private String state;
+    private int contadorEventos;
     private FirebaseFirestore db;
     private Context context;
     @Override
@@ -49,6 +54,7 @@ public class VerActividad extends AppCompatActivity {
         detailDescripcion = findViewById(R.id.recDesc);
         detailDelegado = findViewById(R.id.dele);
         detailImagen = findViewById(R.id.recImage);
+        numEventos = findViewById(R.id.numDeEventos);
         //detailApoyos = findViewById(R.id.numapoyos);
 
         Bundle bundle = getIntent().getExtras();
@@ -57,6 +63,7 @@ public class VerActividad extends AppCompatActivity {
             Picasso.get().load(imageUrl).into(detailImagen);
             //detailEventos.setText(bundle.getString("Numeventos"));
             //detailApoyos.setText(bundle.getString("Numapoyos"));
+            nombreActividad = bundle.getString("Title");
             detailTitle.setText(bundle.getString("Title"));
             detailDescripcion.setText(bundle.getString("Descripcion"));
             detailDelegado.setText(bundle.getString("Delegado")+ " - "+bundle.getString("DelegadoCode") );
@@ -100,6 +107,33 @@ public class VerActividad extends AppCompatActivity {
                 });
 
 
+
+        FirebaseFirestore db2 = FirebaseFirestore.getInstance();
+
+        //ver eventos de actividad
+        db2.collection("publicaciones")
+                .whereEqualTo("idActividad", nombreActividad)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    contadorEventos = 0; // Inicializa el contador
+
+                    for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots.getDocuments()) {
+                        if (documentSnapshot.exists()) {
+                            contadorEventos++; // Incrementa el contador por cada documento que existe
+                        }
+                    }
+
+                    // Aquí puedes usar el contador. Por ejemplo, mostrarlo en un TextView o tomar alguna decisión.
+                    // Ejemplo: textViewContador.setText("Número de documentos: " + contadorDocumentos);
+
+                    numEventos.setText("Se tiene " + contadorEventos+" eventos activos");
+
+                })
+                .addOnFailureListener(e -> {
+                    // Manejo de errores
+                });
+
+
         //cerrar actividad
         cambiarEstadoButton.setOnClickListener(v -> {
             //se valida el estado actual de la actividad
@@ -110,7 +144,14 @@ public class VerActividad extends AppCompatActivity {
                         .setMessage("¿Estás seguro de que deseas cambiar el estado de esta actividad a 'Finalizado'?")
                         .setPositiveButton("Sí", (dialog, which) -> {
                             // Usuario ha confirmado la acción.
-                            cerrarActividad(); // Función para cambiar el estado.
+                            if (contadorEventos==0) {
+                                cerrarActividad(); // Función para cambiar el estado.
+
+                            } else {
+
+                                Toast.makeText(VerActividad.this, "No se pudo cerrar Actividad, hay eventos activos", Toast.LENGTH_SHORT).show();
+
+                            }
                         })
                         .setNegativeButton("Cancelar", (dialog, which) -> {
                             // Usuario ha cancelado la acción.
