@@ -21,6 +21,7 @@ import android.view.animation.RotateAnimation;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.cometchat.chat.constants.CometChatConstants;
 import com.cometchat.chat.core.CometChat;
@@ -59,21 +60,40 @@ public class CometChatFragment extends Fragment {
     private ImageButton sendButton;
     private ChatAdapter chatAdapter;
     private List<BaseMessage> messages;
+    private String eventName;
+
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
 
-
+    public static CometChatFragment newInstance(String groupID, String eventName) {
+        CometChatFragment fragment = new CometChatFragment();
+        Bundle args = new Bundle();
+        args.putString("GROUP_ID", groupID);
+        args.putString("EVENT_NAME", eventName);
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_comet_chat, container, false);
+        eventName = getArguments().getString("EVENT_NAME", "Chat");
 
         chatRecyclerView = view.findViewById(R.id.chatRecyclerView);
         messageEditText = view.findViewById(R.id.messageEditText);
         sendButton = view.findViewById(R.id.sendButton);
         chatRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
+        if (getArguments() != null) {
+            eventName = getArguments().getString("EVENT_NAME");
+            getActivity().setTitle(eventName);
+        }
+
+        if (getActivity() != null) {
+            TextView titleTextView = getActivity().findViewById(R.id.titleTextView);
+            titleTextView.setText(eventName);
+        }
         Bundle bundle = getArguments();
         if (bundle != null) {
             groupID = bundle.getString("GROUP_ID");

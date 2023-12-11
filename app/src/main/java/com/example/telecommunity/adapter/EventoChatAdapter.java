@@ -84,12 +84,15 @@ public class EventoChatAdapter extends RecyclerView.Adapter<EventoChatAdapter.Pu
         });
 
         holder.btnComentar.setOnClickListener(v -> {
+
+
             // Crear una instancia de CometChatFragment
             CometChatFragment cometChatFragment = new CometChatFragment();
 
             // Crear un Bundle para pasar datos al fragmento
             Bundle bundle = new Bundle();
             bundle.putString("GROUP_ID", publicacion.getId()); // Pasar el ID del evento como el ID del grupo
+            bundle.putString("EVENT_NAME", publicacion.getNombre());
             cometChatFragment.setArguments(bundle);
 
             // Reemplazar el fragmento actual con CometChatFragment

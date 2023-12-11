@@ -130,6 +130,38 @@ public class BaseActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        // Obtén el fragmento actual
+        Fragment currentFragment = getSupportFragmentManager().findFragmentById(R.id.fragment_container);
+
+        // Actualiza el título de acuerdo con el fragmento
+        if (currentFragment instanceof HomeFragment ||
+                currentFragment instanceof MisEventosFragment ||
+                currentFragment instanceof MisActividadesFragment ||
+                currentFragment instanceof SearchFragment ||
+                currentFragment instanceof NotificationFragment ||
+                currentFragment instanceof DonationFragment ||
+                currentFragment instanceof ProfileFragment) {
+
+
+            moveTaskToBack(true);
+            minimizeApp();
+        } else if (currentFragment instanceof CometChatFragment) {
+            titleTextView.setText("Mis Actividades");
+        } else {
+            super.onBackPressed(); // No olvides llamar al super método
+
+        }
+
+    }
+
+    public void minimizeApp() {
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        startActivity(intent);
+    }
 
     private void cometChatLogin() {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
