@@ -33,7 +33,7 @@ public class VerUsuario extends AppCompatActivity {
     TextView detailCondicion, detailNombre, detailCorreo;
     ImageView detailImage;
     private String userCode;
-    private String state, userMail, userName,userLogueado;
+    private String state, userMail, userName,userLogueado,urol;
     private ExecutorService emailExecutor = Executors.newSingleThreadExecutor();
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
@@ -89,12 +89,16 @@ public class VerUsuario extends AppCompatActivity {
                         // Obtiene el valor del campo "tipo"
                         state = documentSnapshot.getString("estado");
                         userMail = documentSnapshot.getString("correo");
+                        urol = documentSnapshot.getString("rol");
                         userName= documentSnapshot.getString("nombre") + " "+ documentSnapshot.getString("apellido") ;
 
                         if ("activo".equals(state)) {
                             banear.setText("Banear usuario");
-                            if("jesus@pucp.edu.pe".equals(userLogueado)){
+                            if("jesus@pucp.edu.pe".equals(userLogueado)&& !"jesus@pucp.edu.pe".equals(userMail)){
                                 convertirDelegado.setVisibility(View.VISIBLE);
+                                if("Delegado general".equals(urol)){
+                                    convertirDelegado.setText("Degradar a usuario");
+                                }
                             }else {
                                 convertirDelegado.setVisibility(View.GONE);
                             }
@@ -186,7 +190,7 @@ public class VerUsuario extends AppCompatActivity {
         //convertir en delegado general
         convertirDelegado.setOnClickListener(v -> {
             //se valida el estado actual del usuario
-            if ("activo".equals(state)) {
+            if ("Delegado de actividad".equals(urol) ||"Usuario".equals(urol) ) {
                 // Crea un diálogo de alerta para confirmar la acción.
                 new AlertDialog.Builder(VerUsuario.this)
                         .setTitle("Confirmar acción")
@@ -199,6 +203,27 @@ public class VerUsuario extends AppCompatActivity {
                             } catch (MessagingException e) {
                                 throw new RuntimeException(e);
                             }
+                        })
+                        .setNegativeButton("Cancelar", (dialog, which) -> {
+                            // Usuario ha cancelado la acción.
+                            dialog.dismiss(); // Cierra el diálogo.
+                        })
+                        .show();
+            }else if ("Delegado general".equals(urol)) {
+                // Crea un diálogo de alerta para confirmar la acción.
+                new AlertDialog.Builder(VerUsuario.this)
+                        .setTitle("Confirmar acción")
+                        .setMessage("¿Estás seguro de que deseas DEGRADAR a este usuario?")
+                        .setPositiveButton("Sí", (dialog, which) -> {
+                            // Usuario ha confirmado la acción.
+                            desconvertirDelegadoUsuario(); // Función para cambiar el estado.
+
+                            try {
+                                enviarEmailDelegadoDegradado(userMail, userName);
+                            } catch (MessagingException e) {
+                                throw new RuntimeException(e);
+                            }
+
                         })
                         .setNegativeButton("Cancelar", (dialog, which) -> {
                             // Usuario ha cancelado la acción.
@@ -222,6 +247,31 @@ public class VerUsuario extends AppCompatActivity {
                 .addOnSuccessListener(aVoid -> {
                     // El estado se actualizó con éxito en Firestore.
                     Toast.makeText(VerUsuario.this, "El usuario seleccionado ahora es Delegado General", Toast.LENGTH_SHORT).show();
+
+                    Intent intent = new Intent(VerUsuario.this, BaseGeneralActivity.class);
+                    //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP); // Para asegurar que AdmActividades sea la única actividad en la pila
+                    startActivity(intent);
+                    finish();
+                })
+                .addOnFailureListener(e -> {
+                    // Ocurrió un error al actualizar el estado en Firestore.
+                    // Puedes mostrar un mensaje de error o realizar acciones de manejo de errores.
+                });
+
+
+
+    }
+
+    private void desconvertirDelegadoUsuario() {
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference actividadRef = db.collection("usuarios").document(userCode);
+
+//                              Actualiza el campo "estado" a "Finalizado".
+        actividadRef.update("rol", "Usuario")
+                .addOnSuccessListener(aVoid -> {
+                    // El estado se actualizó con éxito en Firestore.
+                    Toast.makeText(VerUsuario.this, "El usuario seleccionado ahora es Usuario común", Toast.LENGTH_SHORT).show();
 
                     Intent intent = new Intent(VerUsuario.this, BaseGeneralActivity.class);
                     //intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP); // Para asegurar que AdmActividades sea la única actividad en la pila
@@ -437,6 +487,57 @@ public class VerUsuario extends AppCompatActivity {
                             + "<p style='color:#555;'>Estimado usuario <em>" + nombre + "</em>, </p>"
                             + "<p style='color:#555;'>Su cuenta de teleCommunity ahora tiene privilegios de <strong>Delegado General</strong>.</p>"
                             + "<p style='color:#555;'>Si desea mas detalles, por favor responda este correo</p>"
+                            + "</div>";
+
+                    message.setContent(htmlContent, "text/html; charset=utf-8");
+
+                    Transport.send(message);
+                    System.out.println("Email enviado con éxito");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+
+    }
+
+    public void enviarEmailDelegadoDegradado(String destinatario, String nombre) throws MessagingException {
+
+        emailExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // Aquí va tu código existente para enviar el email
+                    // Configuración de las propiedades SMTP
+                    Properties prop = new Properties();
+                    prop.put("mail.smtp.host", "smtp.gmail.com");
+                    prop.put("mail.smtp.port", "587");
+                    prop.put("mail.smtp.auth", "true");
+                    prop.put("mail.smtp.starttls.enable", "true"); //TLS
+
+                    // Autenticación
+                    final String username = "apptelecommunity@gmail.com"; // Cambiar por tu email
+                    final String password = "ayka dtem fonq ydeu"; // Cambiar por tu contraseña
+
+                    Session session = Session.getInstance(prop, new Authenticator() {
+                        protected PasswordAuthentication getPasswordAuthentication() {
+                            return new PasswordAuthentication(username, password);
+                        }
+                    });
+
+                    // Creación y envío del mensaje
+                    Message message = new MimeMessage(session);
+                    message.setFrom(new InternetAddress("apptelecommunity@gmail.com"));
+                    message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(destinatario));
+                    message.setSubject("Ya no formas parte de los Delegados Generales");
+
+                    // Contenido HTML con estilos en línea
+                    String htmlContent = "<div style='background-color:#f8f8f8; padding:20px; text-align:center;'>"
+                            + "<h1 style='color:#333;'>¡Lo sentimos!</h1>"
+                            + "<p style='color:#555;'>Estimado usuario <em>" + nombre + "</em>, </p>"
+                            + "<p style='color:#555;'>Su cuenta de teleCommunity ahora tiene privilegios de <strong>Usuario común</strong>.</p>"
+                            + "<p style='color:#555;'>Si desea más detalles, por favor responda este correo</p>"
                             + "</div>";
 
                     message.setContent(htmlContent, "text/html; charset=utf-8");

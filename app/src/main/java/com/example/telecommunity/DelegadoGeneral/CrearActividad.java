@@ -45,7 +45,7 @@ public class CrearActividad extends AppCompatActivity {
     private static final int SELECT_IMAGE_REQUEST_CODE = 1001;
     private FirebaseFirestore db;
     private StorageReference storageRef;
-    private String delegadoNombre, userCodeStr;
+    private String delegadoNombre, userCodeStr,userLogueado,codigoLogueado;
     private int userCode;
 
 
@@ -54,7 +54,7 @@ public class CrearActividad extends AppCompatActivity {
     Button btnGuardarPublicacion;
     ImageView ivSelectedImage;
     Button btnSelectImage;
-
+    FirebaseAuth mAuth = FirebaseAuth.getInstance();
     Uri selectedImageUri;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +76,25 @@ public class CrearActividad extends AppCompatActivity {
             startActivityForResult(intent, SELECT_IMAGE_REQUEST_CODE);
         });
 
+// Obtén el usuario logueado
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            String userEmail = user.getEmail();
+            // Busca el nombre del usuario en la colección de usuarios
+            db.collection("usuarios")
+                    .whereEqualTo("correo", userEmail)
+                    .get()
+                    .addOnCompleteListener(task -> {
+                        if (task.isSuccessful()) {
+                            QuerySnapshot querySnapshot = task.getResult();
+                            if (!querySnapshot.isEmpty()) {
+                                DocumentSnapshot document = querySnapshot.getDocuments().get(0);
+                                codigoLogueado = document.getId();
 
+                            }
+                        }
+                    });
+        }
         // Configurar botón para crear actividad
         btnGuardarPublicacion.setOnClickListener(v -> {
 
@@ -91,7 +109,7 @@ public class CrearActividad extends AppCompatActivity {
 
             if (nombre.isEmpty() || contenido.isEmpty() ||codigoDelegadoStr.isEmpty() ){
                 Toast.makeText(CrearActividad.this, "Llene todos los campos ", Toast.LENGTH_SHORT).show();
-            } else if(codigoDelegadoStr.equals("20196324")){
+            } else if(codigoDelegadoStr.equals("20196324") ||codigoDelegadoStr.equals(codigoLogueado) ){
                 Toast.makeText(CrearActividad.this, "El código ingresado es el del delegado general", Toast.LENGTH_SHORT).show();
             } else if(!(!TextUtils.isEmpty(codigoDelegadoStr) && TextUtils.isDigitsOnly(codigoDelegadoStr))){
                 Toast.makeText(CrearActividad.this, "Ingrese solo numeros en el Código", Toast.LENGTH_SHORT).show();
