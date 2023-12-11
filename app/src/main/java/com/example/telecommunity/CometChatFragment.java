@@ -27,8 +27,10 @@ import com.cometchat.chat.core.CometChat;
 import com.cometchat.chat.core.GroupMembersRequest;
 import com.cometchat.chat.core.MessagesRequest;
 import com.cometchat.chat.exceptions.CometChatException;
+import com.cometchat.chat.models.Attachment;
 import com.cometchat.chat.models.BaseMessage;
 import com.cometchat.chat.models.GroupMember;
+import com.cometchat.chat.models.MediaMessage;
 import com.cometchat.chat.models.TextMessage;
 import com.example.telecommunity.adapter.ChatAdapter;
 import com.google.android.gms.tasks.Task;
@@ -56,9 +58,10 @@ public class CometChatFragment extends Fragment {
     private EditText messageEditText;
     private ImageButton sendButton;
     private ChatAdapter chatAdapter;
-    private List<TextMessage> messages;
+    private List<BaseMessage> messages;
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+
 
 
 
@@ -160,17 +163,39 @@ public class CometChatFragment extends Fragment {
     }
 
     private void sendImageMessage(String imageUrl) {
-        Log.d("CometChatFragment", "Enviando mensaje de imagen: " + imageUrl);
+        // Obtener la extensión del archivo de la URL
+        String fileExtension = imageUrl.substring(imageUrl.lastIndexOf(".") + 1).toLowerCase();
+        String mimeType;
 
-        String messageText = "Imagen: " + imageUrl;
-        TextMessage textMessage = new TextMessage(groupID, messageText, CometChatConstants.RECEIVER_TYPE_GROUP);
+        // Establecer el tipo MIME según la extensión del archivo
+        switch (fileExtension) {
+            case "png":
+                mimeType = "image/png";
+                break;
+            case "jpg":
+            case "jpeg":
+                mimeType = "image/jpeg";
+                break;
+            default:
+                mimeType = "image/*"; // Tipo MIME genérico para imágenes
+        }
 
-        CometChat.sendMessage(textMessage, new CometChat.CallbackListener<TextMessage>() {
+        MediaMessage mediaMessage = new MediaMessage(groupID, CometChatConstants.MESSAGE_TYPE_IMAGE, CometChatConstants.RECEIVER_TYPE_GROUP);
+
+        Attachment attachment = new Attachment();
+        attachment.setFileName("imagen"); // Puedes poner un nombre de archivo relevante aquí
+        attachment.setFileExtension(fileExtension);
+        attachment.setFileUrl(imageUrl);
+        attachment.setFileMimeType(mimeType);
+
+        mediaMessage.setAttachment(attachment);
+
+        CometChat.sendMediaMessage(mediaMessage, new CometChat.CallbackListener<MediaMessage>() {
             @Override
-            public void onSuccess(TextMessage textMessage) {
+            public void onSuccess(MediaMessage mediaMessage) {
                 Log.d("CometChat", "Mensaje de imagen enviado exitosamente");
 
-                messages.add(textMessage);
+                messages.add(mediaMessage); // Añade el MediaMessage a la lista
                 chatAdapter.notifyItemInserted(messages.size() - 1);
                 chatRecyclerView.scrollToPosition(messages.size() - 1);
             }
@@ -215,14 +240,10 @@ public class CometChatFragment extends Fragment {
         messagesRequest.fetchPrevious(new CometChat.CallbackListener<List<BaseMessage>>() {
             @Override
             public void onSuccess(List<BaseMessage> baseMessages) {
-                for (BaseMessage baseMessage : baseMessages) {
-                    if (baseMessage instanceof TextMessage) {
-                        messages.add((TextMessage) baseMessage);
-                    }
-                    // Aquí puedes añadir más instancias de mensajes si las necesitas, como MediaMessage, CustomMessage, etc.
-                }
+                messages.clear(); // Limpia la lista actual
+                messages.addAll(baseMessages); // Añade todos los mensajes a la lista
                 chatAdapter.notifyDataSetChanged();
-                // Desplazarse al último mensaje si es necesario
+
                 if (!messages.isEmpty()) {
                     chatRecyclerView.scrollToPosition(messages.size() - 1);
                 }
