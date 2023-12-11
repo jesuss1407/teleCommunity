@@ -1,5 +1,7 @@
 package com.example.telecommunity;
 
+import static android.content.ContentValues.TAG;
+
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -8,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +29,7 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -63,8 +67,9 @@ public class NotificationFragment extends Fragment {
                                 String userCode = String.valueOf(querySnapshot.getDocuments().get(0).getLong("codigo"));
 
                                 // Fetch notifications of type 'donacion' and matching the user code
+                                // Fetch notifications of type 'donacion' and 'chat' matching the user code
                                 db.collection("notificaciones")
-                                        .whereEqualTo("tipo", "donacion")
+                                        .whereIn("tipo", Arrays.asList("donacion", "chat"))
                                         .whereEqualTo("codigo", userCode)
                                         .orderBy("timestamp", Query.Direction.DESCENDING)
                                         .get()
@@ -75,12 +80,22 @@ public class NotificationFragment extends Fragment {
                                                     for (DocumentSnapshot document : task.getResult()) {
                                                         String title = document.getString("titulo");
                                                         String body = document.getString("cuerpo");
+                                                        String type = document.getString("tipo");
 
+                                                        Log.d(TAG, "TIPO CHAT"+type);
                                                         // Convert Firestore Timestamp to readable time string
                                                         String timeString = getTimeAgo(Objects.requireNonNull(document.getTimestamp("timestamp")));
 
+                                                        int drawableResId;
+                                                        if ("donacion".equals(type)) {
+                                                            drawableResId = R.drawable.regalito; // Usar el drawable para donación
+                                                        } else if ("chat".equals(type)) {
+                                                            drawableResId = R.drawable.chatardillas;
+                                                        } else {
+                                                            drawableResId = R.drawable.chatardillas; // Drawable predeterminado para otros tipos
+                                                        }
 
-                                                        notificationList.add(new NotificationItem(R.drawable.regalito, title, timeString, body));
+                                                        notificationList.add(new NotificationItem(drawableResId, title, timeString, body));
                                                     }
 
                                                     notificationAdapter = new NotificationAdapter(notificationList, getActivity());
@@ -88,6 +103,7 @@ public class NotificationFragment extends Fragment {
                                                 }
                                             }
                                         });
+
                             }
                         }
                     });
