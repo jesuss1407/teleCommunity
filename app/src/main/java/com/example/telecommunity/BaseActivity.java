@@ -149,6 +149,7 @@ public class BaseActivity extends AppCompatActivity {
             minimizeApp();
         } else if (currentFragment instanceof CometChatFragment) {
             titleTextView.setText("Mis Actividades");
+            super.onBackPressed();
         } else {
             super.onBackPressed(); // No olvides llamar al super método
 
