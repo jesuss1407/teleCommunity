@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -91,6 +92,9 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageViewHol
                 .setTitle("Descargar Imagen")
                 .setMessage("¿Deseas descargar la imagen?")
                 .setPositiveButton(android.R.string.yes, (dialog, which) -> {
+                    // Mostrar un Toast antes de iniciar la descarga
+                    Toast.makeText(context, "Descargando imagen...", Toast.LENGTH_LONG).show();
+
                     // Continuar con la descarga
                     DownloadManager.Request request = new DownloadManager.Request(Uri.parse(downloadUrl));
                     request.setDescription("Descargando imagen...");
