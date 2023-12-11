@@ -4,6 +4,8 @@ import android.graphics.Color;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,14 +29,16 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import com.github.mikephil.charting.charts.HorizontalBarChart;
 import java.util.stream.Collectors;
 import java.util.LinkedHashMap;
-
+import static android.content.ContentValues.TAG;
 public class EstadisticaGeneralFragment extends Fragment {
 
     private PieChart pieChart;
@@ -133,38 +137,48 @@ public class EstadisticaGeneralFragment extends Fragment {
             }
         });
     }
+
     private void obtenerTopDonantes() {
         db.collection("donacionconf").get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
-                Map<String, Integer> donacionesPorCodigo = new HashMap<>();
+                Map<String, Double> donacionesPorCodigo = new HashMap<>();
 
                 for (QueryDocumentSnapshot document : task.getResult()) {
                     String codigo = document.getString("codigo");
-                    donacionesPorCodigo.put(codigo, donacionesPorCodigo.getOrDefault(codigo, 0) + 1);
+                    // Asegúrate de que el campo "monto" sea un String que puedas convertir a Double
+                    double monto = Double.parseDouble(document.getString("monto"));
+
+                    if (donacionesPorCodigo.containsKey(codigo)) {
+                        donacionesPorCodigo.put(codigo, donacionesPorCodigo.get(codigo) + monto);
+                    } else {
+                        donacionesPorCodigo.put(codigo, monto);
+                    }
                 }
 
-                // Ordena y toma los top 5 donantes
-                Map<String, Integer> topDonantes = donacionesPorCodigo.entrySet().stream()
-                        .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
-                        .limit(5)
-                        .collect(Collectors.toMap(
-                                Map.Entry::getKey,
-                                Map.Entry::getValue,
-                                (e1, e2) -> e1,
-                                LinkedHashMap::new));
+                // Crea una lista a partir de las entradas del mapa y ordena por el monto donado
+                List<Map.Entry<String, Double>> list = new ArrayList<>(donacionesPorCodigo.entrySet());
+                list.sort(Map.Entry.comparingByValue(Comparator.reverseOrder()));
 
+                // Prepara los datos para el gráfico
                 ArrayList<BarEntry> entries = new ArrayList<>();
                 ArrayList<String> codes = new ArrayList<>();
-                int index = 0;
-                for (Map.Entry<String, Integer> entry : topDonantes.entrySet()) {
-                    entries.add(new BarEntry(index, entry.getValue()));
+                for (int i = 0; i < list.size() && i < 5; i++) { // Asegúrate de que solo tomas los 5 primeros
+                    Map.Entry<String, Double> entry = list.get(i);
+                    entries.add(new BarEntry(i, entry.getValue().floatValue())); // Convierte a float para el gráfico
                     codes.add(entry.getKey());
-                    index++;
                 }
 
                 BarDataSet dataSet = new BarDataSet(entries, "Top 5 Donantes");
                 dataSet.setColors(ColorTemplate.LIBERTY_COLORS);
                 BarData data = new BarData(dataSet);
+
+                // Mostrar la cantidad en las barras
+                dataSet.setValueFormatter(new ValueFormatter() {
+                    @Override
+                    public String getFormattedValue(float value) {
+                        return String.valueOf((int) value);
+                    }
+                });
 
                 topDonorsChart.setData(data);
                 XAxis xAxis = topDonorsChart.getXAxis();
@@ -172,6 +186,7 @@ public class EstadisticaGeneralFragment extends Fragment {
                 xAxis.setValueFormatter(new IndexAxisValueFormatter(codes));
                 xAxis.setLabelRotationAngle(45);
                 xAxis.setDrawGridLines(false);
+                xAxis.setGranularity(1f); // Asegúrate de que solo hay un valor por barra
 
                 topDonorsChart.getDescription().setEnabled(false);
                 topDonorsChart.getAxisLeft().setDrawLabels(false);
@@ -181,9 +196,14 @@ public class EstadisticaGeneralFragment extends Fragment {
                 topDonorsChart.invalidate();
             } else {
                 // Manejo de errores
+                Log.w(TAG, "Error al obtener los documentos.", task.getException());
             }
         });
     }
+
+
+
+
 
 
 
