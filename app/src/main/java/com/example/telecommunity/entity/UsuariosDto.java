@@ -1,6 +1,8 @@
 package com.example.telecommunity.entity;
 
-public class UsuariosDto {
+import java.io.Serializable;
+
+public class UsuariosDto implements Serializable {
 
     private int codigo;
     private String nombre;
@@ -13,6 +15,10 @@ public class UsuariosDto {
     private String estado; //activo, inactivo
     private String telefono;
 
+
+    public UsuariosDto() {
+        // Deja este constructor vacío o inicializa campos según tu necesidad.
+    }
     public int getCodigo() {
         return codigo;
     }

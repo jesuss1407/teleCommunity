@@ -139,6 +139,25 @@
                     android:textSize="20sp"
                     android:text="Delegado"
                     />
+                <TextView
+                    android:id="@+id/etiqueta7"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:textStyle="bold|italic"
+                    android:textColor="@color/black"
+                    android:textSize="24sp"
+                    android:layout_marginTop="18dp"
+                    android:text="Eventos: "
+                    />
+                <TextView
+                    android:id="@+id/numDeEventos"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:textSize="20sp"
+                    android:text=""
+                    />
 
             </LinearLayout>
 

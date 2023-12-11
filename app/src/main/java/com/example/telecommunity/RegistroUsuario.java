@@ -98,7 +98,7 @@ public class RegistroUsuario extends AppCompatActivity {
                             usuario.setApellido(apellido);
                             usuario.setCodigo(Integer.parseInt(codigoStr));
                             usuario.setCorreo(correo);
-                            usuario.setContrasena(contrasena);
+                            usuario.setContrasena("*********");
                             usuario.setCondicion(condicion);
                             usuario.setRol(rol);
                             usuario.setEstado(estado);

@@ -20,16 +20,20 @@ import com.example.telecommunity.entity.GeneralActividadesdto;
 import com.example.telecommunity.entity.GeneralUsuariosdto;
 import com.example.telecommunity.entity.UsuariosDto;
 
+import java.util.ArrayList;
 import java.util.List;
 public class GeneralUsuariosAdapter extends RecyclerView.Adapter<GeneralUsuariosAdapter.ViewHolder>{
 
 
-    private List<UsuariosDto> usuariosList;
+    private ArrayList<UsuariosDto> usuariosList;
+    private ArrayList<UsuariosDto> usuariosListFull;
 
     private Context context;
 
-    public GeneralUsuariosAdapter(Context context, List<UsuariosDto> usuariosList) {
+    public GeneralUsuariosAdapter(Context context, ArrayList<UsuariosDto> usuariosList) {
         this.usuariosList = usuariosList;
+        usuariosListFull = new ArrayList<>(); // Inicializar la lista completa
+        usuariosListFull.addAll(usuariosList);
         this.context = context;
     }
     @NonNull
@@ -79,6 +83,21 @@ public class GeneralUsuariosAdapter extends RecyclerView.Adapter<GeneralUsuarios
     }
 
 
+    public void filtrado(final String txtBuscar) {
+        int longitud = txtBuscar.length();
+        usuariosList.clear();  // Limpiar la lista actual
+
+        if (longitud == 0) {
+            usuariosList.addAll(usuariosListFull);  // Si la cadena de búsqueda está vacía, mostrar la lista completa
+        } else {
+            for (UsuariosDto c : usuariosListFull) {
+                if (c.getNombre().toLowerCase().contains(txtBuscar.toLowerCase())) {
+                    usuariosList.add(c);
+                }
+            }
+        }
+        notifyDataSetChanged();
+    }
     @Override
     public int getItemCount() {
         if (usuariosList != null) {

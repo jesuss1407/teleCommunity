@@ -32,7 +32,12 @@ import com.google.firebase.firestore.QuerySnapshot;
 import android.widget.Filter;
 import android.widget.Filterable;
 
+import android.widget.Filter;
+import android.widget.Filterable;
+
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.List;
 import java.util.stream.Collectors;
 

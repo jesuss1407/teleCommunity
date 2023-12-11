@@ -21,14 +21,13 @@
             android:orientation="horizontal"
             android:gravity="center">
 
-            <SearchView
+            <android.widget.SearchView
                 android:id="@+id/buscarActividades"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:queryHint="Buscar"
-                android:text="Buscar"
-                android:padding="6dp"
-                android:background="#EFEFEF"/>
+                android:iconifiedByDefault="false"
+                android:queryHint="Buscar por nombre..."
+                android:layout_margin="8dp" />
         </LinearLayout>
 
         <!-- Lista de actividades -->
