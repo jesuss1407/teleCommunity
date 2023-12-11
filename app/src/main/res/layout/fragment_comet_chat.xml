@@ -16,11 +16,21 @@
         android:orientation="horizontal"
         android:padding="8dp">
 
+
         <EditText
             android:id="@+id/messageEditText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"/>
+
+        <ImageButton
+            android:id="@+id/attachButton"
+            android:layout_width="35dp"
+            android:layout_height="34dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:scaleType="fitCenter"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/upload_image" />
 
         <ImageButton
             android:id="@+id/sendButton"

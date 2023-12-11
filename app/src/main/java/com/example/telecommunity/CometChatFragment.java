@@ -1,9 +1,12 @@
 package com.example.telecommunity;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
+import android.content.Intent;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -33,6 +36,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -90,6 +96,8 @@ public class CometChatFragment extends Fragment {
                 // La animación se detendrá automáticamente, pero si necesitas hacer algo
                 // después de que se envíe el mensaje, coloca ese código aquí.
             }
+
+
         });
 
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
@@ -100,7 +108,78 @@ public class CometChatFragment extends Fragment {
         chatRecyclerView.setAdapter(chatAdapter);
 
 
+        ImageButton attachButton = view.findViewById(R.id.attachButton);
+        attachButton.setOnClickListener(v -> selectImage());
+
         return view;
+    }
+
+    private void selectImage() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Seleccionar Imagen"), PICK_IMAGE_REQUEST);
+    }
+
+    private static final int PICK_IMAGE_REQUEST = 1;
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
+            Uri imageUri = data.getData();
+            uploadImage(imageUri);
+        }
+    }
+
+    private void uploadImage(Uri imageUri) {
+        if (imageUri != null) {
+            Log.d("CometChatFragment", "Subiendo imagen a Firebase Storage");
+
+            FirebaseStorage storage = FirebaseStorage.getInstance();
+            StorageReference storageRef = storage.getReference();
+
+            StorageReference imageRef = storageRef.child("images/" + System.currentTimeMillis() + ".jpg");
+
+            UploadTask uploadTask = imageRef.putFile(imageUri);
+
+            uploadTask.addOnSuccessListener(taskSnapshot -> {
+                Log.d("CometChatFragment", "Imagen subida exitosamente, obteniendo URL de descarga");
+
+                imageRef.getDownloadUrl().addOnSuccessListener(downloadUrl -> {
+                    Log.d("CometChatFragment", "URL de descarga obtenida, enviando mensaje de imagen");
+                    sendImageMessage(downloadUrl.toString());
+                }).addOnFailureListener(exception -> {
+                    Log.e("CometChatFragment", "Error al obtener URL de descarga: " + exception.getMessage());
+                });
+            }).addOnFailureListener(exception -> {
+                Log.e("CometChatFragment", "Error al subir imagen: " + exception.getMessage());
+            });
+        }
+    }
+
+    private void sendImageMessage(String imageUrl) {
+        Log.d("CometChatFragment", "Enviando mensaje de imagen: " + imageUrl);
+
+        String messageText = "Imagen: " + imageUrl;
+        TextMessage textMessage = new TextMessage(groupID, messageText, CometChatConstants.RECEIVER_TYPE_GROUP);
+
+        CometChat.sendMessage(textMessage, new CometChat.CallbackListener<TextMessage>() {
+            @Override
+            public void onSuccess(TextMessage textMessage) {
+                Log.d("CometChat", "Mensaje de imagen enviado exitosamente");
+
+                messages.add(textMessage);
+                chatAdapter.notifyItemInserted(messages.size() - 1);
+                chatRecyclerView.scrollToPosition(messages.size() - 1);
+            }
+
+            @Override
+            public void onError(CometChatException e) {
+                Log.e("CometChat", "Error al enviar mensaje de imagen: " + e.getMessage());
+            }
+        });
     }
 
 
@@ -239,11 +318,23 @@ public class CometChatFragment extends Fragment {
                 .whereEqualTo("titulo", titulo)
                 .get()
                 .addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && task.getResult().isEmpty()) {
-                        // No existe una notificación previa, crea una nueva
-                        createNotification(Integer.parseInt(userCode), message, tipo, titulo);
+                    if (task.isSuccessful()) {
+                        if (!task.getResult().isEmpty()) {
+                            // Existe una notificación previa, actualiza solo el timestamp
+                            for (DocumentSnapshot documentSnapshot : task.getResult()) {
+                                Log.d("Firestore", "Actualizando timestamp de notificación existente: " + documentSnapshot.getId());
+                                db.collection("notificaciones")
+                                        .document(documentSnapshot.getId())
+                                        .update("timestamp", FieldValue.serverTimestamp())
+                                        .addOnSuccessListener(aVoid -> Log.d("Firestore", "Timestamp de notificación actualizado"))
+                                        .addOnFailureListener(e -> Log.e("Firestore", "Error al actualizar timestamp de notificación", e));
+                            }
+                        } else {
+                            // No existe una notificación previa, crea una nueva
+                            createNotification(Integer.parseInt(userCode), message, tipo, titulo);
+                        }
                     } else {
-                        Log.d("Firestore", "Ya existe una notificación para el usuario con código: " + userCode);
+                        Log.e("Firestore", "Error al verificar notificaciones existentes", task.getException());
                     }
                 });
     }
